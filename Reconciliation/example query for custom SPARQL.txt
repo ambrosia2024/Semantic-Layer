@@ -1,0 +1,35 @@
+URL:
+https://query.wikidata.org/sparql
+
+
+
+Query:
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX schema: <http://schema.org/>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+SELECT DISTINCT ?uri ?label ?description WHERE {{ # <-- Double parenthesis needed because python will handle one parenthesis in a wrong manner
+  # Use Wikidata's optimized search service
+  SERVICE wikibase:mwapi {{ # <-- Double Parenthesis
+    bd:serviceParam wikibase:endpoint "www.wikidata.org";
+                    wikibase:api "EntitySearch";
+                    mwapi:search "{term}"; # <-- Single parenthesis
+                    mwapi:language "en".
+    ?uri wikibase:apiOutputItem mwapi:item.
+  }} # <-- Double parenthesis
+
+  # Get English label (mandatory)
+  ?uri rdfs:label ?label .
+  FILTER(LANG(?label) = "en")
+
+  # Optionally get English description
+  OPTIONAL {{ # <-- Double parenthesis
+    ?uri schema:description ?description .
+    FILTER(LANG(?description) = "en")
+  }} # <-- Double parenthesis
+
+}} # <-- Double parenthesis
+LIMIT {limit} # <-- Single parenthesis

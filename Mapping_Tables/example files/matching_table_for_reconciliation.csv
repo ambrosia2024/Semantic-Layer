@@ -1,0 +1,10 @@
+Term,URI,RDF Role,Match Type
+Crop,,predicate,
+Hazard,,predicate,
+Wheat,,object,
+Maize,,object,
+Emmer,,object,
+E. coli,,object,
+Salmonella,,object,
+Aflatoxin,,object,
+

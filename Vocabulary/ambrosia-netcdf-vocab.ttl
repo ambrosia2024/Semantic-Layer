@@ -1,0 +1,233 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix wikidata: <https://www.wikidata.org/entity/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix nc: <http://def.seegrid.csiro.au/isotc211/iso19156/2011/netcdf#> .
+@prefix ecso: <http://purl.dataone.org/odo/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix amblink: <https://www.ambrosia-project.eu/vocab/linking/> .
+@prefix qk:    <http://qudt.org/vocab/quantitykind/> .
+
+### Scheme Definitions ###
+
+<https://www.ambrosia-project.eu/vocab/scheme/netcdf> a skos:ConceptScheme ;
+    dct:title "NetCDF Vocabulary"@en ;
+    dct:description "A controlled vocabulary of NetCDF concepts from the Ambrosia project."@en .
+
+### Class Definitions ###
+
+<https://www.ambrosia-project.eu/vocab/class/VerticalContext> a rdfs:Class ;
+    rdfs:label "Vertical Context"@en ;
+    rdfs:comment "Contextual class for specifying vertical measurement attributes like height and reference level."@en .
+
+### Property Definitions ###
+
+<https://www.ambrosia-project.eu/vocab/property/title> a rdf:Property ;
+    rdfs:label "Title of dataset"@en ;
+    rdfs:comment "Maps to global attribute :title in NetCDF metadata."@en .
+
+<https://www.ambrosia-project.eu/vocab/property/verticalContext> a rdf:Property ;
+    rdfs:label "Vertical Context"@en ;
+    rdfs:comment "Specifies the vertical context of a variable, linking to a detailed VerticalContext description."@en .
+
+<https://www.ambrosia-project.eu/vocab/property/referenceLevel> a rdf:Property ;
+    rdfs:label "Reference Level"@en ;
+    rdfs:comment "Describes the base level from which vertical distance is measured (e.g., 'surface')."@en .
+
+<https://www.ambrosia-project.eu/vocab/property/height> a rdf:Property ;
+    rdfs:label "Vertical Height"@en ;
+    rdfs:comment "Specifies vertical height above the reference level."@en .
+
+### Concepts ###
+
+<https://www.ambrosia-project.eu/vocab/concept/netcdf/latitude>
+    a skos:Concept , nc:Variable ;
+    skos:inScheme <https://www.ambrosia-project.eu/vocab/scheme/netcdf> ;
+    skos:prefLabel "Latitude"@en ;
+    skos:altLabel "lat"@en ;
+    qudt:unit unit:DEG ;  # Degrees (SI-compatible)
+
+    # netCDF-LD metadata
+    nc:hasDataType nc:double ;
+    nc:axis "Y" ;
+    nc:long_name "latitude"@en ;
+    nc:units "degrees_north" ;
+
+    skos:exactMatch wikidata:Q34027 ,  # Wikidata: Latitude
+                    <https://cfconventions.org/Data/cf-standard-names/current/build/cf-standard-name-table.html#latitude> .
+
+<https://www.ambrosia-project.eu/vocab/concept/netcdf/longitude> 
+    a skos:Concept , nc:Variable ;
+    skos:inScheme <https://www.ambrosia-project.eu/vocab/scheme/netcdf> ;
+    skos:prefLabel "longitude"@en ;
+    skos:altLabel "lon"@en ;
+    qudt:unit unit:DEG ;  # Degrees (SI-compatible)
+
+    # netCDF-LD metadata
+    nc:hasDataType nc:double ;
+    nc:axis "X" ;
+    nc:long_name "longitude"@en ;
+    nc:units "degrees_east" ;
+
+    skos:exactMatch wikidata:Q36477 ,  # Wikidata: Longitude
+                    <https://cfconventions.org/Data/cf-standard-names/current/build/cf-standard-name-table.html#longitude> .
+
+<https://www.ambrosia-project.eu/vocab/concept/netcdf/rlat> 
+    a skos:Concept , nc:Dimension ;
+    skos:inScheme <https://www.ambrosia-project.eu/vocab/scheme/netcdf> ;
+    skos:prefLabel "Rotated Latitude"@en ;
+    skos:altLabel "rlat"@en , "grid_latitude"@en ;
+    qudt:unit unit:DEG ;
+    rdfs:comment "Latitude coordinate in a rotated pole grid system, typically used in regional climate models. Expressed as degrees in the rotated grid reference frame."@en ;
+
+    # netCDF-LD metadata
+    nc:hasDataType nc:double ;
+    nc:axis "Y" ;
+    nc:long_name "latitude in rotated pole grid"@en ;
+    nc:units "degrees" ;
+
+    skos:exactMatch <https://cfconventions.org/Data/cf-standard-names/current/build/cf-standard-name-table.html#grid_latitude> .
+
+<https://www.ambrosia-project.eu/vocab/concept/netcdf/rlon> 
+    a skos:Concept , nc:Dimension ;
+    skos:inScheme <https://www.ambrosia-project.eu/vocab/scheme/netcdf> ;
+    skos:prefLabel "Rotated Longitude"@en ;
+    skos:altLabel "rlon"@en , "grid_longitude"@en ;
+    qudt:unit unit:DEG ;
+    rdfs:comment "Longitude coordinate in a rotated pole grid system, typically used in regional climate models. Expressed as degrees in the rotated grid reference frame."@en ;
+
+    # netCDF-LD metadata
+    nc:hasDataType nc:double ;
+    nc:axis "X" ;
+    nc:long_name "longitude in rotated pole grid"@en ;
+    nc:units "degrees" ;
+
+    skos:exactMatch <https://cfconventions.org/Data/cf-standard-names/current/build/cf-standard-name-table.html#grid_longitude> .
+
+<https://www.ambrosia-project.eu/vocab/concept/netcdf/time> 
+    a skos:Concept , nc:Dimension ;
+    skos:inScheme <https://www.ambrosia-project.eu/vocab/scheme/netcdf> ;
+    skos:prefLabel "Time"@en ;
+    qudt:unit unit:SEC ;  # Seconds (SI)
+
+    # netCDF-LD metadata
+    nc:hasDataType nc:double ;
+    nc:axis "T" ;
+    nc:long_name "Time"@en ;
+    nc:calendar "proleptic_gregorian" ;
+    nc:units "days since 1949-12-01 00:00:00" ;
+    nc:bounds "<https://www.ambrosia-project.eu/vocab/concept/netcdf/time_bnds>" ;
+
+    skos:exactMatch wikidata:Q11471 ,  # Wikidata: Time
+                    <https://cfconventions.org/Data/cf-standard-names/current/build/cf-standard-name-table.html#time> .
+
+<https://www.ambrosia-project.eu/vocab/concept/netcdf/tas> 
+    a skos:Concept , nc:Variable ;
+    skos:inScheme <https://www.ambrosia-project.eu/vocab/scheme/netcdf> ;
+    skos:prefLabel "Near-Surface Air Temperature"@en ;
+    skos:altLabel "tas"@en , "Temperature"@en ;
+    qudt:unit unit:DEG_C ;  # Celsius
+
+    <https://www.ambrosia-project.eu/vocab/property/verticalContext> [
+        a <https://www.ambrosia-project.eu/vocab/class/VerticalContext> ;
+        skos:prefLabel "2 m above ground"@en ;
+        <https://www.ambrosia-project.eu/vocab/property/referenceLevel> "surface" ;
+        <https://www.ambrosia-project.eu/vocab/property/height> "2.0"^^xsd:decimal
+    ] ;
+
+    amblink:expectsQuantityKind qk:Temperature ;
+
+    # netCDF-LD metadata
+    nc:hasDataType nc:float ;
+    nc:hasDimension (
+        <https://www.ambrosia-project.eu/vocab/concept/netcdf/time>
+        <https://www.ambrosia-project.eu/vocab/concept/netcdf/rlat>
+        <https://www.ambrosia-project.eu/vocab/concept/netcdf/rlon>
+    ) ;
+    nc:long_name "Daily Near-Surface Air Temperature"@en ;
+    nc:units "celsius" ;  # NOTE: Non-standard unit name used in NetCDF
+    nc:cell_methods "time: mean" ;
+    nc:coordinates "height lat lon" ;
+    nc:grid_mapping <https://www.ambrosia-project.eu/vocab/concept/netcdf/rotated_pole> ;
+
+    skos:exactMatch ecso:ECSO_00003057 ,
+                    <https://cfconventions.org/Data/cf-standard-names/current/build/cf-standard-name-table.html#air_temperature> .
+
+<https://www.ambrosia-project.eu/vocab/concept/netcdf/pr> 
+    a skos:Concept , nc:Variable ;
+    skos:inScheme <https://www.ambrosia-project.eu/vocab/scheme/netcdf> ;
+    skos:prefLabel "Precipitation Flux"@en ;
+    skos:altLabel "pr"@en , "Precipitation"@en ;
+
+    qudt:unit unit:KiloGM-PER-M2-SEC ;  # SI unit according to CF conventions
+
+    # Informative, non-standard unit representation for human readability
+    qudt:applicableUnit [
+        a qudt:Unit ;
+        qudt:symbol "mm/day" ;
+        rdfs:label "Millimetres per day"@en ;
+        qudt:conversionMultiplier "86400"^^xsd:decimal ;  # kg/(m²·s) → mm/day (assuming water density = 1 kg/L)
+        rdfs:comment "Informal human-readable unit for precipitation flux. 1 kg/(m²·s) = 86400 mm/day, assuming water density is 1 kg/L."@en
+    ] ;
+
+    rdfs:comment "Although the official CF unit is kg m-2 s-1, precipitation is commonly provided and interpreted as mm/day in climate datasets."@en ;
+
+    amblink:expectsQuantityKind <https://cfconventions.org/Data/cf-standard-names/current/build/cf-standard-name-table.html#precipitation_flux> ;
+
+    # netCDF-LD metadata
+    nc:hasDataType nc:float ;
+    nc:long_name "Precipitation"@en ;
+    nc:units "mm d-1" ;
+    nc:cell_methods "time: mean" ;
+    nc:coordinates "lat lon" ;
+    nc:grid_mapping <https://www.ambrosia-project.eu/vocab/concept/netcdf/rotated_pole> ;
+    nc:hasDimension ( <https://www.ambrosia-project.eu/vocab/concept/netcdf/time> <https://www.ambrosia-project.eu/vocab/concept/netcdf/rlat> <https://www.ambrosia-project.eu/vocab/concept/netcdf/rlon> ) ;
+
+    skos:exactMatch <https://cfconventions.org/Data/cf-standard-names/current/build/cf-standard-name-table.html#precipitation_flux> ;
+    skos:closeMatch wikidata:Q25257 .  # Wikidata: "Precipitation"
+
+<https://www.ambrosia-project.eu/vocab/concept/netcdf/height> 
+    a skos:Concept , nc:Variable ;
+    skos:inScheme <https://www.ambrosia-project.eu/vocab/scheme/netcdf> ;
+    skos:prefLabel "height"@en ;
+    skos:altLabel "z"@en ;
+    qudt:unit unit:M ;  # SI unit: Meter
+
+    # netCDF-LD metadata
+    nc:axis "Z" ;
+    nc:positive "up" ;
+    nc:units "m" ;
+    nc:long_name "height"@en ;
+    nc:hasDataType nc:double ;
+
+    rdfs:comment "Vertical distance above a reference surface (typically ground level), measured positively upward."@en ;
+
+    skos:exactMatch wikidata:Q208826 ,  # Wikidata: Height
+                    <https://cfconventions.org/Data/cf-standard-names/current/build/cf-standard-name-table.html#height> .
+
+<https://www.ambrosia-project.eu/vocab/concept/netcdf/rotated_pole>
+    a nc:GridMapping ;
+    skos:inScheme <https://www.ambrosia-project.eu/vocab/scheme/netcdf> ;
+    nc:grid_mapping_name "rotated_latitude_longitude" ;
+    nc:grid_north_pole_latitude "39.25"^^xsd:double ;
+    nc:grid_north_pole_longitude "-162.0"^^xsd:double ;
+    skos:prefLabel "Rotated Pole Grid Mapping"@en .
+
+<https://www.ambrosia-project.eu/vocab/concept/netcdf/time_bnds> a nc:Variable ;
+    skos:inScheme <https://www.ambrosia-project.eu/vocab/scheme/netcdf> ;
+    skos:prefLabel "Time Bounds"@en ;
+    nc:hasDataType nc:double ;
+    rdfs:comment "Boundary values for each time step, usually used with cell_methods."@en .
+
+<https://www.ambrosia-project.eu/vocab/concept/netcdf/bnds> a nc:Dimension ;
+    skos:inScheme <https://www.ambrosia-project.eu/vocab/scheme/netcdf> ;
+    skos:prefLabel "Bounds dimension"@en ;
+    rdfs:comment "Dimension of size 2 used for defining time bounds."@en .
+
+<https://www.ambrosia-project.eu/vocab/unitMapping_celsius> a qudt:Unit ;
+    qudt:symbol "°C" ;
+    qudt:conversionMultiplier "1.0"^^xsd:decimal ;
+    rdfs:comment "Maps the non-standard unit label 'celsius' from NetCDF to QUDT unit:DEG_C."@en .

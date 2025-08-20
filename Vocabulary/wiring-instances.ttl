@@ -1,0 +1,21 @@
+@prefix amblink: <https://www.ambrosia-project.eu/vocab/linking/> .
+@prefix model: <https://www.ambrosia-project.eu/model/> .
+@prefix netcdf: <https://www.ambrosia-project.eu/vocab/concept/netcdf/> .
+
+################################################################################
+# model ac398182-01ab-48f0-b25c-ca432631b018 (Koseki_SalmonellaLettuce_Temperature) #
+################################################################################
+
+model:ac398182-01ab-48f0-b25c-ca432631b018 amblink:hasInputMapping [ a amblink:InputMapping ;
+            amblink:isFulfilledBy netcdf:tas ;
+            amblink:mapsParameter <https://www.ambrosia-project.eu/model/ac398182-01ab-48f0-b25c-ca432631b018/parameter/temp_celsius> ;
+            amblink:sourceVariableName "tas" ] .
+
+################################################################################
+# model c4adaff8-96af-40b5-adb9-79bca46c0b04 (Listeria monocytogenes growth model on iceberg lettuce) #
+################################################################################
+
+model:c4adaff8-96af-40b5-adb9-79bca46c0b04 amblink:hasInputMapping [ a amblink:InputMapping ;
+            amblink:isFulfilledBy netcdf:tas ;
+            amblink:mapsParameter <https://www.ambrosia-project.eu/model/c4adaff8-96af-40b5-adb9-79bca46c0b04/parameter/temp_celsius> ;
+            amblink:sourceVariableName "tas" ] .

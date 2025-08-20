@@ -1,0 +1,7 @@
+streamlit
+pandas
+rdflib
+requests
+SPARQLWrapper
+openpyxl
+xlrd

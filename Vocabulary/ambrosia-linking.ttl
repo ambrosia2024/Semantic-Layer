@@ -1,0 +1,191 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix skos:   <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct:    <http://purl.org/dc/terms/> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix qudt:   <http://qudt.org/schema/qudt/> .
+@prefix qk:     <http://qudt.org/vocab/quantitykind/> .
+@prefix unit:   <http://qudt.org/vocab/unit/> .
+
+@prefix fskxo:  <http://semanticlookup.zbmed.de/km/fskxo/> .
+@prefix model:  <https://www.ambrosia-project.eu/model/> .
+@prefix vocab:  <https://www.ambrosia-project.eu/vocab/> .
+@prefix amblink:<https://www.ambrosia-project.eu/vocab/linking/> .
+
+#################################################################
+# Ontology Header
+#################################################################
+amblink: a owl:Ontology ;
+  dct:title "AMBROSIA Wiring Vocabulary"@en ;
+  dct:description "Vocabulary for durable links between predictive models and data sources (inputs/outputs), with light-weight aggregation and transformation hints."@en ;
+  owl:versionInfo "1.1.0" .
+
+#################################################################
+# Classes
+#################################################################
+amblink:InputMapping a owl:Class ;
+  rdfs:label "Input Mapping"@en ;
+  rdfs:comment "Binding describing how a model input parameter is fulfilled by a data variable."@en .
+
+amblink:OutputMapping a owl:Class ;
+  rdfs:label "Output Mapping"@en ;
+  rdfs:comment "Binding describing how a model output parameter corresponds to an observed property and unit."@en .
+
+#################################################################
+# Core Object Properties (Input side — static knowledge)
+#################################################################
+amblink:hasInputMapping a owl:ObjectProperty ;
+  rdfs:label "has input mapping"@en ;
+  rdfs:comment "Attach one or more input mappings to a model."@en ;
+  rdfs:domain fskxo:FSKXO_0000018113 ;        # Predictive model
+  rdfs:range  amblink:InputMapping .
+
+amblink:mapsParameter a owl:ObjectProperty ;
+  rdfs:label "maps parameter"@en ;
+  rdfs:comment "The model parameter (input or output) that this mapping refers to."@en ;
+  rdfs:domain [ a owl:Class ;
+                owl:unionOf ( amblink:InputMapping amblink:OutputMapping ) ] ;
+  rdfs:range  vocab:ModelParameter .
+
+amblink:isFulfilledBy a owl:ObjectProperty ;
+  rdfs:label "is fulfilled by"@en ;
+  rdfs:comment "The conceptual data variable (e.g., a netCDF/CF concept) providing the values for the input."@en ;
+  rdfs:domain amblink:InputMapping ;
+  rdfs:range  skos:Concept .
+
+# Input parameter semantics
+amblink:expectsQuantityKind a owl:ObjectProperty ;
+  rdfs:label "expects quantity kind"@en ;
+  rdfs:comment "Physical quantity expected by the parameter (QUDT QuantityKind)."@en ;
+  rdfs:domain vocab:ModelParameter ;
+  rdfs:range  qudt:QuantityKind .
+
+amblink:preferredInputUnit a owl:ObjectProperty ;
+  rdfs:label "preferred input unit"@en ;
+  rdfs:comment "Preferred unit for an input parameter; backend converts source data if needed."@en ;
+  rdfs:domain vocab:ModelParameter ;
+  rdfs:range  qudt:Unit .
+
+#################################################################
+# Core Object Properties (Output side — static knowledge)
+#################################################################
+amblink:hasOutputMapping a owl:ObjectProperty ;
+  rdfs:label "has output mapping"@en ;
+  rdfs:comment "Attach one or more output mappings to a model."@en ;
+  rdfs:domain fskxo:FSKXO_0000018113 ;
+  rdfs:range  amblink:OutputMapping .
+
+amblink:producesObservedProperty a owl:ObjectProperty ;
+  rdfs:label "produces observed property"@en ;
+  rdfs:comment "Observed property concept represented by this output (e.g., risk probability, predicted concentration)."@en ;
+  rdfs:domain amblink:OutputMapping ;
+  rdfs:range  skos:Concept .
+
+amblink:hasOutputUnit a owl:ObjectProperty ;
+  rdfs:label "has output unit"@en ;
+  rdfs:comment "Unit of the output values (QUDT Unit)."@en ;
+  rdfs:domain amblink:OutputMapping ;
+  rdfs:range  qudt:Unit .
+
+#################################################################
+# Aggregation / Temporal / Transformation Hints
+#################################################################
+# Properties to annotate HOW to obtain an input from a dataset
+amblink:aggregationMethod a owl:ObjectProperty ;
+  rdfs:label "aggregation method"@en ;
+  rdfs:comment "Spatial/temporal aggregation used to derive the input (e.g., area-weighted mean, time mean)."@en ;
+  rdfs:domain amblink:InputMapping ;
+  rdfs:range  skos:Concept .
+
+amblink:temporalAlignment a owl:ObjectProperty ;
+  rdfs:label "temporal alignment"@en ;
+  rdfs:comment "Resampling/alignment between dataset time steps and model step (e.g., daily-to-weekly, monthly-mean, lag=3d)."@en ;
+  rdfs:domain amblink:InputMapping ;
+  rdfs:range  skos:Concept .
+
+amblink:requiresTransformation a owl:ObjectProperty ;
+  rdfs:label "requires transformation"@en ;
+  rdfs:comment "Indicates a derived-input transformation (e.g., precip → RH proxy), referenced as a concept."@en ;
+  rdfs:domain amblink:InputMapping ;
+  rdfs:range  skos:Concept .
+
+# Optional machine hints
+amblink:temporalWindow a owl:DatatypeProperty ;
+  rdfs:label "temporal window"@en ;
+  rdfs:comment "ISO 8601 duration describing the window for aggregation (e.g., P1M, P7D)."@en ;
+  rdfs:domain amblink:InputMapping ;
+  rdfs:range  xsd:duration .
+
+#################################################################
+# Data Properties for the Data Access Layer
+#################################################################
+amblink:sourceVariableName a owl:DatatypeProperty ;
+  rdfs:label "source variable name"@en ;
+  rdfs:comment "Technical variable name in the source (e.g., 'tas', 'pr')."@en ;
+  rdfs:domain amblink:InputMapping ;
+  rdfs:range  xsd:string .
+
+amblink:sourceDataset a owl:DatatypeProperty ;
+  rdfs:label "source dataset identifier"@en ;
+  rdfs:comment "Identifier/URI of the dataset (e.g., 'EURO-CORDEX-XXX')."@en ;
+  rdfs:domain amblink:InputMapping ;
+  rdfs:range  xsd:string .
+
+amblink:transformationHint a owl:DatatypeProperty ;
+  rdfs:label "transformation hint"@en ;
+  rdfs:comment "Free-text/code ref for the transformation (e.g., function name, doc URL)."@en ;
+  rdfs:domain amblink:InputMapping ;
+  rdfs:range  xsd:string .
+
+#################################################################
+# SKOS Schemes for controlled hints (enumerations)
+#################################################################
+# Aggregation methods
+amblink:AggregationMethod a skos:ConceptScheme ;
+  skos:prefLabel "Aggregation methods"@en ;
+  dct:description "Controlled list of spatial/temporal aggregation methods for inputs."@en .
+
+amblink:areaWeightedMean a skos:Concept ;
+  skos:inScheme amblink:AggregationMethod ;
+  skos:prefLabel "Area-weighted mean"@en ;
+  skos:definition "Mean over an area where each grid cell is weighted by its area overlap with the region mask."@en .
+
+amblink:timeMean a skos:Concept ;
+  skos:inScheme amblink:AggregationMethod ;
+  skos:prefLabel "Time mean"@en ;
+  skos:definition "Mean calculated over the specified temporal window."@en .
+
+# Temporal alignment
+amblink:TemporalAlignment a skos:ConceptScheme ;
+  skos:prefLabel "Temporal alignment methods"@en .
+
+amblink:dailyToMonthlyMean a skos:Concept ;
+  skos:inScheme amblink:TemporalAlignment ;
+  skos:prefLabel "Daily → monthly mean"@en .
+
+amblink:lag3Days a skos:Concept ;
+  skos:inScheme amblink:TemporalAlignment ;
+  skos:prefLabel "Lag 3 days"@en .
+
+# Transformations (derived inputs)
+amblink:Transformation a skos:ConceptScheme ;
+  skos:prefLabel "Derived-input transformations"@en ;
+  dct:description "Lightweight references to transformations from raw variables to model-ready inputs."@en .
+
+amblink:precipToRHProxy a skos:Concept ;
+  skos:inScheme amblink:Transformation ;
+  skos:prefLabel "Precipitation → RH proxy"@en ;
+  skos:definition "Use precipitation/temperature to estimate relative humidity as a proxy for aw."@en .
+
+#################################################################
+# Optional Concepts for outputs
+#################################################################
+amblink:RiskProbability a skos:Concept ;
+  skos:prefLabel "Risk probability"@en ;
+  skos:definition "Probability [0..1] of the hazard event under model assumptions."@en .
+
+amblink:PredictedConcentration a skos:Concept ;
+  skos:prefLabel "Predicted concentration"@en ;
+  skos:definition "Predicted concentration of the hazard (e.g., CFU/g, μg/kg)."@en .
