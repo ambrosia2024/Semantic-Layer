@@ -1,0 +1,61 @@
+# Configuration file for the Streamlit Reconciliation Tool
+
+# --- General Settings ---
+app_version: "PoC" # Version of the app
+user_agent_template: "StreamlitReconciliationApp/0.9 (Contact: Michael.Zarske@bfr.bund.de) requests/python"
+
+# --- Wikidata Configuration ---
+wikidata:
+  api_url: "https://www.wikidata.org/w/api.php"
+
+# --- NCBI Configuration ---
+ncbi:
+  api_key: 015218aa479106ba5f3bd34790819e474008   
+  
+  tool_name: "MyStreamlitReconTool"
+  eutils_base_url: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+  default_databases: ['taxonomy', 'bioproject', 'gene']
+  default_retmax: 10
+
+# --- BioPortal Configuration ---
+bioportal:
+  api_key: "17ffc865-32d1-47cf-8e58-533252fa97ff"
+
+  base_url: "https://data.bioontology.org"
+  default_ontologies: "NCIT,MESH,SNOMEDCT,GO"
+  default_pagesize: 15
+  include_fields: "prefLabel,synonym,definition"
+  preferred_ontologies: "NCIT,PO,uberon"
+
+# --- OLS Configuration ---
+ols:
+  base_url: "https://www.ebi.ac.uk/ols4/api"
+  default_ontologies: "go,chebi,doid,hp,mondo"
+  default_rows: 15
+  query_fields: "label,synonym,description,short_form,obo_id,iri"
+  field_list: "iri,label,synonym,description,ontology_prefix"
+  preferred_ontologies: "chebi"
+
+# --- AgroPortal Configuration ---
+agroportal:
+  api_key: "4f1f94d8-8b37-404e-8889-fbae64fe5d8b" # Replace with your EarthPortal API Key
+  base_url: "https://data.agroportal.lirmm.fr"
+  default_pagesize: 15
+  include_fields: "prefLabel,synonym,definition"
+  preferred_ontologies: "Agrovoc,Foodon,Foodex2"
+
+# --- EarthPortal Configuration ---
+earthportal:
+  api_key: "f43f3049-f30e-4895-a66b-642799b1bb2a" # Replace with your EarthPortal API Key
+  base_url: "https://data.earthportal.eu"
+  default_pagesize: 15
+  include_fields: "prefLabel,synonym,definition"
+  preferred_ontologies: "Sweet"
+
+# --- SemLookP Configuration ---
+semlookp:
+  preferred_ontologies: "mesh"
+
+# --- Configuration for the Sentence Transformer Model (Cosine Similarity) ---
+cosine_model:
+  name: 'all-MiniLM-L6-v2'
