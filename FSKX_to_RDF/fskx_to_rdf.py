@@ -1326,8 +1326,8 @@ def generate_rdf_outputs(model_data, original_parameters, master_mapping_df, kno
 
 def main():
     # This must be the first Streamlit command
-    st.set_page_config(layout="wide", page_title="FSKX to SKOS Converter")
-    st.title("FSKX to SKOS Vocabulary Generator")
+    st.set_page_config(layout="wide", page_title="FSKX to RDF Generator")
+    st.title("FSKX to RDF Generator")
 
     # Load master mapping once
     master_mapping_df = load_master_mapping(MASTER_MAPPING_FILE)
