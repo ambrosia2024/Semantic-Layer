@@ -1,8 +1,1 @@
-﻿Demo App/data/
-*.nc
-*.zip
-*.h5
-
-Demo App/data/*
-!Demo App/data/README.md
-!Demo App/data/.gitkeep
+﻿*.nc
