@@ -1,0 +1,17 @@
+# Core libraries
+streamlit
+rdflib
+xarray
+numpy
+pandas
+netcdf4
+dask
+
+# Geospatial libraries
+geopandas
+rioxarray
+shapely
+pyproj
+
+# Visualization
+matplotlib
