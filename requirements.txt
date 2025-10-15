@@ -3,5 +3,8 @@ pandas
 rdflib
 requests
 SPARQLWrapper
+Levenshtein
+PyYAML
+xlsxwriter
 openpyxl
 xlrd

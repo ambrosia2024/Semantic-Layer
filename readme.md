@@ -2,6 +2,10 @@
 
 This application provides a suite of tools to build and manage the AMBROSIA semantic layer. Each tool is designed to handle a specific part of the semantic workflow, from reconciling terms to generating linked data from models.
 
+## Prerequisites
+
+- Python 3.10.16
+
 ## Setup and Installation
 
 To run this application, you will need to set up a Python environment and install the required dependencies. You can use either a standard virtual environment or Anaconda.
@@ -34,7 +38,7 @@ To run this application, you will need to set up a Python environment and instal
 1.  **Create a new environment:**
     *   Open Anaconda Navigator and go to the "Environments" tab.
     *   Click "Create" and give your new environment a name (e.g., `semantic-layer-tools`).
-    *   Select a Python version (e.g., 3.9 or later).
+*   Select Python 3.10.16.
 
 2.  **Install the required packages:**
     *   Activate your new environment.
