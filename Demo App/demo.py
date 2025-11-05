@@ -26,6 +26,7 @@ logger = logging.getLogger(__name__)
 
 # --- Configuration ---
 VOCAB_DIR = Path(__file__).resolve().parent.parent / "Vocabulary"
+FSKX_DATA_DIR = Path(__file__).resolve().parent.parent / "FSKX_to_RDF" / "mapped" / "turtle"
 LOCAL_DATA_DIR = Path("data")
 
 # Validated EURO-CORDEX metadata
@@ -55,9 +56,17 @@ def validate_year_for_experiment(exp: str, year: str):
 @st.cache_resource
 def load_knowledge_graph():
     g = rdflib.Graph()
+    # Load from original vocab dir, excluding specified files
     for filename in os.listdir(VOCAB_DIR):
-        if filename.endswith(".ttl"):
+        if filename.endswith(".ttl") and filename not in ["wiring-instances.ttl", "fskx-models.ttl"]:
             g.parse(os.path.join(VOCAB_DIR, filename), format="turtle")
+
+    # Load from the new FSKX directory
+    if FSKX_DATA_DIR.exists():
+        for filename in os.listdir(FSKX_DATA_DIR):
+            if filename.endswith(".ttl"):
+                g.parse(os.path.join(FSKX_DATA_DIR, filename), format="turtle")
+                
     print(f"Knowledge Graph loaded with {len(g)} triples.")
     return g
 
@@ -93,13 +102,31 @@ def get_model_choices(_graph):
     query = """
         PREFIX fskxo: <http://semanticlookup.zbmed.de/km/fskxo/>
         PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-        SELECT ?product_label ?product_uri ?hazard_label ?hazard_uri
+        PREFIX schema: <https://schema.org/>
+        SELECT DISTINCT ?product_label ?product_uri ?hazard_label ?hazard_uri
         WHERE {
-            ?model_uri a fskxo:FSKXO_0000018113 ;
-                       fskxo:FSKXO_0000000007 ?product_uri ;
+            {
+                # Models with a scope object
+                ?model_uri fskxo:FSKXO_0000000006 ?scope .
+                ?scope fskxo:FSKXO_0000000007 ?product_uri ;
                        fskxo:FSKXO_0000000008 ?hazard_uri .
-            ?product_uri skos:prefLabel ?product_label .
-            ?hazard_uri skos:prefLabel ?hazard_label .
+            }
+            UNION
+            {
+                # Models with direct product/hazard links
+                ?model_uri fskxo:FSKXO_0000000007 ?product_uri ;
+                           fskxo:FSKXO_0000000008 ?hazard_uri .
+            }
+
+            OPTIONAL { ?product_uri schema:label ?plabel1 . }
+            OPTIONAL { ?product_uri skos:prefLabel ?plabel2 . }
+            BIND(COALESCE(?plabel1, ?plabel2) AS ?product_label)
+
+            OPTIONAL { ?hazard_uri schema:label ?hlabel1 . }
+            OPTIONAL { ?hazard_uri skos:prefLabel ?hlabel2 . }
+            BIND(COALESCE(?hlabel1, ?hlabel2) AS ?hazard_label)
+
+            FILTER(BOUND(?product_label) && BOUND(?hazard_label))
         }
         ORDER BY ?product_label ?hazard_label
     """
@@ -211,10 +238,18 @@ def find_model_and_inputs(graph, product_uri, hazard_uri):
     model_discovery_query = query_prefix + f"""
         SELECT ?model_id ?model_uri
         WHERE {{
-            ?model_uri a fskxo:FSKXO_0000018113 ;
-                       fskxo:FSKXO_0000000007 <{product_uri}> ;
-                       fskxo:FSKXO_0000000008 <{hazard_uri}> ;
-                       dct:identifier ?model_id .
+            {{
+                ?model_uri fskxo:FSKXO_0000000006 ?scope .
+                ?scope fskxo:FSKXO_0000000007 <{product_uri}> .
+                ?scope fskxo:FSKXO_0000000008 <{hazard_uri}> .
+            }}
+            UNION
+            {{
+                ?model_uri fskxo:FSKXO_0000000007 <{product_uri}> .
+                ?model_uri fskxo:FSKXO_0000000008 <{hazard_uri}> .
+            }}
+            ?model_uri fskxo:FSKXO_0000000003 ?gen_info .
+            ?gen_info dct:identifier ?model_id .
         }}
     """
     log_messages.append(f"🔍 **Querying for Model:** Searching for a model with product=`<{product_uri.split('/')[-1]}>` and hazard=`<{hazard_uri.split('/')[-1]}>`.")
@@ -380,7 +415,7 @@ with right_col:
     selected_nuts_label = selected_nuts[0] if selected_nuts else "the entire grid"
 
 
-st.subheader("2. Select a Specific Time")
+st.subheader("2. Select a Time Period")
 exp = sel.get("experiment", "historical")  # Default to historical for offline mode
 
 if exp in YEAR_RANGES:
@@ -398,18 +433,33 @@ except Exception:
     default_year = y_min
 default_year = min(max(default_year, y_min), y_max)
 
-date_default = date(default_year, 1, 1)
-
-selected_date = st.date_input(
-    "Date:",
-    value=date_default,
+selected_period = st.slider(
+    "Select a date range:",
+    value=(date(default_year, 1, 1), date(default_year, 12, 31)),
     min_value=date_min,
     max_value=date_max,
-    key="date_input_key",
-    help=f"Allowed range for {exp.replace('_', ' ')}: {y_min}-01-01 to {y_max}-12-31",
+    format="YYYY-MM-DD"
 )
-selected_time = st.time_input("Time (UTC):", value=datetime(1970, 1, 1, 12, 0).time())
-selected_datetime = datetime.combine(selected_date, selected_time)
+start_date, end_date = selected_period
+
+# --- Display selected duration and provide time scale options ---
+time_delta = end_date - start_date
+years = time_delta.days / 365.25
+st.info(f"Selected period: **{time_delta.days} days** (~{years:.1f} years)")
+
+time_scale_options = ["Daily"]
+if time_delta.days > 7:
+    time_scale_options.append("Weekly")
+if time_delta.days > 30:
+    time_scale_options.append("Monthly")
+if time_delta.days > 365:
+    time_scale_options.append("Yearly")
+
+selected_time_scale = st.selectbox(
+    "Select a time scale:",
+    options=time_scale_options,
+    index=0
+)
 
 st.divider()
 
@@ -467,19 +517,21 @@ if st.button("Discover Model and Run Regional Analysis", type="primary", use_con
     st.subheader("3. Climate data extraction (temperature only)")
 
     try:
-        yr = selected_date.year
-        mo = selected_date.month
-        dy = selected_date.day
-
-        ds = open_local(variable="tas", years=[yr])
+        years_to_load = list(range(start_date.year, end_date.year + 1))
+        ds = open_local(variable="tas", years=years_to_load)
+        
         detected_experiment = ds.attrs.get("experiment_id", "historical")
         st.caption(f"Detected experiment from file: `{detected_experiment}`")
-        experiment = detected_experiment  # Override the default
+        experiment = detected_experiment
 
-        # --- Select time SLICE FIRST for performance ---
-        t_sel_native = ds["tas"].sel(time=np.datetime64(selected_datetime), method="nearest")
+        # --- Select time RANGE FIRST for performance ---
+        time_slice = slice(
+            np.datetime64(datetime.combine(start_date, datetime.min.time())),
+            np.datetime64(datetime.combine(end_date, datetime.max.time()))
+        )
+        t_sel_native = ds["tas"].sel(time=time_slice)
 
-        # --- Set CRS and reproject just this slice ---
+        # --- Set CRS and reproject the whole time series ---
         if "rotated_pole" in ds:
             rp = ds["rotated_pole"]
             cf = {
@@ -494,81 +546,88 @@ if st.button("Discover Model and Run Regional Analysis", type="primary", use_con
         
         da_ll = da_native.rio.reproject("EPSG:4326", nodata=np.nan)
 
-        # --- Clip with polygon (using the TTL geometry) ---
+        # --- Clip with polygon ---
         geom = loads(wkt_polygon)
         gdf = gpd.GeoDataFrame(geometry=[geom], crs="EPSG:4326")
         t_clip = da_ll.rio.clip(gdf.geometry, drop=True)
 
         if int(t_clip.count()) == 0:
-            st.error("No intersecting temperature cells in the selected polygon/time.")
+            st.error("No intersecting temperature cells in the selected polygon/time period.")
             st.stop()
 
         # --- Units: convert to °C if in Kelvin ---
-        tas_attrs = t_clip.attrs
-        if tas_attrs.get("units", "").lower() in ("k", "kelvin") or float(t_clip.mean()) > 200:
+        if t_clip.attrs.get("units", "").lower() in ("k", "kelvin") or float(t_clip.mean()) > 200:
             t_clip = t_clip - 273.15
             t_clip.attrs["units"] = "°C"
 
-        # --- Branch A/B: Polygon mean vs Raster cell set ---
-        arr = t_clip.values
-        if temp_input == "Polygon mean":
-            if "y" in t_clip.coords:
-                lat_values = t_clip["y"].values
-                lat2d = np.broadcast_to(lat_values[:, None], t_clip.shape)
-                weights = np.cos(np.deg2rad(lat2d))
-                mean_t = float(np.nansum(arr * weights) / np.nansum(np.where(np.isfinite(arr), weights, 0)))
-            else:
-                st.warning("Latitude coord not found post-reprojection; using unweighted mean.")
-                mean_t = float(np.nanmean(arr))
-            st.success(f"Temperature passed to the model (polygon mean): **{mean_t:.2f} °C**")
-        else:
-            # Raster cell set: show a compact representation of all temperatures
-            values = arr[np.isfinite(arr)]
+        # --- Resample data based on selected time scale ---
+        resample_map = {
+            "Daily": "D",
+            "Weekly": "W",
+            "Monthly": "M",
+            "Yearly": "Y"
+        }
+        resample_freq = resample_map.get(selected_time_scale, "D")
+        t_resampled = t_clip.resample(time=resample_freq).mean()
 
-            # stats + visualization
+        # --- Branch A/B: Polygon mean vs Raster cell set ---
+        if temp_input == "Polygon mean":
+            # Calculate weighted mean over spatial dimensions for each time step
+            if "y" in t_resampled.coords:
+                lat_values = t_resampled["y"].values
+                weights = np.cos(np.deg2rad(lat_values))
+                # Ensure weights are broadcast correctly over lat and lon
+                weights_expanded = xr.DataArray(weights, dims=['y'])
+                mean_t_series = t_resampled.weighted(weights_expanded).mean(dim=["x", "y"])
+            else:
+                st.warning("Latitude coord not found; using unweighted mean.")
+                mean_t_series = t_resampled.mean(dim=["x", "y"])
+
+            st.success("Time series of mean temperature calculated.")
+            
+            # --- Visualization: Line Chart ---
+            import matplotlib.pyplot as plt
+            fig, ax = plt.subplots()
+            mean_t_series.plot(ax=ax)
+            ax.set_title(f"Mean Temperature for {selected_nuts_label}")
+            ax.set_xlabel("Time")
+            ax.set_ylabel("Temperature (°C)")
+            st.pyplot(fig)
+
+            temperatures_for_model = mean_t_series.values
+        else: # Raster cell set
+            st.success("Time series of raster data prepared.")
+            
+            # --- Aggregated Stats over the whole period ---
+            values = t_resampled.values[np.isfinite(t_resampled.values)]
             colA, colB, colC, colD = st.columns(4)
-            colA.metric("Cells", f"{values.size}")
+            colA.metric("Total Cells (resampled)", f"{values.size}")
             colB.metric("Mean (°C)", f"{np.nanmean(values):.2f}")
             colC.metric("P10–P90 (°C)", f"{np.nanpercentile(values,10):.1f}–{np.nanpercentile(values,90):.1f}")
             colD.metric("Min–Max (°C)", f"{np.nanmin(values):.1f}–{np.nanmax(values):.1f}")
 
-            st.caption("The model will receive the full cell temperature set shown below.")
-            # Histogram
+            # --- Visualization: 2D Heatmap of Mean Temp over time ---
+            mean_over_time = t_resampled.mean(dim="time")
             import matplotlib.pyplot as plt
-            fig = plt.figure()
-            plt.hist(values, bins=30)
-            plt.xlabel("Temperature (°C)"); plt.ylabel("Count")
-            plt.title("Distribution of cell temperatures passed to the model")
-            st.pyplot(fig)
-
-            # 2D heatmap preview
             fig2 = plt.figure()
-            plt.imshow(np.where(np.isfinite(arr), arr, np.nan), origin="lower")
+            plt.imshow(np.where(np.isfinite(mean_over_time), mean_over_time, np.nan), origin="lower")
             plt.colorbar(label="°C")
-            plt.title("Clipped temperature tile (preview)")
+            plt.title("Mean Temperature over the selected period")
             st.pyplot(fig2)
 
-            # CSV download with coordinates
-            yy, xx = np.meshgrid(t_clip["y"].values, t_clip["x"].values, indexing="ij")
-            flat = pd.DataFrame({
-                "x": xx.flatten(),
-                "y": yy.flatten(),
-                "temperature_c": arr.flatten()
-            })
-            flat = flat[np.isfinite(flat["temperature_c"])]
-            st.download_button("Download temperatures (with coords)",
-                data=flat.to_csv(index=False).encode("utf-8"),
-                file_name=f"temps_{yr}-{mo:02d}_{selected_nuts_label}.csv",
+            # --- CSV Download ---
+            df_to_download = t_resampled.to_dataframe().reset_index()
+            df_to_download = df_to_download.rename(columns={"tas": "temperature_c"})
+            st.download_button("Download time series data (CSV)",
+                data=df_to_download.to_csv(index=False).encode("utf-8"),
+                file_name=f"temps_{start_date}_{end_date}_{selected_nuts_label}.csv",
                 mime="text/csv")
-        
-        # Example: handoff
-        if temp_input == "Polygon mean":
-            temperatures_for_model = np.array([mean_t], dtype=float)  # shape (1,)
-        else:
-            temperatures_for_model = flat[["temperature_c"]].values.flatten() # 1D array of floats (°C)
 
-        # TODO: pass 'temperatures_for_model' into your predictive model selection/execution.
+            temperatures_for_model = t_resampled.values
+
         st.info(f"Data prepared for model. Shape: {temperatures_for_model.shape}")
 
     except Exception as e:
         st.error(f"An error occurred during the data retrieval or processing: {e}")
+        st.error("Full error details:")
+        st.exception(e)
