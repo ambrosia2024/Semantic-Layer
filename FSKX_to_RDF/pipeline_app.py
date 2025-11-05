@@ -398,264 +398,272 @@ def _bind_common_namespaces(g: Graph):
     g.bind("qudt-unit", QUDT_UNIT)
     g.bind("qk", QK)
 
-# --- Streamlit App UI ---
-st.set_page_config(layout="wide")
-st.title("FSKX to RDF")
+def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
+    if not embedded:
+        st.set_page_config(layout="wide")
+    
+    st.title("FSKX to RDF")
 
-# --- Main Pipeline Runner ---
-st.sidebar.header("Controls")
-override_existing = st.sidebar.checkbox("Re-process all existing models", value=False)
-run_pipeline = st.sidebar.button("▶️ Run Pipeline")
+    # --- Main Pipeline Runner ---
+    st.sidebar.header("Controls")
+    override_existing = st.sidebar.checkbox("Re-process all existing models", value=False, key=f"{key_ns}_override")
+    run_pipeline = st.sidebar.button("▶️ Run Pipeline", key=f"{key_ns}_run")
 
-st.header("Model Status")
-new_models, existing_models_with_titles = get_model_statuses()
-col1, col2 = st.columns(2)
-with col1:
-    st.dataframe({"New Models": new_models or ["-"]}, use_container_width=True)
-with col2:
-    processed_df = pd.DataFrame(
-        {"Model ID": existing_models_with_titles.keys(), "Title": existing_models_with_titles.values()}
+    st.header("Model Status")
+    new_models, existing_models_with_titles = get_model_statuses()
+    col1, col2 = st.columns(2)
+    with col1:
+        st.dataframe({"New Models": new_models or ["-"]}, use_container_width=True)
+    with col2:
+        processed_df = pd.DataFrame(
+            {"Model ID": existing_models_with_titles.keys(), "Title": existing_models_with_titles.values()}
+        )
+        st.dataframe(processed_df, use_container_width=True)
+
+    if run_pipeline:
+        st.session_state.pipeline_run = True
+        st.header("Pipeline Output")
+        script_args = ["--override"] if override_existing else []
+        fskx_to_jsonld_args = [str(FSKX_DIR)] + script_args
+        with st.status("Running pipeline...", expanded=True) as status:
+            if not run_script("FSKX_to_JSONLD.py", fskx_to_jsonld_args): st.stop()
+            if not run_script("ValidityChecker.py"): st.stop()
+            if not run_script("run_mapper.py", script_args): st.stop()
+            converter_args = ["-d", "mapped/jsonld", "-f", "turtle", "-o", "mapped/turtle"]
+            if override_existing: converter_args.append("--override")
+            if not run_script("jsonld_serialization_converter.py", converter_args): st.stop()
+            status.update(label="Pipeline finished successfully!", state="complete", expanded=False)
+
+    st.markdown("---")
+    st.header("Interactive Mapping")
+    st.info("ℹ️ **Note:** The fields below are pre-filled with the currently saved mappings for this model. Any changes you make will be applied when you click the 'Apply All Mappings' button at the bottom.")
+
+    if not MAPPED_TURTLE_DIR.exists() or not any(MAPPED_TURTLE_DIR.iterdir()):
+        st.info("No models to map. Run the pipeline first.")
+        st.stop()
+
+    master_mapping_df = load_master_mapping(MASTER_MAPPING_FILE)
+    if not master_mapping_df.empty:
+        master_mapping_df['prefLabel'] = master_mapping_df.apply(lambda r: _get_display_label(r['Term'], r['altLabels']), axis=1)
+
+    (pathogen_uris, pathogen_display) = build_vocab_struct_for_path(str(VOCAB_DIR / "ambrosia-pathogen-vocab.ttl"))
+    (plant_uris, plant_display) = build_vocab_struct_for_path(str(VOCAB_DIR / "ambrosia-plant-vocab.ttl"))
+
+    _, existing_models_with_titles = get_model_statuses()
+    existing_models_options = list(existing_models_with_titles.keys())
+
+    def format_model_option(model_stem):
+        """Custom function to format the display in the selectbox."""
+        title = existing_models_with_titles.get(model_stem, "N/A")
+        return f"{model_stem} ({title})"
+
+    selected_model = st.selectbox(
+        "Select a model to map:",
+        existing_models_options,
+        format_func=format_model_option,
+        key=f"{key_ns}_model_select"
     )
-    st.dataframe(processed_df, use_container_width=True)
 
-if run_pipeline:
-    st.session_state.pipeline_run = True
-    st.header("Pipeline Output")
-    script_args = ["--override"] if override_existing else []
-    fskx_to_jsonld_args = [str(FSKX_DIR)] + script_args
-    with st.status("Running pipeline...", expanded=True) as status:
-        if not run_script("FSKX_to_JSONLD.py", fskx_to_jsonld_args): st.stop()
-        if not run_script("ValidityChecker.py"): st.stop()
-        if not run_script("run_mapper.py", script_args): st.stop()
-        converter_args = ["-d", "mapped/jsonld", "-f", "turtle", "-o", "mapped/turtle"]
-        if override_existing: converter_args.append("--override")
-        if not run_script("jsonld_serialization_converter.py", converter_args): st.stop()
-        status.update(label="Pipeline finished successfully!", state="complete", expanded=False)
+    if selected_model:
+        turtle_file = MAPPED_TURTLE_DIR / f"{selected_model}.ttl"
+        fskx_file = FSKX_DIR / f"{selected_model}.fskx"
+        if turtle_file.exists() and fskx_file.exists():
+            g = Graph().parse(str(turtle_file), format="turtle")
+            model_data = extract_data_from_turtle(g)
 
-st.markdown("---")
-st.header("Interactive Mapping")
-st.info("ℹ️ **Note:** The fields below are pre-filled with the currently saved mappings for this model. Any changes you make will be applied when you click the 'Apply All Mappings' button at the bottom.")
-
-if not MAPPED_TURTLE_DIR.exists() or not any(MAPPED_TURTLE_DIR.iterdir()):
-    st.info("No models to map. Run the pipeline first.")
-    st.stop()
-
-master_mapping_df = load_master_mapping(MASTER_MAPPING_FILE)
-if not master_mapping_df.empty:
-    master_mapping_df['prefLabel'] = master_mapping_df.apply(lambda r: _get_display_label(r['Term'], r['altLabels']), axis=1)
-
-(pathogen_uris, pathogen_display) = build_vocab_struct_for_path(str(VOCAB_DIR / "ambrosia-pathogen-vocab.ttl"))
-(plant_uris, plant_display) = build_vocab_struct_for_path(str(VOCAB_DIR / "ambrosia-plant-vocab.ttl"))
-
-_, existing_models_with_titles = get_model_statuses()
-existing_models_options = list(existing_models_with_titles.keys())
-
-def format_model_option(model_stem):
-    """Custom function to format the display in the selectbox."""
-    title = existing_models_with_titles.get(model_stem, "N/A")
-    return f"{model_stem} ({title})"
-
-selected_model = st.selectbox(
-    "Select a model to map:",
-    existing_models_options,
-    format_func=format_model_option
-)
-
-if selected_model:
-    turtle_file = MAPPED_TURTLE_DIR / f"{selected_model}.ttl"
-    fskx_file = FSKX_DIR / f"{selected_model}.fskx"
-    if turtle_file.exists() and fskx_file.exists():
-        g = Graph().parse(str(turtle_file), format="turtle")
-        model_data = extract_data_from_turtle(g)
-
-        # --- Pre-fill mappings from existing turtle file ---
-        # Build reverse lookup maps from URI to prefLabel for pre-filling dropdowns
-        param_uri_to_prefLabel = {}
-        param_concepts_df = master_mapping_df[master_mapping_df['ConceptGroup'].isin(['Model Parameters', 'Parameter', 'Climate Variables'])]
-        for _, row in param_concepts_df.iterrows():
-            for uri_col in ['URI1', 'URI2', 'URI3']:
-                uri = row[uri_col]
-                if uri and pd.notna(uri):
-                    param_uri_to_prefLabel[uri] = row['prefLabel']
-
-        # Initialize session state for the selected model
-        param_mappings = st.session_state.setdefault('parameter_mappings', {}).setdefault(selected_model, {})
-
-        # Pre-fill parameter mappings by reading the graph
-        for model in model_data["models"]:
-            for param in model["parameters"]:
-                param_uri = URIRef(param['uri'])
-                
-                # Pre-fill parameter mapping
-                existing_param_match = g.value(subject=param_uri, predicate=SKOS.exactMatch)
-                if existing_param_match and str(existing_param_match) in param_uri_to_prefLabel:
-                    param_mappings[param['id']] = param_uri_to_prefLabel[str(existing_param_match)]
-
-
-        # Pre-fill hazards and products, ensuring state is fresh for the selected model
-        valid_hazards = [h for h in model_data["hazards"] if h in pathogen_uris]
-        valid_products = [p for p in model_data["products"] if p in plant_uris]
-
-        # Ensure the session state keys exist before assignment
-        st.session_state.setdefault('hazard_mappings', {})
-        st.session_state.setdefault('product_mappings', {})
-
-        st.subheader("Map Hazards and Products")
-        
-        # --- Display Model Cascade ---
-        if len(model_data.get("cascade", [])) > 1:
-            st.subheader("Model Cascade")
-            cascade_str = " → ".join([f"`{m['name']}`" for m in model_data["cascade"]])
-            st.markdown(cascade_str)
-
-        col_h, col_p = st.columns(2)
-        with col_h:
-            # By removing the 'key', the widget is recreated on each run,
-            # correctly using the 'default' value from the newly selected model.
-            selected_hazards = st.multiselect(
-                "Hazards",
-                pathogen_uris,
-                default=valid_hazards,
-                format_func=pathogen_display.get
-            )
-            st.session_state.hazard_mappings[selected_model] = selected_hazards
-        with col_p:
-            selected_products = st.multiselect(
-                "Products",
-                plant_uris,
-                default=valid_products,
-                format_func=plant_display.get
-            )
-            st.session_state.product_mappings[selected_model] = selected_products
-
-
-        st.subheader("Map Climate Input Parameters")
-        if model_data["models"]:
+            # --- Pre-fill mappings from existing turtle file ---
+            # Build reverse lookup maps from URI to prefLabel for pre-filling dropdowns
+            param_uri_to_prefLabel = {}
             param_concepts_df = master_mapping_df[master_mapping_df['ConceptGroup'].isin(['Model Parameters', 'Parameter', 'Climate Variables'])]
-            param_options = [""] + sorted(param_concepts_df['prefLabel'].unique().tolist())
+            for _, row in param_concepts_df.iterrows():
+                for uri_col in ['URI1', 'URI2', 'URI3']:
+                    uri = row[uri_col]
+                    if uri and pd.notna(uri):
+                        param_uri_to_prefLabel[uri] = row['prefLabel']
 
-            # --- Render Input Parameters ---
-            any_inputs_found = False
-            # Use the cascade order for rendering
-            for model in model_data["cascade"]:
-                inputs = sorted([p for p in model["parameters"] if "Input" in p.get('classifications', set())], key=lambda x: x['name'])
-                if not inputs:
-                    continue
+            # Initialize session state for the selected model
+            param_mappings = st.session_state.setdefault('parameter_mappings', {}).setdefault(selected_model, {})
 
-                any_inputs_found = True
-                # Display a header for the model, especially if there's more than one.
-                if len(model_data["models"]) > 1:
-                    st.markdown(f"#### Model: `{model['name']}`")
-                else:
-                    st.markdown("#### Input Parameters")
+            # Pre-fill parameter mappings by reading the graph
+            for model in model_data["models"]:
+                for param in model["parameters"]:
+                    param_uri = URIRef(param['uri'])
+                    
+                    # Pre-fill parameter mapping
+                    existing_param_match = g.value(subject=param_uri, predicate=SKOS.exactMatch)
+                    if existing_param_match and str(existing_param_match) in param_uri_to_prefLabel:
+                        param_mappings[param['id']] = param_uri_to_prefLabel[str(existing_param_match)]
 
-                for param in inputs:
-                    default = st.session_state.parameter_mappings[selected_model].get(param['id'], "")
-                    selected_concept = st.selectbox(
-                        f"Map: **{param['name']}** (`{param['id']}`)",
-                        param_options,
-                        index=param_options.index(default) if default in param_options else 0,
-                        key=f"param_map_{selected_model}_{param['uri']}" # URI is unique across models
-                    )
-                    st.session_state.parameter_mappings[selected_model][param['id']] = selected_concept
+
+            # Pre-fill hazards and products, ensuring state is fresh for the selected model
+            valid_hazards = [h for h in model_data["hazards"] if h in pathogen_uris]
+            valid_products = [p for p in model_data["products"] if p in plant_uris]
+
+            # Ensure the session state keys exist before assignment
+            st.session_state.setdefault('hazard_mappings', {})
+            st.session_state.setdefault('product_mappings', {})
+
+            st.subheader("Map Hazards and Products")
             
-            if not any_inputs_found:
-                st.info("No input parameters found to map in this model.")
-        else:
-            st.warning("No parameters found to map in this model.")
+            # --- Display Model Cascade ---
+            if len(model_data.get("cascade", [])) > 1:
+                st.subheader("Model Cascade")
+                cascade_str = " → ".join([f"`{m['name']}`" for m in model_data["cascade"]])
+                st.markdown(cascade_str)
 
-        st.markdown("---")
-        if st.button(f"Apply All Mappings to {selected_model}"):
-            model_uri = model_data["model_uri"]
-            if model_uri:
-                g.remove((model_uri, FSKXO.FSKXO_0000000008, None)); g.remove((model_uri, FSKXO.FSKXO_0000000007, None))
-                for uri in st.session_state.hazard_mappings[selected_model]: g.add((model_uri, FSKXO.FSKXO_0000000008, URIRef(uri)))
-                for uri in st.session_state.product_mappings[selected_model]: g.add((model_uri, FSKXO.FSKXO_0000000007, URIRef(uri)))
+            col_h, col_p = st.columns(2)
+            with col_h:
+                # By removing the 'key', the widget is recreated on each run,
+                # correctly using the 'default' value from the newly selected model.
+                selected_hazards = st.multiselect(
+                    "Hazards",
+                    pathogen_uris,
+                    default=valid_hazards,
+                    format_func=pathogen_display.get,
+                    key=f"{key_ns}_hazards"
+                )
+                st.session_state.hazard_mappings[selected_model] = selected_hazards
+            with col_p:
+                selected_products = st.multiselect(
+                    "Products",
+                    plant_uris,
+                    default=valid_products,
+                    format_func=plant_display.get,
+                    key=f"{key_ns}_products"
+                )
+                st.session_state.product_mappings[selected_model] = selected_products
 
-            # Iterate through all parameters from all models
-            all_params = [param for model in model_data["models"] for param in model["parameters"]]
 
-            for param in all_params:
-                param_uri = URIRef(param['uri'])
-                
-                # --- Parameter Concept Mapping ---
-                # Always remove existing parameter mappings first.
-                g.remove((param_uri, SKOS.exactMatch, None))
-                g.remove((param_uri, AMBLINK.expectsQuantityKind, None))
-                mapped_concept = st.session_state.parameter_mappings[selected_model].get(param['id'])
-                # Add new mappings only if a valid one is selected.
-                if mapped_concept and not master_mapping_df[master_mapping_df['prefLabel'] == mapped_concept].empty:
-                    param_row = master_mapping_df[master_mapping_df['prefLabel'] == mapped_concept].iloc[0]
-                    uris = [u for u in param_row[['URI1', 'URI2', 'URI3']] if u]
-                    concept_uri = next((u for u in uris if 'qudt.org' not in u), None)
-                    qk_uri = next((u for u in uris if 'quantitykind' in u), None)
-                    if concept_uri: g.add((param_uri, SKOS.exactMatch, URIRef(concept_uri)))
-                    if qk_uri: g.add((param_uri, AMBLINK.expectsQuantityKind, URIRef(qk_uri)))
+            st.subheader("Map Climate Input Parameters")
+            if model_data["models"]:
+                param_concepts_df = master_mapping_df[master_mapping_df['ConceptGroup'].isin(['Model Parameters', 'Parameter', 'Climate Variables'])]
+                param_options = [""] + sorted(param_concepts_df['prefLabel'].unique().tolist())
 
-            # --- New Wiring Logic based on fskx_to_rdf.py ---
-            if model_uri:
-                try:
-                    netcdf_vocab_path = str(VOCAB_DIR / "ambrosia-netcdf-vocab.ttl")
-                    knowledge_graph = Graph()
-                    if Path(netcdf_vocab_path).exists():
-                        knowledge_graph.parse(netcdf_vocab_path, format="turtle")
+                # --- Render Input Parameters ---
+                any_inputs_found = False
+                # Use the cascade order for rendering
+                for model in model_data["cascade"]:
+                    inputs = sorted([p for p in model["parameters"] if "Input" in p.get('classifications', set())], key=lambda x: x['name'])
+                    if not inputs:
+                        continue
+
+                    any_inputs_found = True
+                    # Display a header for the model, especially if there's more than one.
+                    if len(model_data["models"]) > 1:
+                        st.markdown(f"#### Model: `{model['name']}`")
                     else:
-                        st.warning(f"NetCDF vocabulary not found at {netcdf_vocab_path}. Cannot perform automatic wiring.")
+                        st.markdown("#### Input Parameters")
 
-                    # Remove all existing input mappings to avoid duplicates
-                    for s, p, o in list(g.triples((model_uri, AMBLINK.hasInputMapping, None))):
-                        g.remove((s, p, o))
-                        g.remove((o, None, None))
+                    for param in inputs:
+                        default = st.session_state.parameter_mappings[selected_model].get(param['id'], "")
+                        selected_concept = st.selectbox(
+                            f"Map: **{param['name']}** (`{param['id']}`)",
+                            param_options,
+                            index=param_options.index(default) if default in param_options else 0,
+                            key=f"{key_ns}_param_map_{selected_model}_{param['uri']}" # URI is unique across models
+                        )
+                        st.session_state.parameter_mappings[selected_model][param['id']] = selected_concept
+                
+                if not any_inputs_found:
+                    st.info("No input parameters found to map in this model.")
+            else:
+                st.warning("No parameters found to map in this model.")
 
-                    # Iterate through all parameters again to create wiring
-                    for param in all_params:
-                        if 'Input' not in param.get('classifications', set()):
-                            continue
+            st.markdown("---")
+            if st.button(f"Apply All Mappings to {selected_model}", key=f"{key_ns}_apply_mappings"):
+                model_uri = model_data["model_uri"]
+                if model_uri:
+                    g.remove((model_uri, FSKXO.FSKXO_0000000008, None)); g.remove((model_uri, FSKXO.FSKXO_0000000007, None))
+                    for uri in st.session_state.hazard_mappings[selected_model]: g.add((model_uri, FSKXO.FSKXO_0000000008, URIRef(uri)))
+                    for uri in st.session_state.product_mappings[selected_model]: g.add((model_uri, FSKXO.FSKXO_0000000007, URIRef(uri)))
 
-                        mapped_concept = st.session_state.parameter_mappings[selected_model].get(param['id'])
-                        if not mapped_concept:
-                            continue
+                # Iterate through all parameters from all models
+                all_params = [param for model in model_data["models"] for param in model["parameters"]]
 
-                        param_row = master_mapping_df[master_mapping_df['prefLabel'] == mapped_concept]
-                        if param_row.empty:
-                            continue
+                for param in all_params:
+                    param_uri = URIRef(param['uri'])
+                    
+                    # --- Parameter Concept Mapping ---
+                    # Always remove existing parameter mappings first.
+                    g.remove((param_uri, SKOS.exactMatch, None))
+                    g.remove((param_uri, AMBLINK.expectsQuantityKind, None))
+                    mapped_concept = st.session_state.parameter_mappings[selected_model].get(param['id'])
+                    # Add new mappings only if a valid one is selected.
+                    if mapped_concept and not master_mapping_df[master_mapping_df['prefLabel'] == mapped_concept].empty:
+                        param_row = master_mapping_df[master_mapping_df['prefLabel'] == mapped_concept].iloc[0]
+                        uris = [u for u in param_row[['URI1', 'URI2', 'URI3']] if u]
+                        concept_uri = next((u for u in uris if 'qudt.org' not in u), None)
+                        qk_uri = next((u for u in uris if 'quantitykind' in u), None)
+                        if concept_uri: g.add((param_uri, SKOS.exactMatch, URIRef(concept_uri)))
+                        if qk_uri: g.add((param_uri, AMBLINK.expectsQuantityKind, URIRef(qk_uri)))
 
-                        uris = [u for u in param_row.iloc[0][['URI1', 'URI2', 'URI3']] if u]
-                        
-                        # Iterate through all potential URIs from the master mapping to find a match.
-                        wiring_successful = False
-                        for potential_qk_uri in uris:
-                            if not potential_qk_uri: continue
+                # --- New Wiring Logic based on fskx_to_rdf.py ---
+                if model_uri:
+                    try:
+                        netcdf_vocab_path = str(VOCAB_DIR / "ambrosia-netcdf-vocab.ttl")
+                        knowledge_graph = Graph()
+                        if Path(netcdf_vocab_path).exists():
+                            knowledge_graph.parse(netcdf_vocab_path, format="turtle")
+                        else:
+                            st.warning(f"NetCDF vocabulary not found at {netcdf_vocab_path}. Cannot perform automatic wiring.")
 
-                            query = prepareQuery(
-                                "SELECT ?ds ?varName WHERE { ?ds amblink:expectsQuantityKind ?qk . OPTIONAL { ?ds amblink:sourceVariableName ?varName . } }",
-                                initNs={"amblink": AMBLINK}
-                            )
-                            results = list(knowledge_graph.query(query, initBindings={'qk': URIRef(potential_qk_uri)}))
+                        # Remove all existing input mappings to avoid duplicates
+                        for s, p, o in list(g.triples((model_uri, AMBLINK.hasInputMapping, None))):
+                            g.remove((s, p, o))
+                            g.remove((o, None, None))
+
+                        # Iterate through all parameters again to create wiring
+                        for param in all_params:
+                            if 'Input' not in param.get('classifications', set()):
+                                continue
+
+                            mapped_concept = st.session_state.parameter_mappings[selected_model].get(param['id'])
+                            if not mapped_concept:
+                                continue
+
+                            param_row = master_mapping_df[master_mapping_df['prefLabel'] == mapped_concept]
+                            if param_row.empty:
+                                continue
+
+                            uris = [u for u in param_row.iloc[0][['URI1', 'URI2', 'URI3']] if u]
                             
-                            if results:
-                                first_result = results[0]
-                                data_source_uri = first_result.ds
-                                source_var_name = first_result.varName or Literal(str(data_source_uri).split('/')[-1])
+                            # Iterate through all potential URIs from the master mapping to find a match.
+                            wiring_successful = False
+                            for potential_qk_uri in uris:
+                                if not potential_qk_uri: continue
 
-                                input_mapping_node = BNode()
-                                g.add((model_uri, AMBLINK.hasInputMapping, input_mapping_node))
-                                g.add((input_mapping_node, RDF.type, AMBLINK.InputMapping))
-                                g.add((input_mapping_node, AMBLINK.mapsParameter, URIRef(param['uri'])))
-                                g.add((input_mapping_node, AMBLINK.isFulfilledBy, data_source_uri))
-                                g.add((input_mapping_node, AMBLINK.sourceVariableName, source_var_name))
-                                st.info(f"Successfully wired parameter '{param['name']}' to data source '{source_var_name}'.")
-                                wiring_successful = True
-                                # Break after the first successful wiring for this parameter
-                                break
-                        
-                        if not wiring_successful:
-                            st.warning(f"No data source found for any of the URIs associated with parameter '{param['name']}'. URIs checked: {uris}")
-                except Exception as e:
-                    st.error(f"An error occurred during the wiring process: {e}")
+                                query = prepareQuery(
+                                    "SELECT ?ds ?varName WHERE { ?ds amblink:expectsQuantityKind ?qk . OPTIONAL { ?ds amblink:sourceVariableName ?varName . } }",
+                                    initNs={"amblink": AMBLINK}
+                                )
+                                results = list(knowledge_graph.query(query, initBindings={'qk': URIRef(potential_qk_uri)}))
+                                
+                                if results:
+                                    first_result = results[0]
+                                    data_source_uri = first_result.ds
+                                    source_var_name = first_result.varName or Literal(str(data_source_uri).split('/')[-1])
+
+                                    input_mapping_node = BNode()
+                                    g.add((model_uri, AMBLINK.hasInputMapping, input_mapping_node))
+                                    g.add((input_mapping_node, RDF.type, AMBLINK.InputMapping))
+                                    g.add((input_mapping_node, AMBLINK.mapsParameter, URIRef(param['uri'])))
+                                    g.add((input_mapping_node, AMBLINK.isFulfilledBy, data_source_uri))
+                                    g.add((input_mapping_node, AMBLINK.sourceVariableName, source_var_name))
+                                    st.info(f"Successfully wired parameter '{param['name']}' to data source '{source_var_name}'.")
+                                    wiring_successful = True
+                                    # Break after the first successful wiring for this parameter
+                                    break
+                            
+                            if not wiring_successful:
+                                st.warning(f"No data source found for any of the URIs associated with parameter '{param['name']}'. URIs checked: {uris}")
+                    except Exception as e:
+                        st.error(f"An error occurred during the wiring process: {e}")
 
 
-            _bind_common_namespaces(g)
-            g.serialize(destination=str(turtle_file), format="turtle")
-            st.success(f"Mappings applied and saved to {turtle_file.name}")
-            st.rerun()
+                _bind_common_namespaces(g)
+                g.serialize(destination=str(turtle_file), format="turtle")
+                st.success(f"Mappings applied and saved to {turtle_file.name}")
+                st.rerun()
+
+if __name__ == "__main__":
+    render_fskx_to_rdf_ui()
