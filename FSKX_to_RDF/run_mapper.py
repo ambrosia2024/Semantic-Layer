@@ -56,8 +56,10 @@ def process_files(override=False):
 
         except Exception as e:
             logging.error(f"  -> ERROR processing {file_path.name}: {e}", exc_info=True)
+        
+        # Save mappings after each file to make new mappings available to subsequent files
+        mapper.save_custom_mappings()
 
-    mapper.save_custom_mappings()
     logging.info("Processing complete.")
 
 if __name__ == "__main__":
