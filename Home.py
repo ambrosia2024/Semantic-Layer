@@ -24,10 +24,10 @@ The Reconciliation Service allows you to map terms from your datasets to establi
 
 st.subheader("2. SKOS Vocabulary Generator")
 st.markdown("""
-This tool helps you create and manage SKOS (Simple Knowledge Organization System) vocabularies. You can define concepts, establish relationships between them (such as broader, narrower, and related), and export the result as a Turtle (.ttl) file. This is essential for creating controlled vocabularies for your domain.
+This tool helps you create and manage SKOS (Simple Knowledge Organization System) vocabularies. You can define concepts, establish relationships between them, and export the result as a Turtle (.ttl) file. 
 """)
 
 st.subheader("3. FSKX to RDF Generator")
 st.markdown("""
-The FSKX to RDF Generator converts models described in the FSKX format into RDF graphs. It maps model parameters, hazards, and products to your SKOS vocabularies and generates linked data descriptions of the models, including wiring information for connecting model inputs to data sources.
+This tool transforms FSKX models into rich, semantic RDF representations. It enriches the model's metadata using the FSKX Ontology, creating a solid foundation for linked data. The user-friendly interface allows for the manual mapping of hazards, products, and climate variables to input parameters. All mappings and linkages are saved semantically, making them readily available for downstream applications and analysis.
 """)

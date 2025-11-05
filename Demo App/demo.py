@@ -297,7 +297,7 @@ def find_model_and_inputs(graph, product_uri, hazard_uri):
 
 # --- Main App UI and Logic ---
 st.set_page_config(layout="wide")
-st.title("AMBROSIA Semantic Wiring & Geospatial Clipping Demo")
+st.title("AMBROSIA Semantic Wiring Demo")
 st.info("This app demonstrates semantic discovery and regional data extraction using a clipped NetCDF file.")
 
 graph = load_knowledge_graph()

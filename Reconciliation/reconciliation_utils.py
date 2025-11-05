@@ -11,6 +11,8 @@ import traceback
 import yaml
 import logging
 import concurrent.futures
+import rdflib
+from rdflib.util import guess_format
 
 # --- Configure Logging (Console Only) ---
 logger = logging.getLogger(__name__)
@@ -338,6 +340,13 @@ def prefill_best_matches():
     st.rerun()
 
 # --- Pagination Control UI Function ---
+def parse_rdf_data(rdf_data, filename):
+    """Parses RDF data from an uploaded file."""
+    graph = rdflib.Graph()
+    file_format = guess_format(filename)
+    graph.parse(data=rdf_data, format=file_format)
+    return graph
+
 def render_pagination_controls_ui(total_pages, current_page_session_key, key_prefix):
     """Renders pagination controls horizontally using a single st.columns layout."""
     if total_pages <= 1:

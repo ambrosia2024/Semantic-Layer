@@ -8,6 +8,7 @@
 @prefix qudt:   <http://qudt.org/schema/qudt/> .
 @prefix qk:     <http://qudt.org/vocab/quantitykind/> .
 @prefix unit:   <http://qudt.org/vocab/unit/> .
+@prefix ncbitaxon: <http://purl.obolibrary.org/obo/NCBITaxon_> .
 
 @prefix fskxo:  <http://semanticlookup.zbmed.de/km/fskxo/> .
 @prefix model:  <https://www.ambrosia-project.eu/model/> .
@@ -20,7 +21,7 @@
 amblink: a owl:Ontology ;
   dct:title "AMBROSIA Wiring Vocabulary"@en ;
   dct:description "Vocabulary for durable links between predictive models and data sources (inputs/outputs), with light-weight aggregation and transformation hints."@en ;
-  owl:versionInfo "1.1.0" .
+  owl:versionInfo "1.2.0" .
 
 #################################################################
 # Classes
@@ -32,6 +33,21 @@ amblink:InputMapping a owl:Class ;
 amblink:OutputMapping a owl:Class ;
   rdfs:label "Output Mapping"@en ;
   rdfs:comment "Binding describing how a model output parameter corresponds to an observed property and unit."@en .
+
+amblink:ModelLink a rdfs:Class ;
+  rdfs:comment "A link between two models, showing the flow of data from one model to another." .
+
+amblink:ObservedProperty a rdfs:Class ;
+  rdfs:comment "An observable property produced by a model, such as concentration or dose." .
+
+amblink:Endpoint a rdfs:Class ;
+  rdfs:comment "A health endpoint used in risk modeling (e.g., infection)." .
+
+amblink:ExposureRoute a rdfs:Class ;
+  rdfs:comment "The route of exposure (e.g., oral) used in risk modeling." .
+
+amblink:Population a rdfs:Class ;
+  rdfs:comment "The target population for a model (e.g., general population, risk groups)." .
 
 #################################################################
 # Core Object Properties (Input side — static knowledge)
@@ -55,7 +71,6 @@ amblink:isFulfilledBy a owl:ObjectProperty ;
   rdfs:domain amblink:InputMapping ;
   rdfs:range  skos:Concept .
 
-# Input parameter semantics
 amblink:expectsQuantityKind a owl:ObjectProperty ;
   rdfs:label "expects quantity kind"@en ;
   rdfs:comment "Physical quantity expected by the parameter (QUDT QuantityKind)."@en ;
@@ -92,7 +107,6 @@ amblink:hasOutputUnit a owl:ObjectProperty ;
 #################################################################
 # Aggregation / Temporal / Transformation Hints
 #################################################################
-# Properties to annotate HOW to obtain an input from a dataset
 amblink:aggregationMethod a owl:ObjectProperty ;
   rdfs:label "aggregation method"@en ;
   rdfs:comment "Spatial/temporal aggregation used to derive the input (e.g., area-weighted mean, time mean)."@en ;
@@ -111,7 +125,6 @@ amblink:requiresTransformation a owl:ObjectProperty ;
   rdfs:domain amblink:InputMapping ;
   rdfs:range  skos:Concept .
 
-# Optional machine hints
 amblink:temporalWindow a owl:DatatypeProperty ;
   rdfs:label "temporal window"@en ;
   rdfs:comment "ISO 8601 duration describing the window for aggregation (e.g., P1M, P7D)."@en ;
@@ -142,7 +155,6 @@ amblink:transformationHint a owl:DatatypeProperty ;
 #################################################################
 # SKOS Schemes for controlled hints (enumerations)
 #################################################################
-# Aggregation methods
 amblink:AggregationMethod a skos:ConceptScheme ;
   skos:prefLabel "Aggregation methods"@en ;
   dct:description "Controlled list of spatial/temporal aggregation methods for inputs."@en .
@@ -157,7 +169,6 @@ amblink:timeMean a skos:Concept ;
   skos:prefLabel "Time mean"@en ;
   skos:definition "Mean calculated over the specified temporal window."@en .
 
-# Temporal alignment
 amblink:TemporalAlignment a skos:ConceptScheme ;
   skos:prefLabel "Temporal alignment methods"@en .
 
@@ -169,7 +180,6 @@ amblink:lag3Days a skos:Concept ;
   skos:inScheme amblink:TemporalAlignment ;
   skos:prefLabel "Lag 3 days"@en .
 
-# Transformations (derived inputs)
 amblink:Transformation a skos:ConceptScheme ;
   skos:prefLabel "Derived-input transformations"@en ;
   dct:description "Lightweight references to transformations from raw variables to model-ready inputs."@en .
@@ -180,12 +190,90 @@ amblink:precipToRHProxy a skos:Concept ;
   skos:definition "Use precipitation/temperature to estimate relative humidity as a proxy for aw."@en .
 
 #################################################################
-# Optional Concepts for outputs
+# Linking-specific Properties, Classes, and Concepts
 #################################################################
+
+# Properties
+amblink:forTaxon a owl:ObjectProperty ;
+  rdfs:comment "Links a model to a specific taxon (e.g., NCBITaxon)." .
+
+amblink:forMatrix a owl:ObjectProperty ;
+  rdfs:comment "Links a model to a matrix (e.g., food, sample)." .
+
+amblink:endpoint a owl:ObjectProperty ;
+  rdfs:comment "Links a model to a health endpoint (e.g., infection)." .
+
+amblink:exposureRoute a owl:ObjectProperty ;
+  rdfs:comment "Links a model to an exposure route (e.g., oral)." .
+
+amblink:population a owl:ObjectProperty ;
+  rdfs:comment "Links a model to a target population (e.g., general population)." .
+
+amblink:expectsObservedProperty a owl:ObjectProperty ;
+  rdfs:comment "Describes the observed property that is expected as an input for the model." .
+
+amblink:expectsUnit a owl:ObjectProperty ;
+  rdfs:comment "Describes the unit expected for the input (e.g., CFU)." .
+
+amblink:expectsQuantityKind a owl:ObjectProperty ;
+  rdfs:comment "Describes the quantity kind expected for the input (e.g., concentration, dose)." .
+
+amblink:hasOutputMapping a owl:ObjectProperty ;
+  rdfs:comment "Links a model to an output mapping." .
+
+amblink:producesObservedProperty a owl:ObjectProperty ;
+  rdfs:comment "Indicates the observed property produced by the model." .
+
+amblink:hasOutputUnit a owl:ObjectProperty ;
+  rdfs:comment "Indicates the unit for the output parameter." .
+
+amblink:hasOutputQuantityKind a owl:ObjectProperty ;
+  rdfs:comment "Indicates the quantity kind for the output parameter." .
+
+amblink:fromModel a owl:ObjectProperty ;
+  rdfs:comment "Links a model to the source model." .
+
+amblink:toModel a owl:ObjectProperty ;
+  rdfs:comment "Links a model to the target model." .
+
+amblink:assumption a owl:DatatypeProperty ;
+  rdfs:comment "Indicates an assumption, e.g., whether general→specific or vice versa." .
+
+amblink:confidence a owl:DatatypeProperty ;
+  rdfs:comment "Indicates the confidence or accuracy of a model link." .
+
+# Concept Schemes
+amblink:ObservedProperty a skos:ConceptScheme ;
+  skos:prefLabel "Observed Property (Ambrosia Linking)"@en .
+amblink:Endpoint a skos:ConceptScheme .
+amblink:ExposureRoute a skos:ConceptScheme .
+amblink:Population a skos:ConceptScheme .
+
+# Concepts
 amblink:RiskProbability a skos:Concept ;
   skos:prefLabel "Risk probability"@en ;
   skos:definition "Probability [0..1] of the hazard event under model assumptions."@en .
-
 amblink:PredictedConcentration a skos:Concept ;
-  skos:prefLabel "Predicted concentration"@en ;
+  skos:inScheme amblink:ObservedProperty ;
+  skos:prefLabel "Predicted concentration (e.g., CFU per g)"@en ;
   skos:definition "Predicted concentration of the hazard (e.g., CFU/g, μg/kg)."@en .
+
+amblink:Dose a skos:Concept ;
+  skos:inScheme amblink:ObservedProperty ;
+  skos:prefLabel "Dose (e.g., CFU per person/serving)"@en .
+
+amblink:Infection a skos:Concept ;
+  skos:inScheme amblink:Endpoint ;
+  skos:prefLabel "Infection"@en .
+
+amblink:Illness a skos:Concept ;
+  skos:inScheme amblink:Endpoint ;
+  skos:prefLabel "Illness"@en .
+
+amblink:Oral a skos:Concept ;
+  skos:inScheme amblink:ExposureRoute ;
+  skos:prefLabel "Oral"@en .
+
+amblink:GeneralPopulation a skos:Concept ;
+  skos:inScheme amblink:Population ;
+  skos:prefLabel "General population"@en .

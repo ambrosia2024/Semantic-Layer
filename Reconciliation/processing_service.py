@@ -17,6 +17,7 @@ try:
     from . import agroportal_provider
     from . import earthportal_provider # Import the new EarthPortal provider
     from . import qudt_provider # Import the new QUDT provider
+    from . import rdf_provider
 except ImportError as e:
     logging.critical(f"Failed to import a required provider module: {e}", exc_info=True)
     raise ImportError(f"Missing provider module: {e}") from e
@@ -137,6 +138,8 @@ def process_chunk_for_provider(
             provider_func = earthportal_provider.query_earthportal
         elif current_provider_name == "QUDT":
             provider_func = qudt_provider.query_qudt
+        elif current_provider_name == "Local RDF File":
+            provider_func = rdf_provider.search_local_rdf
         elif current_provider_name == CUSTOM_SPARQL_PROVIDER_NAME:
             provider_func = query_custom_sparql
             if 'custom_sparql' not in config or not config['custom_sparql'].get('endpoint') or not config['custom_sparql'].get('query_template'):
@@ -190,6 +193,8 @@ def process_chunk_for_provider(
                 elif current_provider_name == "QUDT":
                     kwargs_for_call['limit'] = num_suggestions
                     kwargs_for_call['config'] = config # Pass the full config to access QUDT specific settings
+                elif current_provider_name == "Local RDF File":
+                    kwargs_for_call['limit'] = num_suggestions
                 elif current_provider_name == CUSTOM_SPARQL_PROVIDER_NAME:
                     kwargs_for_call['limit'] = num_suggestions
                     kwargs_for_call['config'] = config
@@ -230,7 +235,8 @@ def fetch_suggestions_for_term_from_provider(
     term_to_search: str,
     config: dict,
     user_agent: str,
-    num_suggestions: int
+    num_suggestions: int,
+    rdf_graph=None  # Add rdf_graph as an optional argument
 ) -> list:
     """
     Fetches suggestions for a single term from a specified provider.
@@ -261,6 +267,8 @@ def fetch_suggestions_for_term_from_provider(
             provider_func = earthportal_provider.query_earthportal
         elif provider_name == "QUDT":
             provider_func = qudt_provider.query_qudt
+        elif provider_name == "Local RDF File":
+            provider_func = rdf_provider.search_local_rdf
         elif provider_name == CUSTOM_SPARQL_PROVIDER_NAME:
             provider_func = query_custom_sparql
             if 'custom_sparql' not in config or not config['custom_sparql'].get('endpoint') or not config['custom_sparql'].get('query_template'):
@@ -328,6 +336,9 @@ def fetch_suggestions_for_term_from_provider(
             elif provider_name == "QUDT":
                 kwargs_for_call['limit'] = num_suggestions
                 kwargs_for_call['config'] = config # Pass the full config to access QUDT specific settings
+            elif provider_name == "Local RDF File":
+                kwargs_for_call['limit'] = num_suggestions
+                kwargs_for_call['graph'] = rdf_graph
             elif provider_name == CUSTOM_SPARQL_PROVIDER_NAME:
                 kwargs_for_call['limit'] = num_suggestions
                 kwargs_for_call['config'] = config

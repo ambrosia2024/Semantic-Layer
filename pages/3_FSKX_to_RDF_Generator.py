@@ -12,8 +12,7 @@ if project_directory not in sys.path:
 # --- Import Application Module ---
 try:
     # Now we can import the app using an absolute path from the project root
-    from FSKX_to_RDF.fskx_to_rdf import main
-    main()
+    from FSKX_to_RDF import pipeline_app
 except ImportError as import_err:
     st.error(f"Failed to import the FSKX to RDF Generator page function.")
     st.error(f"ImportError: {import_err}")

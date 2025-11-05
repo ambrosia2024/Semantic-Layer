@@ -352,17 +352,18 @@ def serialize_graph_to_custom_turtle(graph):
 
     return "\n\n".join([prefix_str] + all_blocks), explicit_output_prefixes # Return explicit_output_prefixes
 
-def render_skos_generator_ui():
-    st.set_page_config(page_title="SKOS Vocabulary Generator", layout="wide")
+def render_skos_generator_ui(embedded=False, key_ns=""):
+    if not embedded:
+        st.set_page_config(page_title="SKOS Vocabulary Generator", layout="wide")
 
     st.title("SKOS Vocabulary Generator")
 
-st.markdown("""
+    st.markdown("""
 This tool generates a SKOS vocabulary from an uploaded Excel file.
 """)
 
-st.subheader("Excel File Structure Information")
-st.info("""
+    st.subheader("Excel File Structure Information")
+    st.info("""
 Your Excel file should be structured with the following columns:
 - **Term**: The primary term for the SKOS Concept (required).
 - **altLabel**: Alternative labels for the term (comma-separated, optional).
@@ -375,278 +376,278 @@ Your Excel file should be structured with the following columns:
 **Maximum of 3 external mappings are supported.**
 """)
 
-# Define the template columns
-template_columns = [
-    "Term", "altLabel", "ConceptGroup",
-    "URI1", "Match Type1", "SourceProvider1", "ProviderTerm1", "ProviderDescription1",
-    "URI2", "Match Type2", "SourceProvider2", "ProviderTerm2", "ProviderDescription2",
-    "URI3", "Match Type3", "SourceProvider3", "ProviderTerm3", "ProviderDescription3"
-]
+    # Define the template columns
+    template_columns = [
+        "Term", "altLabel", "ConceptGroup",
+        "URI1", "Match Type1", "SourceProvider1", "ProviderTerm1", "ProviderDescription1",
+        "URI2", "Match Type2", "SourceProvider2", "ProviderTerm2", "ProviderDescription2",
+        "URI3", "Match Type3", "SourceProvider3", "ProviderTerm3", "ProviderDescription3"
+    ]
 
-# Create an empty DataFrame for the template
-output = io.BytesIO()
-with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-    pd.DataFrame(columns=template_columns).to_excel(writer, index=False, sheet_name='SKOS_Template')
-data = output.getvalue()
+    # Create an empty DataFrame for the template
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        pd.DataFrame(columns=template_columns).to_excel(writer, index=False, sheet_name='SKOS_Template')
+    data = output.getvalue()
 
-st.download_button(
-    label="Download Excel Template",
-    data=data,
-    file_name="skos_vocabulary_template.xlsx",
-    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    help="Download an Excel template with the required column headers."
-)
-
-st.markdown("---") # Add a separator for clarity
-
-uploaded_file = st.file_uploader("Upload your Excel file (.xlsx)", type=["xlsx"])
-
-with st.expander("Extend Existing Vocabulary (Optional)"):
-    existing_vocab_file = st.file_uploader(
-        "Upload existing SKOS vocabulary file",
-        type=["ttl", "jsonld", "rdf", "xml"]
+    st.download_button(
+        label="Download Excel Template",
+        data=data,
+        file_name="skos_vocabulary_template.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        help="Download an Excel template with the required column headers."
     )
 
-if "conflicts" not in st.session_state:
-    st.session_state.conflicts = []
-if "resolutions" not in st.session_state:
-    st.session_state.resolutions = {}
-if "graph" not in st.session_state:
-    st.session_state.graph = None
+    st.markdown("---") # Add a separator for clarity
 
+    uploaded_file = st.file_uploader("Upload your Excel file (.xlsx)", type=["xlsx"])
 
-if uploaded_file:
-    try:
-        df = pd.read_excel(uploaded_file)
-        st.success("File uploaded successfully!")
-        st.dataframe(df.head())
-
-        st.subheader("Configuration")
-
-        base_namespace = st.text_input(
-            "Base Namespace URI",
-            value="https://www.ambrosia-project.eu/vocab/",
-            help="This URI will be the base for all generated SKOS concepts and collections."
+    with st.expander("Extend Existing Vocabulary (Optional)"):
+        existing_vocab_file = st.file_uploader(
+            "Upload existing SKOS vocabulary file",
+            type=["ttl", "jsonld", "rdf", "xml"]
         )
 
+    if "conflicts" not in st.session_state:
+        st.session_state.conflicts = []
+    if "resolutions" not in st.session_state:
+        st.session_state.resolutions = {}
+    if "graph" not in st.session_state:
+        st.session_state.graph = None
 
 
-        st.markdown("---")
-        st.subheader("Optional Language Tags")
+    if uploaded_file:
+        try:
+            df = pd.read_excel(uploaded_file)
+            st.success("File uploaded successfully!")
+            st.dataframe(df.head())
 
-        pref_label_lang = None
-        alt_label_lang = None
-        definition_lang = None
+            st.subheader("Configuration")
 
-        COMMON_LANGUAGES = {
-            "en": "English", "de": "German", "fr": "French", "es": "Spanish", "it": "Italian",
-            "pt": "Portuguese", "nl": "Dutch", "zh": "Chinese (Simplified)", "ja": "Japanese",
-            "ar": "Arabic", "ru": "Russian", "ko": "Korean", "hi": "Hindi", "sv": "Swedish",
-            "da": "Danish", "no": "Norwegian", "fi": "Finnish", "pl": "Polish", "tr": "Turkish",
-            "el": "Greek", "cs": "Czech", "hu": "Hungarian", "id": "Indonesian",
-            "th": "Thai", "vi": "Vietnamese", "uk": "Ukrainian", "ro": "Romanian",
-            "bg": "Bulgarian", "hr": "Croatian", "sk": "Slovak", "sl": "Slovenian", "lt": "Lithuanian",
-            "lv": "Latvian", "et": "Estonian", "is": "Icelandic"
-        }
-        lang_options = [f"{code} ({name})" for code, name in COMMON_LANGUAGES.items()]
-        default_lang_index = list(COMMON_LANGUAGES.keys()).index('en') if 'en' in COMMON_LANGUAGES else 0
-
-        col1, col2, col3 = st.columns(3)
-
-        with col1:
-            enable_pref_label_lang = st.checkbox("Enable Language for prefLabel", value=False)
-            if enable_pref_label_lang:
-                pref_label_selection = st.selectbox(
-                    "Language for prefLabel",
-                    options=lang_options,
-                    index=default_lang_index,
-                    key="pref_label_lang_select"
-                )
-                pref_label_lang = pref_label_selection.split(' ')[0]
-
-        with col2:
-            enable_alt_label_lang = st.checkbox("Enable Language for altLabel", value=False)
-            if enable_alt_label_lang:
-                alt_label_selection = st.selectbox(
-                    "Language for altLabel",
-                    options=lang_options,
-                    index=default_lang_index,
-                    key="alt_label_lang_select"
-                )
-                alt_label_lang = alt_label_selection.split(' ')[0]
-
-        with col3:
-            enable_definition_lang = st.checkbox("Enable Language for Definition", value=False)
-            if enable_definition_lang:
-                definition_selection = st.selectbox(
-                    "Language for Definition",
-                    options=lang_options,
-                    index=default_lang_index,
-                    key="definition_lang_select"
-                )
-                definition_lang = definition_selection.split(' ')[0]
-
-        st.markdown("---")
-        st.subheader("Output Format")
-        serialization_format = st.radio(
-            "Select output serialization format:",
-            ('Turtle (.ttl)', 'RDF/XML (.rdf)', 'JSON-LD (.jsonld)'),
-            index=0 # Default to Turtle
-        )
-
-        if existing_vocab_file and not st.session_state.get("conflicts_resolved"):
-            if st.button("Check for Conflicts"):
-                g = Graph()
-                
-                # Explicitly bind common RDF namespaces that might be expected by the parser
-                g.bind("rdf", RDF)
-                g.bind("rdfs", RDFS)
-
-                # Load all known prefixes from all.file.sparql.txt and bind them to the graph
-                # This is crucial for parsing existing vocabulary files that might use these prefixes.
-                try:
-                    all_prefixes_from_file = extract_prefixes('all.file.sparql.txt')
-                    for namespace_uri, prefixes_list in all_prefixes_from_file.items():
-                        # Use the first prefix found for a given namespace for binding
-                        if prefixes_list:
-                            g.bind(prefixes_list[0], URIRef(namespace_uri))
-                except FileNotFoundError:
-                    st.warning("`all.file.sparql.txt` not found. Parsing of existing vocabulary might fail if it uses unknown prefixes.")
-                except Exception as e:
-                    st.error(f"Error loading prefixes for parsing: {e}")
-
-                g.parse(existing_vocab_file, format=rdflib.util.guess_format(existing_vocab_file.name))
-                st.session_state.graph = g
-                
-                g, conflicts, report = extend_vocabulary(
-                    g, df, base_namespace, pref_label_lang, alt_label_lang, definition_lang
-                )
-                st.session_state.conflicts = conflicts
-                st.session_state.report = report
-
-                if conflicts:
-                    st.warning("Conflicts detected! Please resolve them below.")
-                else:
-                    st.success("No conflicts detected. You can now generate the extended vocabulary.")
-                    st.session_state.conflicts_resolved = True
+            base_namespace = st.text_input(
+                "Base Namespace URI",
+                value="https://www.ambrosia-project.eu/vocab/",
+                help="This URI will be the base for all generated SKOS concepts and collections."
+            )
 
 
-            if st.session_state.conflicts:
-                resolutions = display_conflict_resolution(st.session_state.conflicts)
-                if st.button("Resolve Conflicts"):
-                    st.session_state.resolutions = resolutions
-                    st.session_state.conflicts_resolved = True
-                    st.success("Conflicts resolved. You can now generate the extended vocabulary.")
 
-        
-        if st.button("Generate SKOS Vocabulary", disabled=(existing_vocab_file is not None and not st.session_state.get("conflicts_resolved"))):
-            if not base_namespace.strip():
-                st.error("Base Namespace URI cannot be empty.")
-            else:
-                with st.spinner("Generating SKOS vocabulary..."):
+            st.markdown("---")
+            st.subheader("Optional Language Tags")
+
+            pref_label_lang = None
+            alt_label_lang = None
+            definition_lang = None
+
+            COMMON_LANGUAGES = {
+                "en": "English", "de": "German", "fr": "French", "es": "Spanish", "it": "Italian",
+                "pt": "Portuguese", "nl": "Dutch", "zh": "Chinese (Simplified)", "ja": "Japanese",
+                "ar": "Arabic", "ru": "Russian", "ko": "Korean", "hi": "Hindi", "sv": "Swedish",
+                "da": "Danish", "no": "Norwegian", "fi": "Finnish", "pl": "Polish", "tr": "Turkish",
+                "el": "Greek", "cs": "Czech", "hu": "Hungarian", "id": "Indonesian",
+                "th": "Thai", "vi": "Vietnamese", "uk": "Ukrainian", "ro": "Romanian",
+                "bg": "Bulgarian", "hr": "Croatian", "sk": "Slovak", "sl": "Slovenian", "lt": "Lithuanian",
+                "lv": "Latvian", "et": "Estonian", "is": "Icelandic"
+            }
+            lang_options = [f"{code} ({name})" for code, name in COMMON_LANGUAGES.items()]
+            default_lang_index = list(COMMON_LANGUAGES.keys()).index('en') if 'en' in COMMON_LANGUAGES else 0
+
+            col1, col2, col3 = st.columns(3)
+
+            with col1:
+                enable_pref_label_lang = st.checkbox("Enable Language for prefLabel", value=False)
+                if enable_pref_label_lang:
+                    pref_label_selection = st.selectbox(
+                        "Language for prefLabel",
+                        options=lang_options,
+                        index=default_lang_index,
+                        key="pref_label_lang_select"
+                    )
+                    pref_label_lang = pref_label_selection.split(' ')[0]
+
+            with col2:
+                enable_alt_label_lang = st.checkbox("Enable Language for altLabel", value=False)
+                if enable_alt_label_lang:
+                    alt_label_selection = st.selectbox(
+                        "Language for altLabel",
+                        options=lang_options,
+                        index=default_lang_index,
+                        key="alt_label_lang_select"
+                    )
+                    alt_label_lang = alt_label_selection.split(' ')[0]
+
+            with col3:
+                enable_definition_lang = st.checkbox("Enable Language for Definition", value=False)
+                if enable_definition_lang:
+                    definition_selection = st.selectbox(
+                        "Language for Definition",
+                        options=lang_options,
+                        index=default_lang_index,
+                        key="definition_lang_select"
+                    )
+                    definition_lang = definition_selection.split(' ')[0]
+
+            st.markdown("---")
+            st.subheader("Output Format")
+            serialization_format = st.radio(
+                "Select output serialization format:",
+                ('Turtle (.ttl)', 'RDF/XML (.rdf)', 'JSON-LD (.jsonld)'),
+                index=0 # Default to Turtle
+            )
+
+            if existing_vocab_file and not st.session_state.get("conflicts_resolved"):
+                if st.button("Check for Conflicts"):
+                    g = Graph()
+                    
+                    # Explicitly bind common RDF namespaces that might be expected by the parser
+                    g.bind("rdf", RDF)
+                    g.bind("rdfs", RDFS)
+
+                    # Load all known prefixes from all.file.sparql.txt and bind them to the graph
+                    # This is crucial for parsing existing vocabulary files that might use these prefixes.
                     try:
-                        g = st.session_state.graph if st.session_state.graph else Graph()
+                        all_prefixes_from_file = extract_prefixes('all.file.sparql.txt')
+                        for namespace_uri, prefixes_list in all_prefixes_from_file.items():
+                            # Use the first prefix found for a given namespace for binding
+                            if prefixes_list:
+                                g.bind(prefixes_list[0], URIRef(namespace_uri))
+                    except FileNotFoundError:
+                        st.warning("`all.file.sparql.txt` not found. Parsing of existing vocabulary might fail if it uses unknown prefixes.")
+                    except Exception as e:
+                        st.error(f"Error loading prefixes for parsing: {e}")
 
-                        if existing_vocab_file:
-                            if st.session_state.get('conflicts_resolved'):
-                                if st.session_state.resolutions:
-                                    g = apply_resolutions(g, st.session_state.resolutions, st.session_state.conflicts)
-                                
-                                # Re-run extend_vocabulary to apply non-conflicting changes
+                    g.parse(existing_vocab_file, format=rdflib.util.guess_format(existing_vocab_file.name))
+                    st.session_state.graph = g
+                    
+                    g, conflicts, report = extend_vocabulary(
+                        g, df, base_namespace, pref_label_lang, alt_label_lang, definition_lang
+                    )
+                    st.session_state.conflicts = conflicts
+                    st.session_state.report = report
+
+                    if conflicts:
+                        st.warning("Conflicts detected! Please resolve them below.")
+                    else:
+                        st.success("No conflicts detected. You can now generate the extended vocabulary.")
+                        st.session_state.conflicts_resolved = True
+
+
+                if st.session_state.conflicts:
+                    resolutions = display_conflict_resolution(st.session_state.conflicts)
+                    if st.button("Resolve Conflicts"):
+                        st.session_state.resolutions = resolutions
+                        st.session_state.conflicts_resolved = True
+                        st.success("Conflicts resolved. You can now generate the extended vocabulary.")
+
+            
+            if st.button("Generate SKOS Vocabulary", disabled=(existing_vocab_file is not None and not st.session_state.get("conflicts_resolved"))):
+                if not base_namespace.strip():
+                    st.error("Base Namespace URI cannot be empty.")
+                else:
+                    with st.spinner("Generating SKOS vocabulary..."):
+                        try:
+                            g = st.session_state.graph if st.session_state.graph else Graph()
+
+                            if existing_vocab_file:
+                                if st.session_state.get('conflicts_resolved'):
+                                    if st.session_state.resolutions:
+                                        g = apply_resolutions(g, st.session_state.resolutions, st.session_state.conflicts)
+                                    
+                                    # Re-run extend_vocabulary to apply non-conflicting changes
+                                    g, _, report = extend_vocabulary(
+                                        g, df, base_namespace, pref_label_lang, alt_label_lang, definition_lang
+                                    )
+                                    st.session_state.report = report # Update report
+                            else:
+                                # This is for creating a new vocabulary from scratch
                                 g, _, report = extend_vocabulary(
                                     g, df, base_namespace, pref_label_lang, alt_label_lang, definition_lang
                                 )
-                                st.session_state.report = report # Update report
-                        else:
-                            # This is for creating a new vocabulary from scratch
-                            g, _, report = extend_vocabulary(
-                                g, df, base_namespace, pref_label_lang, alt_label_lang, definition_lang
+                                st.session_state.report = report
+
+                            # --- Finalize and Serialize Graph ---
+                            # Determine format and file extension
+                            format_map = {
+                                'Turtle (.ttl)': ('turtle', 'ttl'),
+                                'RDF/XML (.rdf)': ('xml', 'rdf'),
+                                'JSON-LD (.jsonld)': ('json-ld', 'jsonld')
+                            }
+                            serialization_format_key, file_extension = format_map[serialization_format]
+
+                            # Use the custom serializer for Turtle to ensure correct order
+                            if serialization_format_key == 'turtle':
+                                output_str, explicit_output_prefixes = serialize_graph_to_custom_turtle(g)
+                            else:
+                                # For other formats, use standard rdflib serialization
+                                output_str = g.serialize(format=serialization_format_key)
+                                # For non-Turtle formats, we don't have explicit_output_prefixes from the custom serializer
+                                explicit_output_prefixes = {} 
+                            
+                            output_data = output_str.encode('utf-8')
+                            mime_type = f"application/{serialization_format_key}" if serialization_format_key != 'turtle' else 'text/turtle'
+
+                            st.success("SKOS vocabulary generated successfully!")
+                            
+                            # Prepare and provide downloadable log file (moved before vocabulary download)
+                            import datetime
+                            log_data = {
+                                "timestamp": datetime.datetime.now().isoformat(),
+                                "excel_file_name": uploaded_file.name if uploaded_file else None,
+                                "existing_vocab_file_name": existing_vocab_file.name if existing_vocab_file else None,
+                                "generation_report": st.session_state.report,
+                                "explicitly_included_prefixes": explicit_output_prefixes
+                            }
+                            log_json = json.dumps(log_data, indent=2)
+                            st.download_button(
+                                label="Download Generation Log (.json)",
+                                data=log_json.encode('utf-8'),
+                                file_name="skos_generation_log.json",
+                                mime="application/json"
                             )
-                            st.session_state.report = report
 
-                        # --- Finalize and Serialize Graph ---
-                        # Determine format and file extension
-                        format_map = {
-                            'Turtle (.ttl)': ('turtle', 'ttl'),
-                            'RDF/XML (.rdf)': ('xml', 'rdf'),
-                            'JSON-LD (.jsonld)': ('json-ld', 'jsonld')
-                        }
-                        serialization_format_key, file_extension = format_map[serialization_format]
+                            st.download_button(
+                                label=f"Download Generated SKOS Vocabulary as .{file_extension}",
+                                data=output_data,
+                                file_name=f"skos_vocabulary.{file_extension}",
+                                mime=mime_type
+                            )
+                            
+                            st.subheader("Preview of Generated SKOS Vocabulary")
+                            st.code(output_str, language=serialization_format_key)
 
-                        # Use the custom serializer for Turtle to ensure correct order
-                        if serialization_format_key == 'turtle':
-                            output_str, explicit_output_prefixes = serialize_graph_to_custom_turtle(g)
-                        else:
-                            # For other formats, use standard rdflib serialization
-                            output_str = g.serialize(format=serialization_format_key)
-                            # For non-Turtle formats, we don't have explicit_output_prefixes from the custom serializer
-                            explicit_output_prefixes = {} 
-                        
-                        output_data = output_str.encode('utf-8')
-                        mime_type = f"application/{serialization_format_key}" if serialization_format_key != 'turtle' else 'text/turtle'
+                        except Exception as e:
+                            st.error(f"An error occurred during generation: {e}")
+                            st.exception(e)
 
-                        st.success("SKOS vocabulary generated successfully!")
-                        
-                        # Prepare and provide downloadable log file (moved before vocabulary download)
-                        import datetime
-                        log_data = {
-                            "timestamp": datetime.datetime.now().isoformat(),
-                            "excel_file_name": uploaded_file.name if uploaded_file else None,
-                            "existing_vocab_file_name": existing_vocab_file.name if existing_vocab_file else None,
-                            "generation_report": st.session_state.report,
-                            "explicitly_included_prefixes": explicit_output_prefixes
-                        }
-                        log_json = json.dumps(log_data, indent=2)
-                        st.download_button(
-                            label="Download Generation Log (.json)",
-                            data=log_json.encode('utf-8'),
-                            file_name="skos_generation_log.json",
-                            mime="application/json"
-                        )
+        except Exception as e:
+            st.error(f"Error reading Excel file: {e}")
+            st.exception(e)
 
-                        st.download_button(
-                            label=f"Download Generated SKOS Vocabulary as .{file_extension}",
-                            data=output_data,
-                            file_name=f"skos_vocabulary.{file_extension}",
-                            mime=mime_type
-                        )
-                        
-                        st.subheader("Preview of Generated SKOS Vocabulary")
-                        st.code(output_str, language=serialization_format_key)
+    # Add logic to reset state when new files are uploaded
+    if 'last_uploaded_file_id' not in st.session_state:
+        st.session_state.last_uploaded_file_id = None
+    if 'last_existing_vocab_file_id' not in st.session_state:
+        st.session_state.last_existing_vocab_file_id = None
 
-                    except Exception as e:
-                        st.error(f"An error occurred during generation: {e}")
-                        st.exception(e)
+    current_uploaded_file_id = uploaded_file.file_id if uploaded_file else None
+    current_existing_vocab_file_id = existing_vocab_file.file_id if existing_vocab_file else None
 
-    except Exception as e:
-        st.error(f"Error reading Excel file: {e}")
-        st.exception(e)
-
-# Add logic to reset state when new files are uploaded
-if 'last_uploaded_file_id' not in st.session_state:
-    st.session_state.last_uploaded_file_id = None
-if 'last_existing_vocab_file_id' not in st.session_state:
-    st.session_state.last_existing_vocab_file_id = None
-
-current_uploaded_file_id = uploaded_file.file_id if uploaded_file else None
-current_existing_vocab_file_id = existing_vocab_file.file_id if existing_vocab_file else None
-
-if (current_uploaded_file_id != st.session_state.last_uploaded_file_id or
-    current_existing_vocab_file_id != st.session_state.last_existing_vocab_file_id):
-    
-    # Reset state variables
-    st.session_state.conflicts = []
-    st.session_state.resolutions = {}
-    st.session_state.graph = None
-    st.session_state.conflicts_resolved = False
-    
-    # Update stored file IDs
-    st.session_state.last_uploaded_file_id = current_uploaded_file_id
-    st.session_state.last_existing_vocab_file_id = current_existing_vocab_file_id
-    
-    # The app will naturally rerun due to file uploader changes,
-    # so explicit rerun is not needed and causes an error in newer Streamlit versions.
-    pass
+    if (current_uploaded_file_id != st.session_state.last_uploaded_file_id or
+        current_existing_vocab_file_id != st.session_state.last_existing_vocab_file_id):
+        
+        # Reset state variables
+        st.session_state.conflicts = []
+        st.session_state.resolutions = {}
+        st.session_state.graph = None
+        st.session_state.conflicts_resolved = False
+        
+        # Update stored file IDs
+        st.session_state.last_uploaded_file_id = current_uploaded_file_id
+        st.session_state.last_existing_vocab_file_id = current_existing_vocab_file_id
+        
+        # The app will naturally rerun due to file uploader changes,
+        # so explicit rerun is not needed and causes an error in newer Streamlit versions.
+        pass
 
 if __name__ == "__main__":
     render_skos_generator_ui()

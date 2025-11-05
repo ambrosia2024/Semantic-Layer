@@ -8,3 +8,5 @@ PyYAML
 xlsxwriter
 openpyxl
 xlrd
+beautifulsoup4
+pyld

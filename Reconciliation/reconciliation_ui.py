@@ -121,6 +121,8 @@ def render_reconciliation_ui():
     if 'items_per_page' not in st.session_state: st.session_state['items_per_page'] = 10 # Default items per page
     if 'current_page' not in st.session_state: st.session_state['current_page'] = 1
     if 'skos_matching_enabled' not in st.session_state: st.session_state['skos_matching_enabled'] = False
+    if 'rdf_graph' not in st.session_state: st.session_state['rdf_graph'] = None # For storing the parsed RDF graph
+    if 'rdf_file_loaded' not in st.session_state: st.session_state['rdf_file_loaded'] = False # Flag to indicate if a local RDF file is loaded
 
     # New state variables for ontology filtering
     if 'available_ontologies_by_provider' not in st.session_state: st.session_state['available_ontologies_by_provider'] = {}
@@ -234,6 +236,35 @@ def render_reconciliation_ui():
 
     # Option 2: Upload a new CSV or Excel file
     uploaded_file = st.file_uploader("Upload New Matching Table (CSV, XLSX, XLS)", type=["csv", "xlsx", "xls"], key="file_uploader_csv_excel")
+
+    # --- RDF File Uploader ---
+    st.subheader("2. (Optional) Upload Local RDF Vocabulary")
+    uploaded_rdf_file = st.file_uploader(
+        "Upload an RDF file (.owl, .rdf, .ttl, .nt, .json-ld)",
+        type=["owl", "rdf", "ttl", "nt", "jsonld"],
+        key="rdf_file_uploader",
+        help="Supported formats include RDF/XML (.rdf, .owl), Turtle (.ttl), N-Triples (.nt), and JSON-LD (.jsonld). The file format is automatically detected from the extension."
+    )
+
+    if uploaded_rdf_file is not None:
+        if not st.session_state.get('rdf_file_loaded') or uploaded_rdf_file.name != st.session_state.get('last_rdf_filename'):
+            try:
+                with st.spinner("Loading and parsing RDF file..."):
+                    # Read the content of the uploaded file
+                    rdf_data = uploaded_rdf_file.getvalue()
+                    # Attempt to parse the RDF data
+                    # You might need a utility function in processing_service or similar to handle this
+                    # For now, let's assume a function `parse_rdf_data` exists
+                    from .reconciliation_utils import parse_rdf_data
+                    st.session_state['rdf_graph'] = parse_rdf_data(rdf_data, uploaded_rdf_file.name)
+                    st.session_state['rdf_file_loaded'] = True
+                    st.session_state['last_rdf_filename'] = uploaded_rdf_file.name
+                    st.success(f"Successfully loaded and parsed '{uploaded_rdf_file.name}'.")
+            except Exception as e:
+                st.error(f"Failed to load or parse RDF file: {e}")
+                st.session_state['rdf_graph'] = None
+                st.session_state['rdf_file_loaded'] = False
+
 
     should_process_upload = False
     if uploaded_file is not None and not data_loaded_this_run:
@@ -359,6 +390,10 @@ def render_reconciliation_ui():
         st.subheader("Reconciliation Sources")
         standard_providers = ["Wikidata", "NCBI", "BioPortal", "OLS (EBI)", "AgroPortal", "EarthPortal", "SemLookP", "QUDT"]
         available_providers = standard_providers.copy()
+        
+        if st.session_state.get('rdf_file_loaded'):
+            available_providers.insert(0, "Local RDF File")
+
         if st.session_state.get('custom_sparql_enabled'):
             available_providers.append(CUSTOM_SPARQL_PROVIDER_NAME)
         
@@ -806,8 +841,12 @@ def render_reconciliation_ui():
                                 
                                 future = executor.submit(
                                     fetch_suggestions_for_term_from_provider,
-                                    provider_name, term_to_process, current_config_for_provider,
-                                    USER_AGENT, st.session_state.suggestion_slider
+                                    provider_name,
+                                    term_to_process,
+                                    current_config_for_provider,
+                                    USER_AGENT,
+                                    st.session_state.suggestion_slider,
+                                    rdf_graph=st.session_state.get('rdf_graph')
                                 )
                                 future_to_provider[future] = provider_name
 
@@ -1339,7 +1378,12 @@ def render_reconciliation_ui():
 
                                                 future = executor.submit(
                                                     fetch_suggestions_for_term_from_provider,
-                                                    p_name, term_for_api, dynamic_dialog_config, USER_AGENT, st.session_state.get('suggestion_slider', 10)
+                                                    p_name,
+                                                    term_for_api,
+                                                    dynamic_dialog_config,
+                                                    USER_AGENT,
+                                                    st.session_state.get('suggestion_slider', 10),
+                                                    rdf_graph=st.session_state.get('rdf_graph')
                                                 )
                                                 future_to_provider[future] = p_name
                                             for future in concurrent.futures.as_completed(future_to_provider):
