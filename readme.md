@@ -63,9 +63,7 @@ This project is organized into several directories, each serving a specific purp
     *   When using the **SKOS Generator**, you can extend existing vocabularies (e.g., `ambrosia-plant-vocab.ttl`, `ambrosia-pathogen-vocab.ttl`) by selecting them from this folder.
     *   The **FSKX to RDF Generator** will create `fskx-models.ttl` and `wiring-instances.ttl` in this directory. If these files are present, the generator will provide an "append" option to add new models to the existing files. Otherwise, it will create them from scratch.
 
-*   **`Mapping_Tables/`**: This folder contains the mapping files that drive the reconciliation and conversion processes.
-    *   `master_mapping.xlsx`: This is the central file for mapping units and parameters from FSKX files to controlled vocabularies.
-    *   `example files/`: This sub-directory contains example tables that can be used with the **SKOS Generator** and **Reconciliation Service**.
+*   **`example files/`**: This sub-directory contains example tables that can be used with the **SKOS Generator** and **Reconciliation Service**.
 
 *   **`Reconciliation/`**: This directory contains the logic for the Reconciliation Service.
     *   `config.yaml`: This is a critical configuration file where you must provide your API keys and usernames for the various reconciliation providers (e.g., NCBI, BioPortal). You can also specify preferred ontologies to appear at the top of the dropdown lists for providers that support a large number of ontologies.
