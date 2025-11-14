@@ -58,7 +58,7 @@ def load_knowledge_graph():
     g = rdflib.Graph()
     # Load from original vocab dir, excluding specified files
     for filename in os.listdir(VOCAB_DIR):
-        if filename.endswith(".ttl") and filename not in ["wiring-instances.ttl", "fskx-models.ttl"]:
+        if filename.endswith(".ttl"):
             g.parse(os.path.join(VOCAB_DIR, filename), format="turtle")
 
     # Load from the new FSKX directory
