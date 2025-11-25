@@ -16,10 +16,13 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S"
 )
 
-def process_files(override=False):
+def process_files(input_file=None, override=False):
     """
-    Process all JSON-LD files in the input folder using the VocabularyMapper
-    and save them to the output folder.
+    Process JSON-LD files using the VocabularyMapper and save them to the output folder.
+    
+    Args:
+        input_file: Optional path to a single JSON-LD file to process.
+        override: Whether to override existing output files.
     """
     logging.info("Initializing Vocabulary Mapper...")
     mapper = VocabularyMapper(ONTOLOGY_FILE)
@@ -29,8 +32,18 @@ def process_files(override=False):
 
     output_path.mkdir(parents=True, exist_ok=True)
 
-    jsonld_files = sorted(input_path.glob('*.jsonld'))
-    logging.info(f"Found {len(jsonld_files)} JSON-LD files to process in '{INPUT_FOLDER}'.")
+    if input_file:
+        # Process single file
+        file_path = Path(input_file)
+        if not file_path.exists():
+            logging.error(f"Input file not found: {file_path}")
+            return
+        jsonld_files = [file_path]
+        logging.info(f"Processing single file: {file_path}")
+    else:
+        # Process all files in input directory
+        jsonld_files = sorted(input_path.glob('*.jsonld'))
+        logging.info(f"Found {len(jsonld_files)} JSON-LD files to process in '{INPUT_FOLDER}'.")
 
     if not jsonld_files:
         logging.info("No files to process. Exiting.")
@@ -65,10 +78,14 @@ def process_files(override=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Apply vocabulary mapping to JSON-LD files.")
     parser.add_argument(
+        '-i', '--input',
+        help='Path to a single JSON-LD file to process.'
+    )
+    parser.add_argument(
         '--override',
         action='store_true',
         help='Override existing output files.'
     )
     args = parser.parse_args()
 
-    process_files(override=args.override)
+    process_files(input_file=args.input, override=args.override)

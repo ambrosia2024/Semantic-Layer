@@ -1,6 +1,7 @@
 import streamlit as st
 import subprocess
 import sys
+import logging
 from pathlib import Path
 import os
 import pandas as pd
@@ -105,7 +106,8 @@ def load_master_mapping(file_path):
         df.columns = [col.strip() for col in df.columns]
         for col in df.columns:
             if 'URI' in col or 'Term' in col:
-                df[col] = df[col].astype(str).fillna('')
+                # Fill NaNs first, then convert to string to avoid "nan" strings
+                df[col] = df[col].fillna('').astype(str)
         return df
     except FileNotFoundError:
         st.warning(f"Master mapping file not found at '{file_path}'.")
@@ -337,7 +339,7 @@ def extract_data_from_turtle(graph):
         model_data = {"uri": str(model_uri), "name": str(model_name), "parameters": []}
         
         q_params = """
-            SELECT ?param ?id ?name ?classification WHERE {
+            SELECT ?param ?id ?name ?classification ?unit_label WHERE {
                 ?model fskxo:FSKXO_0000000016 / fskxo:FSKXO_0000000017 ?param .
                 OPTIONAL { ?param dcterms:identifier ?id_dcterms . }
                 OPTIONAL { ?param schema:id ?id_schema . }
@@ -346,6 +348,7 @@ def extract_data_from_turtle(graph):
                 
                 OPTIONAL { ?param schema:name ?name . }
                 OPTIONAL { ?param fskxo:FSKXO_0000017519 ?classification . }
+                OPTIONAL { ?param schema:unit_label ?unit_label . }
             }
         """
         params_res = graph.query(q_params, initNs=ns, initBindings={'model': model_uri})
@@ -357,9 +360,15 @@ def extract_data_from_turtle(graph):
                 param_id = str(row.id)
                 if re.search(r'\d+$', param_id):
                     continue
+                
+                schema_name = str(row.name) if row.name else None
+                
                 temp_params[param_uri] = {
-                    'uri': param_uri, 'id': param_id, 'name': str(row.name or param_id),
-                    'classifications': set()
+                    'uri': param_uri, 'id': param_id, 
+                    'name': schema_name or param_id, # Display name with fallback
+                    'schema_name': schema_name, # Raw schema:name
+                    'classifications': set(),
+                    'raw_unit_label': str(row.unit_label) if row.unit_label else None
                 }
             
             if row.classification:
@@ -406,7 +415,28 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
 
     # --- Main Pipeline Runner ---
     st.sidebar.header("Controls")
-    override_existing = st.sidebar.checkbox("Re-process all existing models", value=False, key=f"{key_ns}_override")
+
+    # Execution Mode Selection
+    execution_mode = st.sidebar.radio(
+        "Execution Mode",
+        ["Process All Models", "Process Single Model"],
+        key=f"{key_ns}_exec_mode"
+    )
+
+    target_model_file = None
+    if execution_mode == "Process Single Model":
+        # Gather available FSKX files
+        if FSKX_DIR.exists():
+            fskx_files = sorted([p.name for p in FSKX_DIR.glob("*.fskx")])
+            target_model_file = st.sidebar.selectbox(
+                "Select Model to Process",
+                fskx_files,
+                key=f"{key_ns}_target_model"
+            )
+        else:
+            st.sidebar.error(f"FSKX Directory not found: {FSKX_DIR}")
+
+    override_existing = st.sidebar.checkbox("Re-process/Overwrite", value=False, key=f"{key_ns}_override")
     run_pipeline = st.sidebar.button("▶️ Run Pipeline", key=f"{key_ns}_run")
 
     st.header("Model Status")
@@ -424,14 +454,42 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
         st.session_state.pipeline_run = True
         st.header("Pipeline Output")
         script_args = ["--override"] if override_existing else []
-        fskx_to_jsonld_args = [str(FSKX_DIR)] + script_args
+        
         with st.status("Running pipeline...", expanded=True) as status:
-            if not run_script("FSKX_to_JSONLD.py", fskx_to_jsonld_args): st.stop()
-            if not run_script("ValidityChecker.py"): st.stop()
-            if not run_script("run_mapper.py", script_args): st.stop()
-            converter_args = ["-d", "mapped/jsonld", "-f", "turtle", "-o", "mapped/turtle"]
-            if override_existing: converter_args.append("--override")
-            if not run_script("jsonld_serialization_converter.py", converter_args): st.stop()
+            if execution_mode == "Process Single Model" and target_model_file:
+                st.write(f"Processing single model: **{target_model_file}**")
+                model_stem = Path(target_model_file).stem
+                
+                # 1. FSKX_to_JSONLD.py
+                fskx_path = FSKX_DIR / target_model_file
+                fskx_args = [str(fskx_path)] + script_args
+                if not run_script("FSKX_to_JSONLD.py", fskx_args): st.stop()
+                
+                # 2. ValidityChecker.py
+                if not run_script("ValidityChecker.py"): st.stop()
+                
+                # 3. run_mapper.py
+                # Need to point to the generated unmapped jsonld file
+                unmapped_jsonld = Path("unmapped/jsonld") / f"{model_stem}.jsonld"
+                mapper_args = ["-i", str(unmapped_jsonld)] + script_args
+                if not run_script("run_mapper.py", mapper_args): st.stop()
+                
+                # 4. jsonld_serialization_converter.py
+                # Need to point to the mapped jsonld file
+                mapped_jsonld = Path("mapped/jsonld") / f"{model_stem}.jsonld"
+                converter_args = ["-i", str(mapped_jsonld), "-f", "turtle", "-o", "mapped/turtle"] + script_args
+                if not run_script("jsonld_serialization_converter.py", converter_args): st.stop()
+            
+            else:
+                # Process All
+                fskx_to_jsonld_args = [str(FSKX_DIR)] + script_args
+                if not run_script("FSKX_to_JSONLD.py", fskx_to_jsonld_args): st.stop()
+                if not run_script("ValidityChecker.py"): st.stop()
+                if not run_script("run_mapper.py", script_args): st.stop()
+                converter_args = ["-d", "mapped/jsonld", "-f", "turtle", "-o", "mapped/turtle"]
+                if override_existing: converter_args.append("--override")
+                if not run_script("jsonld_serialization_converter.py", converter_args): st.stop()
+
             status.update(label="Pipeline finished successfully!", state="complete", expanded=False)
 
     st.markdown("---")
@@ -443,8 +501,20 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
         st.stop()
 
     master_mapping_df = load_master_mapping(MASTER_MAPPING_FILE)
+    unit_df = pd.DataFrame()
+    unit_options = [""]
+    unit_label_to_uri = {}
     if not master_mapping_df.empty:
         master_mapping_df['prefLabel'] = master_mapping_df.apply(lambda r: _get_display_label(r['Term'], r['altLabels']), axis=1)
+        unit_df = master_mapping_df[master_mapping_df['ConceptGroup'] == 'Unit'].copy()
+        unit_options = [""] + sorted(unit_df['prefLabel'].unique().tolist())
+        
+        for _, row in unit_df.iterrows():
+            # Prefer URI1, then URI2, then URI3
+            uri = row['URI1'] if pd.notna(row['URI1']) and row['URI1'] else \
+                  (row['URI2'] if pd.notna(row['URI2']) and row['URI2'] else row['URI3'])
+            if uri:
+                unit_label_to_uri[row['prefLabel']] = str(uri)
 
     (pathogen_uris, pathogen_display) = build_vocab_struct_for_path(str(VOCAB_DIR / "ambrosia-pathogen-vocab.ttl"))
     (plant_uris, plant_display) = build_vocab_struct_for_path(str(VOCAB_DIR / "ambrosia-plant-vocab.ttl"))
@@ -471,28 +541,338 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
             g = Graph().parse(str(turtle_file), format="turtle")
             model_data = extract_data_from_turtle(g)
 
+            # --- Automatic Prefill Option ---
+            if st.button("Automatic Prefill Option", help="Attempt to automatically infer Hazards, Products, Parameters, and Units from the FSKX/Turtle files.", key=f"{key_ns}_auto_prefill"):
+                st.info("Running automatic inference...")
+                
+                # Configure Logging
+                log_file = script_dir / "inference_debug.log"
+                logging.basicConfig(filename=str(log_file), level=logging.DEBUG, filemode='w', format='%(asctime)s - %(levelname)s - %(message)s')
+                logging.info(f"Starting automatic inference for model: {selected_model}")
+
+                # 1. Infer Hazards and Products from Turtle (Matched against Vocabularies)
+                inferred_hazards = set()
+                inferred_products = set()
+                
+                # Load Vocabulary Graphs for matching
+                pathogen_graph = load_vocab_graph(str(VOCAB_DIR / "ambrosia-pathogen-vocab.ttl"))
+                plant_graph = load_vocab_graph(str(VOCAB_DIR / "ambrosia-plant-vocab.ttl"))
+                logging.info("Vocabulary graphs loaded.")
+
+                # Namespaces for query
+                ns_query = {
+                    "fskxo": FSKXO,
+                    "schema": SCHEMA,
+                    "dcterms": DCTERMS,
+                    "skos": SKOS
+                }
+                
+                # --- Hazard Inference ---
+                # Look for ?h via FSKXO_0000000008, then get its label or name URI
+                q_hazard = """
+                    SELECT ?label ?name_uri ?h_node WHERE {
+                        ?model fskxo:FSKXO_0000000008 ?h_node .
+                        OPTIONAL { ?h_node schema:label ?label . }
+                        OPTIONAL { ?h_node schema:name ?name_uri . }
+                    }
+                """
+                for row in g.query(q_hazard, initNs=ns_query):
+                    h_label = str(row.label).strip() if row.label else None
+                    h_uris = []
+                    if row.name_uri: h_uris.append(URIRef(row.name_uri))
+                    if row.h_node and isinstance(row.h_node, URIRef): h_uris.append(row.h_node)
+                    
+                    logging.debug(f"Found Hazard Candidate in FSKX: Label='{h_label}', URIs={[str(u) for u in h_uris]}")
+
+                    # Strategy 1: URI Match (Exact Match in Vocab)
+                    # Check if extracted URI is the Subject in Vocab OR Object of skos:exactMatch
+                    for uri in h_uris:
+                        # Case A: URI is the concept URI in vocab
+                        if (uri, RDF.type, SKOS.Concept) in pathogen_graph:
+                            inferred_hazards.add(str(uri))
+                            logging.info(f"Hazard Match (Direct URI): {uri}")
+                        
+                        # Case B: URI is mapped via skos:exactMatch/closeMatch/narrowMatch
+                        q_match = prepareQuery("""
+                            SELECT ?concept WHERE {
+                                ?concept a skos:Concept .
+                                { ?concept skos:exactMatch ?uri } UNION
+                                { ?concept skos:closeMatch ?uri } UNION
+                                { ?concept skos:narrowMatch ?uri }
+                            }
+                        """, initNs={"skos": SKOS})
+                        for match in pathogen_graph.query(q_match, initBindings={'uri': uri}):
+                            inferred_hazards.add(str(match.concept))
+                            logging.info(f"Hazard Match (SKOS Match URI): {match.concept} matches {uri}")
+
+                    # Strategy 2: Label Match
+                    if h_label:
+                         # Try exact match case-insensitive
+                         q_label = prepareQuery("""
+                            SELECT ?concept ?pref ?alt WHERE {
+                                ?concept a skos:Concept .
+                                OPTIONAL { ?concept skos:prefLabel ?pref }
+                                OPTIONAL { ?concept skos:altLabel ?alt }
+                                FILTER(LCASE(STR(?pref)) = LCASE(?target_label) || LCASE(STR(?alt)) = LCASE(?target_label))
+                            }
+                        """, initNs={"skos": SKOS})
+                         for match in pathogen_graph.query(q_label, initBindings={'target_label': Literal(h_label)}):
+                             inferred_hazards.add(str(match.concept))
+                             logging.info(f"Hazard Match (Label): {match.concept} matches label '{h_label}'")
+
+
+                # --- Product Inference ---
+                # Look for ?p via FSKXO_0000000007
+                q_product = """
+                    SELECT ?label ?name_uri ?p_node WHERE {
+                        ?model fskxo:FSKXO_0000000007 ?p_node .
+                        OPTIONAL { 
+                            ?p_node schema:name ?p_name_node . 
+                            ?p_name_node schema:label ?label .
+                        }
+                        OPTIONAL { ?p_node schema:label ?label_direct . }
+                        BIND(COALESCE(?label, ?label_direct) AS ?label)
+                        
+                        OPTIONAL { ?p_node schema:name ?name_uri . FILTER(isIRI(?name_uri)) }
+                    }
+                """
+                for row in g.query(q_product, initNs=ns_query):
+                    p_label = str(row.label).strip() if row.label else None
+                    p_uris = []
+                    if row.name_uri: p_uris.append(URIRef(row.name_uri))
+                    # Check if p_node or p_name_node (if URI) is relevant
+                    # Usually p_node is scope specific, but let's check just in case
+                    if row.p_node and isinstance(row.p_node, URIRef): p_uris.append(row.p_node)
+
+                    logging.debug(f"Found Product Candidate in FSKX: Label='{p_label}', URIs={[str(u) for u in p_uris]}")
+
+                    # Strategy 1: URI Match
+                    for uri in p_uris:
+                        if (uri, RDF.type, SKOS.Concept) in plant_graph:
+                            inferred_products.add(str(uri))
+                            logging.info(f"Product Match (Direct URI): {uri}")
+                        
+                        q_match = prepareQuery("""
+                            SELECT ?concept WHERE {
+                                ?concept a skos:Concept .
+                                { ?concept skos:exactMatch ?uri } UNION
+                                { ?concept skos:closeMatch ?uri } UNION
+                                { ?concept skos:narrowMatch ?uri }
+                            }
+                        """, initNs={"skos": SKOS})
+                        for match in plant_graph.query(q_match, initBindings={'uri': uri}):
+                            inferred_products.add(str(match.concept))
+                            logging.info(f"Product Match (SKOS Match URI): {match.concept} matches {uri}")
+
+                    # Strategy 2: Label Match
+                    if p_label:
+                         q_label = prepareQuery("""
+                            SELECT ?concept ?pref ?alt WHERE {
+                                ?concept a skos:Concept .
+                                OPTIONAL { ?concept skos:prefLabel ?pref }
+                                OPTIONAL { ?concept skos:altLabel ?alt }
+                                FILTER(LCASE(STR(?pref)) = LCASE(?target_label) || LCASE(STR(?alt)) = LCASE(?target_label))
+                            }
+                        """, initNs={"skos": SKOS})
+                         for match in plant_graph.query(q_label, initBindings={'target_label': Literal(p_label)}):
+                             inferred_products.add(str(match.concept))
+                             logging.info(f"Product Match (Label): {match.concept} matches label '{p_label}'")
+
+                
+                # Update Session State for Hazards/Products
+                logging.info(f"Inferred Hazards: {inferred_hazards}")
+                logging.info(f"Inferred Products: {inferred_products}")
+                
+                if inferred_hazards:
+                    st.session_state.hazard_mappings[selected_model] = list(inferred_hazards)
+                    st.session_state[f"{key_ns}_hazards"] = list(inferred_hazards)
+                if inferred_products:
+                    st.session_state.product_mappings[selected_model] = list(inferred_products)
+                    st.session_state[f"{key_ns}_products"] = list(inferred_products)
+                
+                # Update Session State for Hazards/Products
+                if inferred_hazards:
+                    st.session_state.hazard_mappings[selected_model] = list(inferred_hazards)
+                if inferred_products:
+                    st.session_state.product_mappings[selected_model] = list(inferred_products)
+
+
+                # 2. Infer Parameters and Units (Existing Logic)
+                inferred_units_file = script_dir / "inferred_units.json"
+                mapped_turtle_dir = script_dir / "mapped" / "turtle"
+                dirs_to_scan = []
+                if mapped_turtle_dir.exists(): dirs_to_scan.append(str(mapped_turtle_dir))
+                
+                if dirs_to_scan:
+                    infer_args = [
+                        "--input-dirs", *dirs_to_scan,
+                        "--master-mapping", str(MASTER_MAPPING_FILE),
+                        "--out", str(inferred_units_file)
+                    ]
+                    inference_success = run_script("infer_units_from_fskx.py", infer_args)
+                    
+                    if inference_success and inferred_units_file.exists():
+                        try:
+                            with open(inferred_units_file, 'r', encoding='utf-8') as f:
+                                inferred_data = json.load(f)
+                            
+                            model_inferred = inferred_data.get(selected_model, {})
+                            
+                            # Helper to update if not empty
+                            def update_if_val(target_dict, key, val):
+                                if val: target_dict[key] = val
+
+                            # Collect params
+                            all_params_for_prefill = []
+                            for model in model_data["cascade"]:
+                                all_params_for_prefill.extend(model["parameters"])
+
+                            for param in all_params_for_prefill:
+                                p_id = param['id']
+                                if p_id in model_inferred:
+                                    inf = model_inferred[p_id]
+                                    
+                                    # Inputs
+                                    if "Input" in param.get('classifications', set()):
+                                        if 'mapped_unit_term' in inf:
+                                            st.session_state.setdefault('input_units', {}).setdefault(selected_model, {})[p_id] = inf['mapped_unit_term']
+                                        if 'mapped_parameter_term' in inf:
+                                            st.session_state.setdefault('parameter_mappings', {}).setdefault(selected_model, {})[p_id] = inf['mapped_parameter_term']
+                                    
+                                    # Outputs
+                                    if "Output" in param.get('classifications', set()):
+                                        if 'mapped_unit_term' in inf:
+                                            st.session_state.setdefault('output_units', {}).setdefault(selected_model, {})[p_id] = inf['mapped_unit_term']
+                                        if 'mapped_parameter_term' in inf:
+                                            st.session_state.setdefault('output_concepts', {}).setdefault(selected_model, {})[p_id] = inf['mapped_parameter_term']
+
+                        except Exception as e:
+                            st.error(f"Error reading inferred units JSON: {e}")
+                
+                st.success(f"Prefill complete. Found {len(inferred_hazards)} hazards, {len(inferred_products)} products.")
+                st.rerun()
+
             # --- Pre-fill mappings from existing turtle file ---
-            # Build reverse lookup maps from URI to prefLabel for pre-filling dropdowns
-            param_uri_to_prefLabel = {}
-            param_concepts_df = master_mapping_df[master_mapping_df['ConceptGroup'].isin(['Model Parameters', 'Parameter', 'Climate Variables'])]
+            # Build reverse lookup maps from URI to list of rows for disambiguation
+            param_uri_to_rows = {}
+            param_concepts_df = master_mapping_df[master_mapping_df['ConceptGroup'].isin(['Model Parameters', 'Parameter', 'Climate Variables', 'InputParameter', 'OutputParameter'])]
             for _, row in param_concepts_df.iterrows():
                 for uri_col in ['URI1', 'URI2', 'URI3']:
                     uri = row[uri_col]
                     if uri and pd.notna(uri):
-                        param_uri_to_prefLabel[uri] = row['prefLabel']
+                        if uri not in param_uri_to_rows:
+                            param_uri_to_rows[uri] = []
+                        param_uri_to_rows[uri].append(row)
+
+            # Load NetCDF vocab for disambiguation context
+            netcdf_vocab_path = str(VOCAB_DIR / "ambrosia-netcdf-vocab.ttl")
+            netcdf_graph = Graph()
+            if Path(netcdf_vocab_path).exists():
+                try:
+                    netcdf_graph.parse(netcdf_vocab_path, format="turtle")
+                except Exception:
+                    pass # Ignore errors here, just best effort
+
+            # Prepare concept dataframes for matching
+            input_concepts_df = master_mapping_df[master_mapping_df['ConceptGroup'] == 'InputParameter']
+            output_concepts_df = master_mapping_df[master_mapping_df['ConceptGroup'] == 'OutputParameter']
+            
+            input_concept_options = [""] + sorted(input_concepts_df['prefLabel'].unique().tolist())
+            output_concept_options = [""] + sorted(output_concepts_df['prefLabel'].unique().tolist())
 
             # Initialize session state for the selected model
             param_mappings = st.session_state.setdefault('parameter_mappings', {}).setdefault(selected_model, {})
+            output_units = st.session_state.setdefault('output_units', {}).setdefault(selected_model, {})
+            input_units = st.session_state.setdefault('input_units', {}).setdefault(selected_model, {})
 
             # Pre-fill parameter mappings by reading the graph
             for model in model_data["models"]:
                 for param in model["parameters"]:
                     param_uri = URIRef(param['uri'])
                     
+                    # --- Pre-fill Input Units from Graph ---
+                    if "Input" in param.get('classifications', set()):
+                        input_unit_uri = g.value(subject=param_uri, predicate=AMBLINK.preferredInputUnit)
+                        if input_unit_uri:
+                            u_match = unit_df[
+                                (unit_df['URI1'] == str(input_unit_uri)) | 
+                                (unit_df['URI2'] == str(input_unit_uri)) | 
+                                (unit_df['URI3'] == str(input_unit_uri))
+                            ]
+                            if not u_match.empty:
+                                input_units[param['id']] = u_match.iloc[0]['prefLabel']
+
+                    # --- Pre-fill Output Units from Graph ---
+                    if "Output" in param.get('classifications', set()):
+                        # Find if there is an OutputMapping pointing to this parameter
+                        om_node = next(g.subjects(AMBLINK.mapsParameter, param_uri), None)
+                        if om_node and (om_node, RDF.type, AMBLINK.OutputMapping) in g:
+                            unit_uri = g.value(om_node, AMBLINK.hasOutputUnit)
+                            if unit_uri:
+                                # Reverse lookup unit label from URI in unit_df
+                                u_match = unit_df[
+                                    (unit_df['URI1'] == str(unit_uri)) | 
+                                    (unit_df['URI2'] == str(unit_uri)) | 
+                                    (unit_df['URI3'] == str(unit_uri))
+                                ]
+                                if not u_match.empty:
+                                    output_units[param['id']] = u_match.iloc[0]['prefLabel']
+
                     # Pre-fill parameter mapping
                     existing_param_match = g.value(subject=param_uri, predicate=SKOS.exactMatch)
-                    if existing_param_match and str(existing_param_match) in param_uri_to_prefLabel:
-                        param_mappings[param['id']] = param_uri_to_prefLabel[str(existing_param_match)]
+                    
+                    if existing_param_match:
+                        uri_str = str(existing_param_match)
+                        if uri_str in param_uri_to_rows:
+                            rows = param_uri_to_rows[uri_str]
+                            
+                            # Default to the first one (or last one if we mimicked previous behavior, but let's try to be smarter)
+                            # If multiple rows map to this URI, we need to choose.
+                            selected_label = rows[0]['prefLabel']
+                            
+                            if len(rows) > 1:
+                                # Ambiguity detected. Try to use existing wiring (source variable) to disambiguate.
+                                source_var = None
+                                for im in g.subjects(AMBLINK.mapsParameter, param_uri):
+                                     # Check if this IM belongs to the selected model (optional but safer)
+                                     if (URIRef(model_data['model_uri']), AMBLINK.hasInputMapping, im) in g:
+                                         source_var = g.value(im, AMBLINK.isFulfilledBy)
+                                         break
+                                
+                                if source_var:
+                                    # Get labels for the wired NetCDF variable
+                                    vocab_terms = []
+                                    # Query vocab for labels of source_var
+                                    for p in [SKOS.prefLabel, SKOS.altLabel, RDFS.label]:
+                                        for o in netcdf_graph.objects(source_var, p):
+                                            vocab_terms.append(str(o).lower())
+                                    # Also add local name
+                                    vocab_terms.append(str(source_var).split('/')[-1].lower())
+                                    
+                                    best_row = None
+                                    best_score = -1
+                                    
+                                    for row in rows:
+                                        search_terms = [str(val).lower() for val in [row['Term'], row['altLabels'], row.get('ProviderTerm1', '')] if pd.notna(val) and val]
+                                        
+                                        score = 0
+                                        for s in search_terms:
+                                            for t in vocab_terms:
+                                                if t in s or s in t: score += 50
+                                                if difflib.SequenceMatcher(None, s, t).ratio() > 0.6: score += 20
+                                        
+                                        if score > best_score:
+                                            best_score = score
+                                            best_row = row
+                                    
+                                    if best_row is not None:
+                                        selected_label = best_row['prefLabel']
+                            
+                            param_mappings[param['id']] = selected_label
+                        else:
+                             st.warning(f"URI {uri_str} found in graph but not in Master Mapping.")
+                    
+                    # Note: In-memory fuzzy fallback removed to rely on the external inference script.
 
 
             # Pre-fill hazards and products, ensuring state is fresh for the selected model
@@ -534,48 +914,187 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
                 st.session_state.product_mappings[selected_model] = selected_products
 
 
-            st.subheader("Map Climate Input Parameters")
             if model_data["models"]:
-                param_concepts_df = master_mapping_df[master_mapping_df['ConceptGroup'].isin(['Model Parameters', 'Parameter', 'Climate Variables'])]
-                param_options = [""] + sorted(param_concepts_df['prefLabel'].unique().tolist())
+                # Unit options are already correctly filtered from 'Unit' ConceptGroup
+                
+                # --- Collect all params for prefill ---
+                all_input_params_list = []
+                all_output_params_list = []
+                for model in model_data["cascade"]:
+                    m_inputs = sorted([p for p in model["parameters"] if "Input" in p.get('classifications', set())], key=lambda x: x['name'])
+                    for p in m_inputs: all_input_params_list.append((model['name'], p))
+                    
+                    m_outputs = sorted([p for p in model["parameters"] if "Output" in p.get('classifications', set())], key=lambda x: x['name'])
+                    for p in m_outputs: all_output_params_list.append((model['name'], p))
 
-                # --- Render Input Parameters ---
+                # Initialize session state
+                input_units = st.session_state.setdefault('input_units', {}).setdefault(selected_model, {})
+                output_units = st.session_state.setdefault('output_units', {}).setdefault(selected_model, {})
+
+                st.subheader("Map Input Parameters")
+                # Initialize session state for input units (already done above, but keep for safety if moved)
+                input_units = st.session_state.setdefault('input_units', {}).setdefault(selected_model, {})
+
                 any_inputs_found = False
-                # Use the cascade order for rendering
                 for model in model_data["cascade"]:
                     inputs = sorted([p for p in model["parameters"] if "Input" in p.get('classifications', set())], key=lambda x: x['name'])
                     if not inputs:
                         continue
 
                     any_inputs_found = True
-                    # Display a header for the model, especially if there's more than one.
                     if len(model_data["models"]) > 1:
                         st.markdown(f"#### Model: `{model['name']}`")
                     else:
                         st.markdown("#### Input Parameters")
 
                     for param in inputs:
-                        default = st.session_state.parameter_mappings[selected_model].get(param['id'], "")
-                        selected_concept = st.selectbox(
-                            f"Map: **{param['name']}** (`{param['id']}`)",
-                            param_options,
-                            index=param_options.index(default) if default in param_options else 0,
-                            key=f"{key_ns}_param_map_{selected_model}_{param['uri']}" # URI is unique across models
-                        )
-                        st.session_state.parameter_mappings[selected_model][param['id']] = selected_concept
-                
+                        col_concept, col_unit = st.columns(2)
+                        with col_concept:
+                            default_concept = st.session_state.parameter_mappings[selected_model].get(param['id'], "")
+                            
+                            # Construct label: Always show parenthesis if schema_name exists
+                            label_str = f"Concept: **{param['id']}**"
+                            if param.get('schema_name'):
+                                label_str += f" ({param['schema_name']})"
+                                
+                            selected_concept = st.selectbox(
+                                label_str,
+                                input_concept_options,
+                                index=input_concept_options.index(default_concept) if default_concept in input_concept_options else 0,
+                                key=f"{key_ns}_input_concept_map_{selected_model}_{param['uri']}"
+                            )
+                            st.session_state.parameter_mappings[selected_model][param['id']] = selected_concept
+                        
+                        with col_unit:
+                            # Pre-fill input units from graph if available
+                            # This needs to be done during pre-fill logic, but for now, we'll assume fresh.
+                            current_input_unit = st.session_state.input_units[selected_model].get(param['id'], "")
+                            raw_unit_disp = f"({param.get('raw_unit_label', '')})" if param.get('raw_unit_label') else ""
+                            new_input_unit = st.selectbox(
+                                f"Unit for **{param['id']}** {raw_unit_disp}",
+                                unit_options,
+                                index=unit_options.index(current_input_unit) if current_input_unit in unit_options else 0,
+                                key=f"{key_ns}_input_unit_map_{selected_model}_{param['uri']}"
+                            )
+                            st.session_state.input_units[selected_model][param['id']] = new_input_unit
+
                 if not any_inputs_found:
                     st.info("No input parameters found to map in this model.")
             else:
                 st.warning("No parameters found to map in this model.")
 
+            st.subheader("Map Output Parameters")
+            # Initialize session state for output concepts
+            output_concepts = st.session_state.setdefault('output_concepts', {}).setdefault(selected_model, {})
+            # Initialize session state for output units (already exists, but for clarity)
+            output_units = st.session_state.setdefault('output_units', {}).setdefault(selected_model, {})
+
+            # 1. Collect all output params first to see if we need to render anything
+            all_output_params = []
+            for model in model_data["cascade"]:
+                 model_outputs = sorted([p for p in model["parameters"] if "Output" in p.get('classifications', set())], key=lambda x: x['name'])
+                 for p in m_outputs: all_output_params.append((model['name'], p)) # Just using local var from above loop would be cleaner but let's stick to existing structure or reuse what we calculated above.
+                 # Actually, we calculated all_output_params_list above. We can just check if it is empty.
+                 # But to minimize change, I will let this loop run or reuse `all_output_params_list`.
+                 # Let's reuse all_output_params_list for checking emptiness, but the loop structure below relies on `model['parameters']` iteration which is fine.
+            
+            # Just re-collect for local use in loop if needed, but we already did it above.
+            # Let's stick to the original structure minus the button.
+            
+            if not all_output_params_list: # Use the list we calculated above
+                st.info("No output parameters found.")
+            else:
+                # Pre-fill existing output concepts and units from graph
+                for model in model_data["models"]:
+                    for param in model["parameters"]:
+                        param_uri = URIRef(param['uri'])
+                        
+                        # Pre-fill Output Concepts from Graph
+                        existing_output_concept_match = g.value(subject=param_uri, predicate=SKOS.exactMatch)
+                        if existing_output_concept_match:
+                            uri_str = str(existing_output_concept_match)
+                            if uri_str in param_uri_to_rows: # Use general param_uri_to_rows, as output concepts might also be there
+                                rows = param_uri_to_rows[uri_str]
+                                # Similar disambiguation logic as for input concepts if needed, for simplicity take first
+                                output_concepts[param['id']] = rows[0]['prefLabel']
+                            else:
+                                st.warning(f"Output Concept URI {uri_str} found in graph but not in Master Mapping.")
+
+                        # Pre-fill Output Units from Graph (Existing logic remains)
+                        if "Output" in param.get('classifications', set()):
+                            om_node = next(g.subjects(AMBLINK.mapsParameter, param_uri), None)
+                            if om_node and (om_node, RDF.type, AMBLINK.OutputMapping) in g:
+                                unit_uri = g.value(om_node, AMBLINK.hasOutputUnit)
+                                if unit_uri:
+                                    u_match = unit_df[
+                                        (unit_df['URI1'] == str(unit_uri)) | 
+                                        (unit_df['URI2'] == str(unit_uri)) | 
+                                        (unit_df['URI3'] == str(unit_uri))
+                                    ]
+                                    if not u_match.empty:
+                                        output_units[param['id']] = u_match.iloc[0]['prefLabel']
+                
+                # Render UI for Output Concepts and Units
+                for model in model_data["cascade"]:
+                    outputs = sorted([p for p in model["parameters"] if "Output" in p.get('classifications', set())], key=lambda x: x['name'])
+                    if not outputs: continue
+                    
+                    if len(model_data["models"]) > 1:
+                        st.markdown(f"#### Model: `{model['name']}`")
+                    else:
+                        st.markdown("#### Output Parameters")
+
+                    for param in outputs:
+                        p_id = param['id']
+                        col_concept, col_unit = st.columns(2)
+                        with col_concept:
+                            current_concept = st.session_state.output_concepts[selected_model].get(p_id, "")
+                            
+                            # Construct label: Always show parenthesis if schema_name exists
+                            label_str = f"Concept: **{p_id}**"
+                            if param.get('schema_name'):
+                                label_str += f" ({param['schema_name']})"
+
+                            new_concept = st.selectbox(
+                                label_str, 
+                                output_concept_options, 
+                                index=output_concept_options.index(current_concept) if current_concept in output_concept_options else 0,
+                                key=f"output_concept_{selected_model}_{p_id}"
+                            )
+                            st.session_state.output_concepts[selected_model][p_id] = new_concept
+                        
+                        with col_unit:
+                            current_unit = st.session_state.output_units[selected_model].get(p_id, "")
+                            raw_unit_disp = f"({param.get('raw_unit_label', '')})" if param.get('raw_unit_label') else ""
+                            new_unit = st.selectbox(
+                                f"Unit for **{p_id}** {raw_unit_disp}", 
+                                unit_options, 
+                                index=unit_options.index(current_unit) if current_unit in unit_options else 0,
+                                key=f"output_unit_{selected_model}_{p_id}"
+                            )
+                            st.session_state.output_units[selected_model][p_id] = new_unit
+
             st.markdown("---")
             if st.button(f"Apply All Mappings to {selected_model}", key=f"{key_ns}_apply_mappings"):
+                # Validation removed as per user feedback: "it is okay that Units or Parameters are kept empty"
+                
                 model_uri = model_data["model_uri"]
+                
+                # 1. Hazards and Products
                 if model_uri:
                     g.remove((model_uri, FSKXO.FSKXO_0000000008, None)); g.remove((model_uri, FSKXO.FSKXO_0000000007, None))
                     for uri in st.session_state.hazard_mappings[selected_model]: g.add((model_uri, FSKXO.FSKXO_0000000008, URIRef(uri)))
                     for uri in st.session_state.product_mappings[selected_model]: g.add((model_uri, FSKXO.FSKXO_0000000007, URIRef(uri)))
+
+                    # Remove all existing OutputMappings and associated triples for the model to ensure idempotency
+                    for s, p, o in list(g.triples((URIRef(model_uri), AMBLINK.hasOutputMapping, None))):
+                        g.remove((s, p, o))     # Remove link from model
+                        g.remove((o, None, None)) # Remove the OutputMapping node and its properties
+                    
+                    # Also remove existing SKOS.exactMatch for output parameters to allow recreation
+                    for param in all_output_params:
+                        param_uri = URIRef(param[1]['uri'])
+                        g.remove((param_uri, SKOS.exactMatch, None))
 
                 # Iterate through all parameters from all models
                 all_params = [param for model in model_data["models"] for param in model["parameters"]]
@@ -583,19 +1102,63 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
                 for param in all_params:
                     param_uri = URIRef(param['uri'])
                     
-                    # --- Parameter Concept Mapping ---
-                    # Always remove existing parameter mappings first.
-                    g.remove((param_uri, SKOS.exactMatch, None))
-                    g.remove((param_uri, AMBLINK.expectsQuantityKind, None))
-                    mapped_concept = st.session_state.parameter_mappings[selected_model].get(param['id'])
-                    # Add new mappings only if a valid one is selected.
-                    if mapped_concept and not master_mapping_df[master_mapping_df['prefLabel'] == mapped_concept].empty:
-                        param_row = master_mapping_df[master_mapping_df['prefLabel'] == mapped_concept].iloc[0]
-                        uris = [u for u in param_row[['URI1', 'URI2', 'URI3']] if u]
-                        concept_uri = next((u for u in uris if 'qudt.org' not in u), None)
-                        qk_uri = next((u for u in uris if 'quantitykind' in u), None)
-                        if concept_uri: g.add((param_uri, SKOS.exactMatch, URIRef(concept_uri)))
-                        if qk_uri: g.add((param_uri, AMBLINK.expectsQuantityKind, URIRef(qk_uri)))
+                    # --- Input Parameter Concept and Unit Mapping ---
+                    if "Input" in param.get('classifications', set()):
+                        # Remove existing mappings first
+                        g.remove((param_uri, SKOS.exactMatch, None))
+                        g.remove((param_uri, AMBLINK.expectsQuantityKind, None)) # This was removed, so ensure it's not re-added accidentally
+                        g.remove((param_uri, AMBLINK.preferredInputUnit, None)) # Remove existing preferred input unit
+
+                        mapped_concept = st.session_state.parameter_mappings[selected_model].get(param['id'])
+                        mapped_unit_label = st.session_state.input_units[selected_model].get(param['id'])
+
+                        # Add new Concept mapping
+                        if mapped_concept and not input_concepts_df[input_concepts_df['prefLabel'] == mapped_concept].empty:
+                            param_row = input_concepts_df[input_concepts_df['prefLabel'] == mapped_concept].iloc[0]
+                            # Use all available URIs for exactMatch
+                            raw_uris = param_row[['URI1', 'URI2', 'URI3']].values.flatten().tolist()
+                            uris = [str(u).strip() for u in raw_uris if u and pd.notna(u) and str(u).lower() != 'nan' and str(u).strip() != '']
+                            for u in uris:
+                                g.add((param_uri, SKOS.exactMatch, URIRef(u)))
+                        
+                        # Add new Unit mapping
+                        if mapped_unit_label:
+                            unit_uri = unit_label_to_uri.get(mapped_unit_label)
+                            if unit_uri:
+                                g.add((param_uri, AMBLINK.preferredInputUnit, URIRef(unit_uri)))
+
+                    # --- Output Mappings (Concept and Unit) ---
+                    if "Output" in param.get('classifications', set()):
+                        output_concept_label = st.session_state.output_concepts[selected_model].get(param['id'])
+                        output_unit_label = st.session_state.output_units[selected_model].get(param['id'])
+                        
+                        # Create OutputMapping Node (includes concept and unit)
+                        if output_concept_label or output_unit_label: # Create mapping node if either is present
+                            om_node = BNode()
+                            g.add((URIRef(model_uri), AMBLINK.hasOutputMapping, om_node))
+                            g.add((om_node, RDF.type, AMBLINK.OutputMapping))
+                            g.add((om_node, AMBLINK.mapsParameter, param_uri))
+
+                            # Add Output Concept mapping
+                            if output_concept_label and not output_concepts_df[output_concepts_df['prefLabel'] == output_concept_label].empty:
+                                concept_row = output_concepts_df[output_concepts_df['prefLabel'] == output_concept_label].iloc[0]
+                                # Use all available URIs for exactMatch
+                                raw_uris = concept_row[['URI1', 'URI2', 'URI3']].values.flatten().tolist()
+                                uris = [str(u).strip() for u in raw_uris if u and pd.notna(u) and str(u).lower() != 'nan' and str(u).strip() != '']
+                                
+                                # Link observed property on the mapping node (using the first valid URI)
+                                if uris:
+                                    g.add((om_node, AMBLINK.producesObservedProperty, URIRef(uris[0])))
+                                
+                                # Link exact matches on the parameter node
+                                for u in uris:
+                                    g.add((param_uri, SKOS.exactMatch, URIRef(u))) 
+                            
+                            # Add Output Unit mapping
+                            if output_unit_label: 
+                                unit_uri = unit_label_to_uri.get(output_unit_label)
+                                if unit_uri:
+                                    g.add((om_node, AMBLINK.hasOutputUnit, URIRef(unit_uri)))
 
                 # --- New Wiring Logic based on fskx_to_rdf.py ---
                 if model_uri:
@@ -621,41 +1184,82 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
                             if not mapped_concept:
                                 continue
 
-                            param_row = master_mapping_df[master_mapping_df['prefLabel'] == mapped_concept]
-                            if param_row.empty:
+                            param_rows = input_concepts_df[input_concepts_df['prefLabel'] == mapped_concept] # Use input_concepts_df here
+                            if param_rows.empty:
                                 continue
+                            param_row = param_rows.iloc[0]
 
-                            uris = [u for u in param_row.iloc[0][['URI1', 'URI2', 'URI3']] if u]
+                            # 1. Gather Candidates via URI
+                            raw_uris = param_row[['URI1', 'URI2', 'URI3']].values.flatten().tolist()
+                            target_uris = [str(u).strip() for u in raw_uris if u and pd.notna(u) and str(u).lower() != 'nan' and str(u).strip() != '']
+                            candidates = []
                             
-                            # Iterate through all potential URIs from the master mapping to find a match.
-                            wiring_successful = False
-                            for potential_qk_uri in uris:
-                                if not potential_qk_uri: continue
-
-                                query = prepareQuery(
-                                    "SELECT ?ds ?varName WHERE { ?ds amblink:expectsQuantityKind ?qk . OPTIONAL { ?ds amblink:sourceVariableName ?varName . } }",
-                                    initNs={"amblink": AMBLINK}
-                                )
-                                results = list(knowledge_graph.query(query, initBindings={'qk': URIRef(potential_qk_uri)}))
+                            for uri in target_uris:
+                                # SPARQL: Find NetCDF vars matching this URI
+                                q = prepareQuery("""SELECT ?ds ?varName ?pref ?alt WHERE { 
+                                    ?ds skos:exactMatch ?uri . 
+                                    OPTIONAL { ?ds amblink:sourceVariableName ?varName }
+                                    OPTIONAL { ?ds skos:prefLabel ?pref } 
+                                    OPTIONAL { ?ds skos:altLabel ?alt } 
+                                }""", initNs={"skos": SKOS, "amblink": AMBLINK})
                                 
-                                if results:
-                                    first_result = results[0]
-                                    data_source_uri = first_result.ds
-                                    source_var_name = first_result.varName or Literal(str(data_source_uri).split('/')[-1])
+                                results = list(knowledge_graph.query(q, initBindings={'uri': URIRef(uri)}))
+                                for res in results:
+                                    if any(c['ds'] == res.ds for c in candidates):
+                                        continue
+                                        
+                                    cand = {
+                                        'ds': res.ds,
+                                        'varName': str(res.varName) if res.varName else str(res.ds).split('/')[-1],
+                                        'pref': str(res.pref) if res.pref else "",
+                                        'alt': str(res.alt) if res.alt else "",
+                                        'id': str(res.ds).split('/')[-1]
+                                    }
+                                    candidates.append(cand)
 
-                                    input_mapping_node = BNode()
-                                    g.add((model_uri, AMBLINK.hasInputMapping, input_mapping_node))
-                                    g.add((input_mapping_node, RDF.type, AMBLINK.InputMapping))
-                                    g.add((input_mapping_node, AMBLINK.mapsParameter, URIRef(param['uri'])))
-                                    g.add((input_mapping_node, AMBLINK.isFulfilledBy, data_source_uri))
-                                    g.add((input_mapping_node, AMBLINK.sourceVariableName, source_var_name))
-                                    st.info(f"Successfully wired parameter '{param['name']}' to data source '{source_var_name}'.")
-                                    wiring_successful = True
-                                    # Break after the first successful wiring for this parameter
-                                    break
-                            
-                            if not wiring_successful:
-                                st.warning(f"No data source found for any of the URIs associated with parameter '{param['name']}'. URIs checked: {uris}")
+                            # 2. Resolve Ambiguity
+                            final_match = None
+                            if len(candidates) == 0:
+                                st.warning(f"No NetCDF variable found for parameter '{param['name']}' (mapped to '{mapped_concept}'). URIs checked: {target_uris}")
+                                continue
+                            elif len(candidates) == 1:
+                                final_match = candidates[0]
+                            else:
+                                # Disambiguation (Fuzzy String Scoring)
+                                # Gather search terms from Excel
+                                provider_term = param_row['ProviderTerm1'] if 'ProviderTerm1' in param_row else ''
+                                search_terms = [str(val).lower() for val in [param_row['Term'], param_row['altLabels'], provider_term] if pd.notna(val) and val]
+                                
+                                best_cand, best_score = None, -1
+                                
+                                for cand in candidates:
+                                    # Gather target terms from RDF
+                                    target_terms = [t.lower() for t in [cand['pref'], cand['alt'], cand['varName'], cand['id']] if t]
+                                    
+                                    # Simple Scoring
+                                    score = 0
+                                    for s in search_terms:
+                                        for t in target_terms:
+                                            if t in s or s in t: score += 50
+                                            if difflib.SequenceMatcher(None, s, t).ratio() > 0.6: score += 20
+                                    
+                                    if score > best_score:
+                                        best_score = score
+                                        best_cand = cand
+                                
+                                final_match = best_cand
+                                st.info(f"Disambiguated '{param['name']}' -> {final_match['varName']} (Score: {best_score}) among {[c['varName'] for c in candidates]}")
+
+                            # 3. Create Triples using final_match
+                            if final_match:
+                                input_mapping_node = BNode()
+                                g.add((model_uri, AMBLINK.hasInputMapping, input_mapping_node))
+                                g.add((input_mapping_node, RDF.type, AMBLINK.InputMapping))
+                                g.add((input_mapping_node, AMBLINK.mapsParameter, URIRef(param['uri'])))
+                                g.add((input_mapping_node, AMBLINK.isFulfilledBy, final_match['ds']))
+                                g.add((input_mapping_node, AMBLINK.sourceVariableName, Literal(final_match['varName'])))
+                                st.success(f"Successfully wired parameter '{param['name']}' to data source '{final_match['varName']}'.")
+
                     except Exception as e:
                         st.error(f"An error occurred during the wiring process: {e}")
 
