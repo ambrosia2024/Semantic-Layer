@@ -49,6 +49,14 @@ amblink:ExposureRoute a rdfs:Class ;
 amblink:Population a rdfs:Class ;
   rdfs:comment "The target population for a model (e.g., general population, risk groups)." .
 
+amblink:FoodSafetyIncident a owl:Class ;
+  rdfs:label "Food safety incident"@en ;
+  rdfs:comment "Historical or observed food safety event, e.g. outbreak or contamination exceeding legal limits."@en .
+
+amblink:MitigationMeasure a owl:Class ;
+  rdfs:label "Mitigation measure"@en ;
+  rdfs:comment "Action or intervention to reduce food safety risk."@en .
+
 #################################################################
 # Core Object Properties (Input side — static knowledge)
 #################################################################
@@ -71,12 +79,6 @@ amblink:isFulfilledBy a owl:ObjectProperty ;
   rdfs:domain amblink:InputMapping ;
   rdfs:range  skos:Concept .
 
-amblink:expectsQuantityKind a owl:ObjectProperty ;
-  rdfs:label "expects quantity kind"@en ;
-  rdfs:comment "Physical quantity expected by the parameter (QUDT QuantityKind)."@en ;
-  rdfs:domain vocab:ModelParameter ;
-  rdfs:range  qudt:QuantityKind .
-
 amblink:preferredInputUnit a owl:ObjectProperty ;
   rdfs:label "preferred input unit"@en ;
   rdfs:comment "Preferred unit for an input parameter; backend converts source data if needed."@en ;
@@ -95,6 +97,12 @@ amblink:hasOutputMapping a owl:ObjectProperty ;
 amblink:producesObservedProperty a owl:ObjectProperty ;
   rdfs:label "produces observed property"@en ;
   rdfs:comment "Observed property concept represented by this output (e.g., risk probability, predicted concentration)."@en ;
+  rdfs:domain amblink:OutputMapping ;
+  rdfs:range  skos:Concept .
+
+amblink:representsStatistic a owl:ObjectProperty ;
+  rdfs:label "represents statistic"@en ;
+  rdfs:comment "Specifies if the output represents a mean, max, percentile, etc."@en ;
   rdfs:domain amblink:OutputMapping ;
   rdfs:range  skos:Concept .
 
@@ -176,18 +184,9 @@ amblink:dailyToMonthlyMean a skos:Concept ;
   skos:inScheme amblink:TemporalAlignment ;
   skos:prefLabel "Daily → monthly mean"@en .
 
-amblink:lag3Days a skos:Concept ;
-  skos:inScheme amblink:TemporalAlignment ;
-  skos:prefLabel "Lag 3 days"@en .
-
 amblink:Transformation a skos:ConceptScheme ;
   skos:prefLabel "Derived-input transformations"@en ;
   dct:description "Lightweight references to transformations from raw variables to model-ready inputs."@en .
-
-amblink:precipToRHProxy a skos:Concept ;
-  skos:inScheme amblink:Transformation ;
-  skos:prefLabel "Precipitation → RH proxy"@en ;
-  skos:definition "Use precipitation/temperature to estimate relative humidity as a proxy for aw."@en .
 
 #################################################################
 # Linking-specific Properties, Classes, and Concepts
@@ -230,17 +229,51 @@ amblink:hasOutputUnit a owl:ObjectProperty ;
 amblink:hasOutputQuantityKind a owl:ObjectProperty ;
   rdfs:comment "Indicates the quantity kind for the output parameter." .
 
-amblink:fromModel a owl:ObjectProperty ;
-  rdfs:comment "Links a model to the source model." .
-
-amblink:toModel a owl:ObjectProperty ;
-  rdfs:comment "Links a model to the target model." .
-
 amblink:assumption a owl:DatatypeProperty ;
   rdfs:comment "Indicates an assumption, e.g., whether general→specific or vice versa." .
 
 amblink:confidence a owl:DatatypeProperty ;
   rdfs:comment "Indicates the confidence or accuracy of a model link." .
+
+# Food Safety Incident Properties
+amblink:occursInRegion a owl:ObjectProperty ;
+  rdfs:domain amblink:FoodSafetyIncident ;
+  rdfs:range  <http://data.europa.eu/nuts/> .   # NUTS concepts
+
+amblink:occursOn a owl:DatatypeProperty ;
+  rdfs:domain amblink:FoodSafetyIncident ;
+  rdfs:range  xsd:dateTime .
+
+amblink:incidentHazard a owl:ObjectProperty ;
+  rdfs:domain amblink:FoodSafetyIncident ;
+  rdfs:range  skos:Concept . # from pathogen/mycotoxin scheme
+
+amblink:incidentProduct a owl:ObjectProperty ;
+  rdfs:domain amblink:FoodSafetyIncident ;
+  rdfs:range  skos:Concept . # from plant/product vocab
+
+amblink:incidentEconomicLoss a owl:DatatypeProperty ;
+  rdfs:domain amblink:FoodSafetyIncident ;
+  rdfs:range  xsd:decimal . # + currency via another property
+
+amblink:regulatoryLimit a owl:DatatypeProperty ;
+  rdfs:label "regulatory limit"@en ;
+  rdfs:comment "The legal maximum limit (e.g. from EC 2073/2005) value."@en ;
+  rdfs:domain amblink:FoodSafetyIncident ; # Or attach to the Hazard/Product pair context
+  rdfs:range xsd:string . # e.g. "100 CFU/g"
+
+# Mitigation Measure Properties
+amblink:mitigatesHazard a owl:ObjectProperty ;
+  rdfs:domain amblink:MitigationMeasure ;
+  rdfs:range  skos:Concept . # hazard
+
+amblink:mitigationForScenario a owl:ObjectProperty ;
+  rdfs:domain amblink:MitigationMeasure ;
+  rdfs:range  amblink:RiskLevel . # or Scenario Concept
+
+amblink:hasChecklistItem a owl:DatatypeProperty ;
+  rdfs:domain amblink:MitigationMeasure ;
+  rdfs:range  xsd:string .
 
 # Concept Schemes
 amblink:ObservedProperty a skos:ConceptScheme ;
@@ -248,6 +281,11 @@ amblink:ObservedProperty a skos:ConceptScheme ;
 amblink:Endpoint a skos:ConceptScheme .
 amblink:ExposureRoute a skos:ConceptScheme .
 amblink:Population a skos:ConceptScheme .
+amblink:RiskLevel a skos:ConceptScheme ;
+  skos:prefLabel "Risk level categories"@en .
+
+amblink:Statistic a skos:ConceptScheme ;
+  skos:prefLabel "Statistical metrics"@en .
 
 # Concepts
 amblink:RiskProbability a skos:Concept ;
@@ -258,9 +296,19 @@ amblink:PredictedConcentration a skos:Concept ;
   skos:prefLabel "Predicted concentration (e.g., CFU per g)"@en ;
   skos:definition "Predicted concentration of the hazard (e.g., CFU/g, μg/kg)."@en .
 
+amblink:ToxinConcentration a skos:Concept ;
+  skos:inScheme amblink:ObservedProperty ;
+  skos:prefLabel "Toxin concentration (e.g. µg/kg)"@en ;
+  skos:definition "Concentration of a chemical hazard (mycotoxin) in the matrix."@en .
+
 amblink:Dose a skos:Concept ;
   skos:inScheme amblink:ObservedProperty ;
   skos:prefLabel "Dose (e.g., CFU per person/serving)"@en .
+
+amblink:IllnessCasesPer100k a skos:Concept ;
+  skos:inScheme amblink:ObservedProperty ;
+  skos:prefLabel "Illness cases per 100 000 persons"@en ;
+  skos:definition "Predicted number of illness cases per 100 000 exposed individuals over the modeled period."@en .
 
 amblink:Infection a skos:Concept ;
   skos:inScheme amblink:Endpoint ;
@@ -277,3 +325,96 @@ amblink:Oral a skos:Concept ;
 amblink:GeneralPopulation a skos:Concept ;
   skos:inScheme amblink:Population ;
   skos:prefLabel "General population"@en .
+
+# Risk Levels
+amblink:RiskLow a skos:Concept ;
+  skos:inScheme amblink:RiskLevel ;
+  skos:prefLabel "Low risk"@en .
+
+amblink:RiskModerate a skos:Concept ;
+  skos:inScheme amblink:RiskLevel ;
+  skos:prefLabel "Moderate risk"@en .
+
+amblink:RiskHigh a skos:Concept ;
+  skos:inScheme amblink:RiskLevel ;
+  skos:prefLabel "High risk"@en .
+
+amblink:RiskVeryHigh a skos:Concept ;
+  skos:inScheme amblink:RiskLevel ;
+  skos:prefLabel "Very high risk"@en .
+
+# Statistical Metrics
+amblink:Mean a skos:Concept ;
+  skos:inScheme amblink:Statistic ;
+  skos:prefLabel "Mean"@en .
+
+amblink:Median a skos:Concept ;
+  skos:inScheme amblink:Statistic ;
+  skos:prefLabel "Median (P50)"@en .
+
+amblink:Percentile05 a skos:Concept ;
+  skos:inScheme amblink:Statistic ;
+  skos:prefLabel "5th Percentile (Lower Bound)"@en .
+
+amblink:Percentile95 a skos:Concept ;
+  skos:inScheme amblink:Statistic ;
+  skos:prefLabel "95th Percentile (Upper Bound)"@en .
+
+amblink:ObservedProperty a skos:ConceptScheme ;
+    skos:prefLabel "Observed properties (Ambrosia)"@en ;
+    dct:description "Controlled vocabulary of observable quantities used in Ambrosia QMRA models."@en .
+
+### Probabilities -> Risk & Rates ################################
+
+amblink:TransferProbability a skos:Concept ;
+    skos:inScheme amblink:ObservedProperty ;
+    skos:prefLabel "Transfer rate"@en ;
+    skos:altLabel "Cross-contamination probability"@en .
+
+amblink:ExposureProbability a skos:Concept ;
+    skos:inScheme amblink:ObservedProperty ;
+    skos:prefLabel "Exposure risk"@en ;
+    skos:altLabel "Prevalence of exposure"@en .
+
+amblink:IllnessProbability a skos:Concept ;
+    skos:inScheme amblink:ObservedProperty ;
+    skos:prefLabel "Risk of illness"@en ;
+    skos:altLabel "Probability of illness"@en .
+
+amblink:MeanIllnessProbability a skos:Concept ;
+    skos:inScheme amblink:ObservedProperty ;
+    skos:prefLabel "Average population risk"@en ;
+    skos:altLabel "Mean illness probability"@en .
+
+### CFU counts -> Loads ##########################################
+
+amblink:TransferredCFUCount a skos:Concept ;
+    skos:inScheme amblink:ObservedProperty ;
+    skos:prefLabel "Transferred load"@en ;
+    skos:altLabel "CFU per portion transferred"@en .
+
+### Doses ########################################################
+
+amblink:IngestedDose a skos:Concept ;
+    skos:inScheme amblink:ObservedProperty ;
+    skos:prefLabel "Ingested dose"@en ;
+    skos:altLabel "Intake level"@en .
+
+### Concentrations ###############################################
+
+amblink:FoodContaminationConcentration a skos:Concept ;
+    skos:inScheme amblink:ObservedProperty ;
+    skos:prefLabel "Pathogen concentration"@en ;
+    skos:altLabel "Contamination level"@en .
+
+### Time & Summary ###############################################
+
+amblink:SimulationTimeSeries a skos:Concept ;
+    skos:inScheme amblink:ObservedProperty ;
+    skos:prefLabel "Simulation timeline"@en ;
+    skos:altLabel "Time series"@en .
+
+amblink:RiskSummaryTable a skos:Concept ;
+    skos:inScheme amblink:ObservedProperty ;
+    skos:prefLabel "Risk characterization"@en ;
+    skos:altLabel "Risk profile"@en, "Summary table"@en .
