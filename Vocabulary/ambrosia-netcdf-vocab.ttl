@@ -138,8 +138,6 @@
         <https://www.ambrosia-project.eu/vocab/property/height> "2.0"^^xsd:decimal
     ] ;
 
-    amblink:expectsQuantityKind qk:Temperature ;
-
     # netCDF-LD metadata
     nc:hasDataType nc:float ;
     nc:hasDimension (
@@ -155,6 +153,64 @@
 
     skos:exactMatch ecso:ECSO_00003057 ,
                     <https://cfconventions.org/Data/cf-standard-names/current/build/cf-standard-name-table.html#air_temperature> .
+
+
+<https://www.ambrosia-project.eu/vocab/concept/netcdf/hurs> 
+    a skos:Concept , nc:Variable ;
+    skos:inScheme <https://www.ambrosia-project.eu/vocab/scheme/netcdf> ;
+    skos:prefLabel "Near-Surface Relative Humidity"@en ;
+    skos:altLabel "hurs"@en , "Relative Humidity"@en ;
+    qudt:unit unit:PERCENT ;
+
+    <https://www.ambrosia-project.eu/vocab/property/verticalContext> [
+        a <https://www.ambrosia-project.eu/vocab/class/VerticalContext> ;
+        skos:prefLabel "2 m above ground"@en ;
+        <https://www.ambrosia-project.eu/vocab/property/referenceLevel> "surface" ;
+        <https://www.ambrosia-project.eu/vocab/property/height> "2.0"^^xsd:decimal
+    ] ;
+
+    # netCDF-LD metadata
+    nc:hasDataType nc:float ;
+    nc:hasDimension (
+        <https://www.ambrosia-project.eu/vocab/concept/netcdf/time>
+        <https://www.ambrosia-project.eu/vocab/concept/netcdf/latitude>
+        <https://www.ambrosia-project.eu/vocab/concept/netcdf/longitude>
+    ) ;
+    nc:long_name "Near-Surface Relative Humidity"@en ;
+    nc:units "%" ;
+    nc:cell_methods "time: mean" ;
+    nc:coordinates "height" ;
+
+    skos:exactMatch <https://cfconventions.org/Data/cf-standard-names/current/build/cf-standard-name-table.html#relative_humidity> .
+
+<https://www.ambrosia-project.eu/vocab/concept/netcdf/tasmax>
+    a skos:Concept , nc:Variable ;
+    skos:inScheme <https://www.ambrosia-project.eu/vocab/scheme/netcdf> ;
+    skos:prefLabel "Daily Maximum Near-Surface Air Temperature"@en ;
+    skos:altLabel "tasmax"@en , "Daily Maximum Air Temperature"@en ;
+
+    qudt:unit unit:DEG_C ;
+
+    <https://www.ambrosia-project.eu/vocab/property/verticalContext> [
+        a <https://www.ambrosia-project.eu/vocab/class/VerticalContext> ;
+        skos:prefLabel "2 m above ground"@en ;
+        <https://www.ambrosia-project.eu/vocab/property:referenceLevel> "surface" ;
+        <https://www.ambrosia-project.eu/vocab/property:height> "2.0"^^xsd:decimal
+    ] ;
+
+    # netCDF-LD metadata
+    nc:hasDataType nc:float ;
+    nc:hasDimension (
+        <https://www.ambrosia-project.eu/vocab/concept/netcdf/time>
+        <https://www.ambrosia-project.eu/vocab/concept/netcdf/latitude>
+        <https://www.ambrosia-project.eu/vocab/concept/netcdf/longitude>
+    ) ;
+    nc:long_name "Daily Maximum Near-Surface Air Temperature"@en ;
+    nc:units "°C" ;
+    nc:cell_methods "time: maximum" ;
+    nc:coordinates "height" ;
+
+    skos:exactMatch <https://cfconventions.org/Data/cf-standard-names/current/build/cf-standard-name-table.html#air_temperature> .
 
 <https://www.ambrosia-project.eu/vocab/concept/netcdf/pr> 
     a skos:Concept , nc:Variable ;
@@ -174,8 +230,6 @@
     ] ;
 
     rdfs:comment "Although the official CF unit is kg m-2 s-1, precipitation is commonly provided and interpreted as mm/day in climate datasets."@en ;
-
-    amblink:expectsQuantityKind <https://cfconventions.org/Data/cf-standard-names/current/build/cf-standard-name-table.html#precipitation_flux> ;
 
     # netCDF-LD metadata
     nc:hasDataType nc:float ;
