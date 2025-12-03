@@ -6,6 +6,7 @@ import pandas as pd
 import time
 import concurrent.futures
 import logging
+import io # Import the io module
 
 # --- Configure Logging (Console Only) ---
 logger = logging.getLogger(__name__)
@@ -131,6 +132,35 @@ def render_reconciliation_ui():
 
     st.title("Reconciliation Service")
     st.write("Upload CSV, select sources, manage queue via sidebar, reconcile terms.")
+
+    st.subheader("Matching Table Structure Information")
+    st.info("""
+Your matching table (CSV or Excel) should be structured with the following columns:
+- **Term**: The term you want to reconcile (required).
+- **URI**: The reconciled URI for the term (optional, will be filled by the service).
+- **RDF Role**: The RDF role of the term (optional, e.g., predicate, object).
+- **Match Type**: The SKOS match type (optional, e.g., skos:exactMatch, skos:closeMatch).
+""")
+
+    # Define the template columns
+    template_columns = ["Term", "URI", "RDF Role", "Match Type"]
+
+    # Create an empty DataFrame for the template
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        pd.DataFrame(columns=template_columns).to_excel(writer, index=False, sheet_name='Reconciliation_Template')
+    data = output.getvalue()
+
+    st.download_button(
+        label="Download Matching Table Template",
+        data=data,
+        file_name="reconciliation_template.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        help="Download an Excel template with the required column headers for reconciliation."
+    )
+
+    st.markdown("---") # Add a separator for clarity
+
 
     if CONFIG is None:
         st.error("Critical Error: 'config.yaml' could not be loaded. App cannot continue.")
@@ -629,16 +659,38 @@ def render_reconciliation_ui():
         st.markdown("---")
 
         st.subheader("Matching Strategy")
-        strategy_options = ["API Ranking", "Levenshtein Similarity", "Cosine Similarity"]
-        current_strategy = st.session_state.get('matching_strategy_radio', "API Ranking")
-        try:
-            current_strategy_idx = strategy_options.index(current_strategy)
-        except ValueError:
-            current_strategy_idx = 0
         
+        # Original strategy options
+        all_strategy_options = ["API Ranking", "Levenshtein Similarity", "Cosine Similarity"]
+        
+        # Determine if "API Ranking" should be available
+        # It should be disabled if "Local RDF File" is the currently displayed provider and it's not a mixed results view.
+        is_local_rdf_only_display = (st.session_state.get('display_provider') == "Local RDF File" and 
+                                     not st.session_state.get('display_mixed_results', False))
+        
+        # Create display options list based on condition
+        display_strategy_options = all_strategy_options.copy()
+        if is_local_rdf_only_display:
+            if "API Ranking" in display_strategy_options:
+                display_strategy_options.remove("API Ranking")
+        
+        current_strategy = st.session_state.get('matching_strategy_radio', "API Ranking")
+
+        # If "API Ranking" was selected but is no longer an option, switch to "Levenshtein Similarity"
+        if is_local_rdf_only_display and current_strategy == "API Ranking":
+            st.session_state['matching_strategy_radio'] = "Levenshtein Similarity"
+            current_strategy = "Levenshtein Similarity" # Update for index calculation
+
+        # Determine the index for the radio button
+        try:
+            current_strategy_idx = display_strategy_options.index(current_strategy)
+        except ValueError:
+            # Fallback if current_strategy is not in display_strategy_options (e.g., "API Ranking" was removed)
+            current_strategy_idx = 0 # Default to the first available option
+
         chosen_strategy = st.radio(
             "Matching/Sorting Strategy", 
-            options=strategy_options, 
+            options=display_strategy_options, 
             index=current_strategy_idx, 
             key="matching_strategy_radio_widget"
         )
@@ -1187,7 +1239,10 @@ def render_reconciliation_ui():
                         if s_uri and s_label:
                             display_text = format_suggestion_display(sugg, st.session_state.get('matching_strategy_radio'))
                             if display_text not in inline_options_map:
-                                source_for_map = sugg.get('source_provider') or sugg.get('db') or sugg.get('ontology') or sugg.get('source_db') or current_display_mode
+                                source_for_map = (
+                                    sugg.get('ontology_title') if current_display_mode == "Local RDF File" and sugg.get('ontology_title') else
+                                    sugg.get('source_provider') or sugg.get('db') or sugg.get('ontology') or sugg.get('source_db') or current_display_mode
+                                )
                                 inline_options_map[display_text] = (s_uri, source_for_map, sugg)
                     
                     current_selection_display = NO_MATCH_DISPLAY 
@@ -1407,9 +1462,13 @@ def render_reconciliation_ui():
                             options_dialog_custom = {NO_MATCH_DISPLAY: (NO_MATCH_URI, "", None)}
                             if dialog_results:
                                 for sugg in dialog_results:
-                                    source_provider = sugg.get('source_provider') or sugg.get('db') or sugg.get('ontology') or sugg.get('source_db') or "Unknown"
+                                    # Prioritize ontology_title if from Local RDF File, otherwise use existing logic
+                                    source_provider_for_dialog = (
+                                        sugg.get('ontology_title') if sugg.get('source_provider') == "Local RDF File" and sugg.get('ontology_title') else
+                                        sugg.get('source_provider') or sugg.get('db') or sugg.get('ontology') or sugg.get('source_db') or "Unknown"
+                                    )
                                     display_text = format_suggestion_display(sugg, st.session_state.get('matching_strategy_radio'))
-                                    options_dialog_custom[display_text] = (sugg.get('uri'), source_provider, sugg)
+                                    options_dialog_custom[display_text] = (sugg.get('uri'), source_provider_for_dialog, sugg)
 
                             selected_dialog_uri_display = st.selectbox(
                                 "Select URI from custom search:", options=list(options_dialog_custom.keys()),

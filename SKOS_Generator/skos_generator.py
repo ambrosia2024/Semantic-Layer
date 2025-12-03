@@ -8,6 +8,36 @@ from .prefix_manager import extract_prefixes, find_relevant_prefixes
 from rdflib import Graph, URIRef, Literal, BNode
 from rdflib.namespace import SKOS, DCTERMS, RDF, RDFS
 
+# Define vocabulary mappings
+VOCAB_MAPPINGS = {
+    "plant": {
+        "base_uri": "https://w3id.org/ambrosia/plant-vocab#",
+        "prefix": "ambplant",
+        "concept_groups": ["fruit", "vegetable", "nut", "cereal"]
+    },
+    "pathogen": {
+        "base_uri": "https://w3id.org/ambrosia/pathogen-vocab#",
+        "prefix": "ambpath",
+        "concept_groups": ["mycotoxin", "pathogen"]
+    }
+}
+
+def determine_vocabulary_type(identifier_value):
+    """
+    Determines the vocabulary type (plant/pathogen) based on a given identifier
+    (e.g., ConceptGroup from Excel or namespace from existing TTL).
+    Returns the vocabulary type string ('plant', 'pathogen') or None if not recognized.
+    """
+    for vocab_type, mapping in VOCAB_MAPPINGS.items():
+        # Check against base URI
+        if mapping["base_uri"] in identifier_value:
+            return vocab_type
+        # Check against concept groups (for Excel upload)
+        for group in mapping["concept_groups"]:
+            if group.lower() in identifier_value.lower():
+                return vocab_type
+    return None
+
 def slugify(value):
     """
     Converts a string into a URI-friendly format (slug).
@@ -221,6 +251,15 @@ def serialize_graph_to_custom_turtle(graph):
     explicit_output_prefixes["skos"] = str(SKOS)
     ns_manager.bind("dct", DCTERMS)
     explicit_output_prefixes["dct"] = str(DCTERMS)
+
+    # Bind ambplant/ambpath based on current_vocab_type if available in session state
+    if "current_vocab_type" in st.session_state and st.session_state.current_vocab_type:
+        vocab_type = st.session_state.current_vocab_type
+        if vocab_type in VOCAB_MAPPINGS:
+            prefix = VOCAB_MAPPINGS[vocab_type]["prefix"]
+            base_uri = VOCAB_MAPPINGS[vocab_type]["base_uri"]
+            ns_manager.bind(prefix, URIRef(base_uri))
+            explicit_output_prefixes[prefix] = base_uri
     
     try:
         all_prefixes_from_file = extract_prefixes('all.file.sparql.txt')
@@ -229,7 +268,7 @@ def serialize_graph_to_custom_turtle(graph):
             ns_manager.bind(prefix, URIRef(namespace))
             explicit_output_prefixes[prefix] = namespace # Add to our explicit list for output
     except FileNotFoundError:
-        st.warning("`all.file.sparql.txt` not found. Only skos and dct prefixes will be used for external URIs.")
+        st.warning("`all.file.sparql.txt` not found. Only skos, dct, and inferred ambrosia prefixes will be used for external URIs.")
 
 
     # 3. Build the final prefix string from the explicitly collected prefixes.
@@ -414,6 +453,10 @@ Your Excel file should be structured with the following columns:
         st.session_state.resolutions = {}
     if "graph" not in st.session_state:
         st.session_state.graph = None
+    if "base_namespace" not in st.session_state:
+        st.session_state.base_namespace = "https://w3id.org/ambrosia/" # Initial default
+    if "current_vocab_type" not in st.session_state:
+        st.session_state.current_vocab_type = None
 
 
     if uploaded_file:
@@ -422,13 +465,43 @@ Your Excel file should be structured with the following columns:
             st.success("File uploaded successfully!")
             st.dataframe(df.head())
 
+            # Attempt to determine vocabulary type from Excel 'ConceptGroup'
+            # Only if a vocabulary type hasn't been set by an existing TTL file
+            if st.session_state.current_vocab_type is None and 'ConceptGroup' in df.columns:
+                unique_groups = df['ConceptGroup'].dropna().unique()
+                if unique_groups.size > 0:
+                    # Check if all unique groups belong to a single vocabulary type
+                    potential_vocab_types = {determine_vocabulary_type(str(g)) for g in unique_groups}
+                    potential_vocab_types.discard(None) # Remove None if any group doesn't match
+
+                    if len(potential_vocab_types) == 1:
+                        inferred_type = list(potential_vocab_types)[0]
+                        st.session_state.current_vocab_type = inferred_type
+                        st.session_state.base_namespace = VOCAB_MAPPINGS[inferred_type]["base_uri"]
+                        st.info(f"Inferred vocabulary type from Excel: **{inferred_type.capitalize()}**")
+                    elif len(potential_vocab_types) > 1:
+                        st.warning("Multiple vocabulary types detected in ConceptGroup column. Please ensure the Excel file contains concepts for a single vocabulary type.")
+                        st.session_state.current_vocab_type = None
+                        st.session_state.base_namespace = "https://w3id.org/ambrosia/" # Reset to generic default
+                    else:
+                        st.info("Could not infer vocabulary type from Excel file. Using generic base URI.")
+                        st.session_state.current_vocab_type = None
+                        st.session_state.base_namespace = "https://w3id.org/ambrosia/" # Reset to generic default
+            
             st.subheader("Configuration")
 
-            base_namespace = st.text_input(
+            # Use st.session_state.base_namespace for the value
+            base_namespace_input = st.text_input(
                 "Base Namespace URI",
-                value="https://www.ambrosia-project.eu/vocab/",
+                value=st.session_state.base_namespace,
                 help="This URI will be the base for all generated SKOS concepts and collections."
             )
+            # Update session state if the user manually changes the input
+            if base_namespace_input != st.session_state.base_namespace:
+                st.session_state.base_namespace = base_namespace_input
+
+            # Use the session state variable
+            base_namespace = st.session_state.base_namespace
 
 
 
@@ -494,42 +567,84 @@ Your Excel file should be structured with the following columns:
                 ('Turtle (.ttl)', 'RDF/XML (.rdf)', 'JSON-LD (.jsonld)'),
                 index=0 # Default to Turtle
             )
+            # Update session state if the user manually changes the input
+            if base_namespace_input != st.session_state.base_namespace:
+                st.session_state.base_namespace = base_namespace_input
 
-            if existing_vocab_file and not st.session_state.get("conflicts_resolved"):
-                if st.button("Check for Conflicts"):
-                    g = Graph()
-                    
-                    # Explicitly bind common RDF namespaces that might be expected by the parser
-                    g.bind("rdf", RDF)
-                    g.bind("rdfs", RDFS)
+            # Use the session state variable
+            base_namespace = st.session_state.base_namespace
 
-                    # Load all known prefixes from all.file.sparql.txt and bind them to the graph
-                    # This is crucial for parsing existing vocabulary files that might use these prefixes.
+
+            if existing_vocab_file:
+                # Only try to infer from existing file if not already done for the current file
+                if existing_vocab_file.file_id != st.session_state.get('last_processed_existing_vocab_file_id'):
                     try:
-                        all_prefixes_from_file = extract_prefixes('all.file.sparql.txt')
-                        for namespace_uri, prefixes_list in all_prefixes_from_file.items():
-                            # Use the first prefix found for a given namespace for binding
-                            if prefixes_list:
-                                g.bind(prefixes_list[0], URIRef(namespace_uri))
-                    except FileNotFoundError:
-                        st.warning("`all.file.sparql.txt` not found. Parsing of existing vocabulary might fail if it uses unknown prefixes.")
+                        temp_g = Graph()
+                        temp_g.parse(existing_vocab_file, format=rdflib.util.guess_format(existing_vocab_file.name))
+                        
+                        # Look for recognized namespaces in the loaded graph
+                        found_vocab_type = None
+                        for p, ns_uri in temp_g.namespace_manager.namespaces():
+                            vocab_type = determine_vocabulary_type(str(ns_uri))
+                            if vocab_type:
+                                found_vocab_type = vocab_type
+                                break
+                        
+                        if found_vocab_type:
+                            st.session_state.current_vocab_type = found_vocab_type
+                            st.session_state.base_namespace = VOCAB_MAPPINGS[found_vocab_type]["base_uri"]
+                            st.info(f"{found_vocab_type.capitalize()} vocabulary successfully loaded (from existing file).")
+                        else:
+                            st.info("Existing vocabulary loaded, but its type (plant/pathogen) could not be automatically determined. Using generic base URI.")
+                            st.session_state.current_vocab_type = None
+                            st.session_state.base_namespace = "https://w3id.org/ambrosia/" # Reset to generic default
+                        
+                        st.session_state.last_processed_existing_vocab_file_id = existing_vocab_file.file_id
                     except Exception as e:
-                        st.error(f"Error loading prefixes for parsing: {e}")
+                        st.error(f"Error processing existing vocabulary file: {e}")
+                        st.session_state.last_processed_existing_vocab_file_id = None # Allow retry if error
 
-                    g.parse(existing_vocab_file, format=rdflib.util.guess_format(existing_vocab_file.name))
-                    st.session_state.graph = g
-                    
-                    g, conflicts, report = extend_vocabulary(
-                        g, df, base_namespace, pref_label_lang, alt_label_lang, definition_lang
-                    )
-                    st.session_state.conflicts = conflicts
-                    st.session_state.report = report
+                if not st.session_state.get("conflicts_resolved"):
+                    if st.button("Check for Conflicts"):
+                        g = Graph()
+                        
+                        # Explicitly bind common RDF namespaces that might be expected by the parser
+                        g.bind("rdf", RDF)
+                        g.bind("rdfs", RDFS)
 
-                    if conflicts:
-                        st.warning("Conflicts detected! Please resolve them below.")
-                    else:
-                        st.success("No conflicts detected. You can now generate the extended vocabulary.")
-                        st.session_state.conflicts_resolved = True
+                        # Load all known prefixes from all.file.sparql.txt and bind them to the graph
+                        # This is crucial for parsing existing vocabulary files that might use these prefixes.
+                        try:
+                            all_prefixes_from_file = extract_prefixes('all.file.sparql.txt')
+                            for namespace_uri, prefixes_list in all_prefixes_from_file.items():
+                                # Use the first prefix found for a given namespace for binding
+                                if prefixes_list:
+                                    g.bind(prefixes_list[0], URIRef(namespace_uri))
+                        except FileNotFoundError:
+                            st.warning("`all.file.sparql.txt` not found. Parsing of existing vocabulary might fail if it uses unknown prefixes.")
+                        except Exception as e:
+                            st.error(f"Error loading prefixes for parsing: {e}")
+
+                        # Use the parsed existing vocab graph if available
+                        if st.session_state.graph is None and existing_vocab_file: # ensure only parsed once
+                             temp_g_for_merge = Graph()
+                             temp_g_for_merge.parse(existing_vocab_file, format=rdflib.util.guess_format(existing_vocab_file.name))
+                             st.session_state.graph = temp_g_for_merge # Store it in session state
+                             g = temp_g_for_merge
+                        elif st.session_state.graph is not None:
+                            g = st.session_state.graph # Use the already loaded graph
+
+                        g, conflicts, report = extend_vocabulary(
+                            g, df, base_namespace, pref_label_lang, alt_label_lang, definition_lang
+                        )
+                        st.session_state.conflicts = conflicts
+                        st.session_state.report = report
+
+                        if conflicts:
+                            st.warning("Conflicts detected! Please resolve them below.")
+                        else:
+                            st.success("No conflicts detected. You can now generate the extended vocabulary.")
+                            st.session_state.conflicts_resolved = True
 
 
                 if st.session_state.conflicts:
@@ -612,8 +727,8 @@ Your Excel file should be structured with the following columns:
                                 mime=mime_type
                             )
                             
-                            st.subheader("Preview of Generated SKOS Vocabulary")
-                            st.code(output_str, language=serialization_format_key)
+                            with st.expander("Preview of Generated SKOS Vocabulary"):
+                                st.code(output_str, language=serialization_format_key)
 
                         except Exception as e:
                             st.error(f"An error occurred during generation: {e}")
@@ -632,6 +747,7 @@ Your Excel file should be structured with the following columns:
     current_uploaded_file_id = uploaded_file.file_id if uploaded_file else None
     current_existing_vocab_file_id = existing_vocab_file.file_id if existing_vocab_file else None
 
+    # Check if either of the uploaded files has changed or been cleared
     if (current_uploaded_file_id != st.session_state.last_uploaded_file_id or
         current_existing_vocab_file_id != st.session_state.last_existing_vocab_file_id):
         
@@ -641,6 +757,18 @@ Your Excel file should be structured with the following columns:
         st.session_state.graph = None
         st.session_state.conflicts_resolved = False
         
+        # Explicitly reset vocab type and base namespace if no files are uploaded
+        if uploaded_file is None and existing_vocab_file is None:
+            st.session_state.current_vocab_type = None
+            st.session_state.base_namespace = "https://w3id.org/ambrosia/" # Reset to generic default
+        
+        # If only uploaded_file is cleared, reset vocab type and base namespace
+        # This prevents an inferred type from a previous Excel file from persisting
+        # when a new Excel is uploaded or the existing one is cleared.
+        if uploaded_file is None and existing_vocab_file is not None:
+             st.session_state.current_vocab_type = None
+             st.session_state.base_namespace = "https://w3id.org/ambrosia/"
+
         # Update stored file IDs
         st.session_state.last_uploaded_file_id = current_uploaded_file_id
         st.session_state.last_existing_vocab_file_id = current_existing_vocab_file_id

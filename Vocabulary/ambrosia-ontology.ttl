@@ -1,0 +1,919 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix dct:    <http://purl.org/dc/terms/> .
+@prefix skos:   <http://www.w3.org/2004/02/skos/core#> .
+
+@prefix foaf:   <http://xmlns.com/foaf/0.1/> .
+@prefix schema: <http://schema.org/> .
+@prefix prov:   <http://www.w3.org/ns/prov#> .
+
+@prefix sosa:   <http://www.w3.org/ns/sosa/> .
+@prefix ssn:    <http://www.w3.org/ns/ssn/> .
+@prefix time:   <http://www.w3.org/2006/time#> .
+@prefix qudt:   <http://qudt.org/schema/qudt/> .
+@prefix qk:     <http://qudt.org/vocab/quantitykind/> .
+@prefix unit:   <http://qudt.org/vocab/unit/> .
+@prefix wgs84_pos: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix geosparql: <http://www.opengis.net/ont/geosparql#> .
+
+@prefix s4agri: <https://saref.etsi.org/saref4agri/> .
+@prefix agrovoc: <http://aims.fao.org/aos/agrovoc/> .
+@prefix nuts:   <http://data.europa.eu/nuts/> .
+
+@prefix fiware: <https://uri.fiware.org/ns/data-models#> .
+@prefix foodie: <http://foodie.cloud/Model#> .
+
+@prefix amblink: <https://w3id.org/ambrosia/linking#> .
+@prefix ambdash: <https://w3id.org/ambrosia/dashboard#> .
+@prefix ambag:   <https://w3id.org/ambrosia/agent#> .
+@prefix amobs:   <https://w3id.org/ambrosia/observation#> .
+@prefix ambplant:   <https://w3id.org/ambrosia/plant-vocab#> .
+@prefix ambpath:   <https://w3id.org/ambrosia/pathogen-vocab#> .
+@prefix amb:     <https://w3id.org/ambrosia/ontology#> .   # global ontology IRI base
+@prefix fskxo:   <http://semanticlookup.zbmed.de/km/fskxo/> .
+@prefix vocab:   <https://w3id.org/ambrosia/vocab#> .
+@prefix ncbitaxon: <http://purl.obolibrary.org/obo/NCBITaxon_> .
+
+#################################################################
+# AMBROSIA Ontology
+#################################################################
+
+<https://w3id.org/ambrosia/ontology>
+    a owl:Ontology ;
+    dct:title "AMBROSIA Ontology"@en ;
+    dct:description "Ontology for the AMBROSIA project: linking, agents, dashboard context, observation model and alert/incident patterns."@en ;
+    owl:versionInfo "1.0" ;
+    dct:creator "Michael Zarske" ;
+    owl:imports
+        <http://www.w3.org/2004/02/skos/core> ,
+        <http://www.w3.org/ns/sosa/> ,
+        <http://www.w3.org/ns/ssn/> ,
+        <http://www.w3.org/2006/time#> ,
+        <http://qudt.org/schema/qudt/> ,
+        <http://xmlns.com/foaf/0.1/> ,
+        <http://www.w3.org/ns/prov#> ,
+        <http://www.opengis.net/ont/geosparql#> ,
+        <https://saref.etsi.org/saref4agri/> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/> .
+
+#################################################################
+# 1. Linking vocabulary
+#################################################################
+
+amblink:InputMapping a owl:Class ;
+  rdfs:label "Input Mapping"@en ;
+  rdfs:comment "Binding describing how a model input parameter is fulfilled by a data variable."@en .
+
+amblink:OutputMapping a owl:Class ;
+  rdfs:label "Output Mapping"@en ;
+  rdfs:comment "Binding describing how a model output parameter corresponds to an observed property and unit."@en .
+
+amblink:ModelLink a owl:Class ;
+  rdfs:label "Model link"@en ;
+  rdfs:comment "A link between two models, showing the flow of data from one model to another."@en .
+
+amblink:ObservedProperty a owl:Class ;
+  rdfs:label "Observed property"@en ;
+  rdfs:comment "Observable quantity produced by a model, such as concentration, dose or risk."@en ;
+  rdfs:subClassOf sosa:ObservableProperty , skos:Concept .
+
+amblink:Endpoint a owl:Class ;
+  rdfs:label "Health endpoint"@en ;
+  rdfs:comment "A health endpoint used in risk modeling (e.g., infection)." ;
+  rdfs:subClassOf skos:Concept .
+
+amblink:ExposureRoute a owl:Class ;
+  rdfs:label "Exposure route"@en ;
+  rdfs:comment "The route of exposure (e.g., oral) used in risk modeling." ;
+  rdfs:subClassOf skos:Concept .
+
+amblink:Population a owl:Class ;
+    rdfs:label "Target population concept"@en ;
+    rdfs:comment "The target population for a model (e.g., general population, risk groups)."@en ;
+    rdfs:subClassOf skos:Concept ;
+    owl:equivalentClass <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000012419> .
+
+vocab:ModelParameter a owl:Class ;
+  rdfs:label "Model parameter"@en ;
+  rdfs:comment "Input or output parameter of a predictive model (e.g., as defined in FSKX or other model formats)."@en .
+
+amblink:FoodSafetyIncident a owl:Class ;
+  rdfs:label "Food safety incident"@en ;
+  rdfs:comment "Historical or observed food safety event, e.g. outbreak or contamination exceeding legal limits."@en .
+
+amblink:MitigationMeasure a owl:Class ;
+  rdfs:label "Mitigation measure"@en ;
+  rdfs:comment "Action or intervention to reduce food safety risk."@en .
+
+amblink:PredictiveModel a owl:Class ;
+    rdfs:label "Predictive model (AMBROSIA)"@en ;
+    rdfs:comment "Predictive model used in AMBROSIA (typically encoded as an FSKX/FSKXO model)."@en ;
+    rdfs:subClassOf sosa:Procedure , prov:Plan ;
+    owl:equivalentClass <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000018113> .
+
+# Core Object Properties (Input side — static knowledge)
+
+amblink:hasInputMapping a owl:ObjectProperty ;
+  rdfs:label "has input mapping"@en ;
+  rdfs:comment "Attach one or more input mappings to a model."@en ;
+  rdfs:domain amblink:PredictiveModel ;        # Predictive model
+  rdfs:range  amblink:InputMapping .
+
+amblink:mapsParameter a owl:ObjectProperty ;
+  rdfs:label "maps parameter"@en ;
+  rdfs:comment "The model parameter (input or output) that this mapping refers to."@en ;
+  rdfs:domain [ a owl:Class ;
+                owl:unionOf ( amblink:InputMapping amblink:OutputMapping ) ] ;
+  rdfs:range  vocab:ModelParameter .
+
+amblink:isFulfilledBy a owl:ObjectProperty ;
+  rdfs:label "is fulfilled by"@en ;
+  rdfs:comment "The conceptual data variable (e.g., a netCDF/CF concept) providing the values for the input."@en ;
+  rdfs:domain amblink:InputMapping ;
+  rdfs:range  skos:Concept .
+
+amblink:preferredInputUnit a owl:ObjectProperty ;
+  rdfs:label "preferred input unit"@en ;
+  rdfs:comment "Preferred unit for an input parameter; backend converts source data if needed."@en ;
+  rdfs:domain vocab:ModelParameter ;
+  rdfs:range  qudt:Unit .
+
+# Core Object Properties (Output side — static knowledge)
+
+amblink:hasOutputMapping a owl:ObjectProperty ;
+  rdfs:label "has output mapping"@en ;
+  rdfs:comment "Attach one or more output mappings to a model."@en ;
+  rdfs:domain amblink:PredictiveModel ;
+  rdfs:range  amblink:OutputMapping .
+
+amblink:producesObservedProperty a owl:ObjectProperty ;
+  rdfs:label "produces observed property"@en ;
+  rdfs:comment "Observed property concept represented by this output (e.g., risk probability, predicted concentration)."@en ;
+  rdfs:domain amblink:OutputMapping ;
+  rdfs:range  skos:Concept .
+
+amblink:representsStatistic a owl:ObjectProperty ;
+  rdfs:label "represents statistic"@en ;
+  rdfs:comment "Specifies if the output represents a mean, max, percentile, etc."@en ;
+  rdfs:domain amblink:OutputMapping ;
+  rdfs:range  skos:Concept .
+
+amblink:hasOutputUnit a owl:ObjectProperty ;
+  rdfs:label "has output unit"@en ;
+  rdfs:comment "Unit of the output values (QUDT Unit)."@en ;
+  rdfs:domain amblink:OutputMapping ;
+  rdfs:range  qudt:Unit .
+
+# Aggregation / Temporal / Transformation Hints
+
+amblink:aggregationMethod a owl:ObjectProperty ;
+  rdfs:label "aggregation method"@en ;
+  rdfs:comment "Spatial/temporal aggregation used to derive the input (e.g., area-weighted mean, time mean)."@en ;
+  rdfs:domain amblink:InputMapping ;
+  rdfs:range  skos:Concept .
+
+amblink:temporalAlignment a owl:ObjectProperty ;
+  rdfs:label "temporal alignment"@en ;
+  rdfs:comment "Resampling/alignment between dataset time steps and model step (e.g., daily-to-weekly, monthly-mean, lag=3d)."@en ;
+  rdfs:domain amblink:InputMapping ;
+  rdfs:range  skos:Concept .
+
+amblink:requiresTransformation a owl:ObjectProperty ;
+  rdfs:label "requires transformation"@en ;
+  rdfs:comment "Indicates a derived-input transformation (e.g., precip → RH proxy), referenced as a concept."@en ;
+  rdfs:domain amblink:InputMapping ;
+  rdfs:range  skos:Concept .
+
+amblink:temporalWindow a owl:DatatypeProperty ;
+  rdfs:label "temporal window"@en ;
+  rdfs:comment "ISO 8601 duration describing the window for aggregation (e.g., P1M, P7D)."@en ;
+  rdfs:domain amblink:InputMapping ;
+  rdfs:range  xsd:duration .
+
+# Data Properties for the Data Access Layer
+
+amblink:sourceVariableName a owl:DatatypeProperty ;
+  rdfs:label "source variable name"@en ;
+  rdfs:comment "Technical variable name in the source (e.g., 'tas', 'pr')."@en ;
+  rdfs:domain amblink:InputMapping ;
+  rdfs:range  xsd:string .
+
+amblink:sourceDataset a owl:DatatypeProperty ;
+  rdfs:label "source dataset identifier"@en ;
+  rdfs:comment "Identifier/URI of the dataset (e.g., 'EURO-CORDEX-XXX')."@en ;
+  rdfs:domain amblink:InputMapping ;
+  rdfs:range  xsd:string .
+
+amblink:transformationHint a owl:DatatypeProperty ;
+  rdfs:label "transformation hint"@en ;
+  rdfs:comment "Free-text/code ref for the transformation (e.g., function name, doc URL)."@en ;
+  rdfs:domain amblink:InputMapping ;
+  rdfs:range  xsd:string .
+
+# SKOS Schemes for controlled hints (enumerations)
+
+amblink:AggregationMethod a skos:ConceptScheme ;
+  skos:prefLabel "Aggregation methods"@en ;
+  dct:description "Controlled list of spatial/temporal aggregation methods for inputs."@en .
+
+amblink:areaWeightedMean a skos:Concept ;
+  skos:inScheme amblink:AggregationMethod ;
+  skos:prefLabel "Area-weighted mean"@en ;
+  skos:definition "Mean over an area where each grid cell is weighted by its area overlap with the region mask."@en .
+
+amblink:timeMean a skos:Concept ;
+  skos:inScheme amblink:AggregationMethod ;
+  skos:prefLabel "Time mean"@en ;
+  skos:definition "Mean calculated over the specified temporal window."@en .
+
+amblink:TemporalAlignment a skos:ConceptScheme ;
+  skos:prefLabel "Temporal alignment methods"@en .
+
+amblink:dailyToMonthlyMean a skos:Concept ;
+  skos:inScheme amblink:TemporalAlignment ;
+  skos:prefLabel "Daily → monthly mean"@en .
+
+amblink:Transformation a skos:ConceptScheme ;
+  skos:prefLabel "Derived-input transformations"@en ;
+  dct:description "Lightweight references to transformations from raw variables to model-ready inputs."@en .
+
+# Linking-specific Properties, Classes, and Concepts
+
+amblink:forTaxon a owl:ObjectProperty ;
+  rdfs:label "for taxon"@en ;
+  rdfs:comment "Links a predictive model to a specific taxon (e.g., NCBI Taxonomy or a pathogen vocabulary concept)."@en ;
+  rdfs:domain amblink:PredictiveModel ;
+  rdfs:range  skos:Concept .
+
+amblink:forMatrix a owl:ObjectProperty ;
+  rdfs:label "for matrix"@en ;
+  rdfs:comment "Links a predictive model to a food or environmental matrix (e.g., FoodEx2 or FoodOn concept)."@en ;
+  rdfs:domain amblink:PredictiveModel ;
+  rdfs:range  skos:Concept .
+
+amblink:endpoint a owl:ObjectProperty ;
+  rdfs:label "endpoint"@en ;
+  rdfs:comment "Links a predictive model to a health endpoint (e.g., infection, illness, hospitalization)."@en ;
+  rdfs:domain amblink:PredictiveModel ;
+  rdfs:range  amblink:Endpoint .
+
+amblink:exposureRoute a owl:ObjectProperty ;
+    rdfs:label "exposure route"@en ;
+    rdfs:comment "Links a predictive model to an exposure route (e.g., oral, dermal)."@en ;
+    rdfs:domain amblink:PredictiveModel ;
+    rdfs:range  amblink:ExposureRoute ;
+    rdfs:subPropertyOf <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000020> .  # hasExposure
+
+amblink:population a owl:ObjectProperty ;
+    rdfs:label "population"@en ;
+    rdfs:comment "Links a predictive model to a target population (e.g., general population, children)."@en ;
+    rdfs:domain amblink:PredictiveModel ;
+    rdfs:range  amblink:Population ;
+    owl:equivalentProperty <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000009> .  # hasPopulationGroup
+
+# Model-level expectations (inputs)
+
+amblink:expectsObservedProperty a owl:ObjectProperty ;
+  rdfs:label "expects observed property"@en ;
+  rdfs:comment "Describes the observed property that is expected as an input for the model."@en ;
+  rdfs:domain vocab:ModelParameter ;
+  rdfs:range  amblink:ObservedProperty .
+
+amblink:expectsUnit a owl:ObjectProperty ;
+  rdfs:label "expects unit"@en ;
+  rdfs:comment "Describes the unit expected for the input (e.g., CFU)."@en ;
+  rdfs:domain vocab:ModelParameter ;
+  rdfs:range  qudt:Unit .
+
+amblink:expectsQuantityKind a owl:ObjectProperty ;
+  rdfs:label "expects quantity kind"@en ;
+  rdfs:comment "Describes the quantity kind expected for the input (e.g., concentration, dose)."@en ;
+  rdfs:domain vocab:ModelParameter ;
+  rdfs:range  qudt:QuantityKind .
+
+# Output-level semantics
+
+amblink:hasOutputQuantityKind a owl:ObjectProperty ;
+  rdfs:label "has output quantity kind"@en ;
+  rdfs:comment "Indicates the quantity kind for the output parameter."@en ;
+  rdfs:domain vocab:ModelParameter ;
+  rdfs:range  qudt:QuantityKind .
+
+# Model link assumptions / confidence
+
+amblink:assumption a owl:DatatypeProperty ;
+  rdfs:label "assumption"@en ;
+  rdfs:comment "Indicates an assumption, e.g., whether general→specific or vice versa."@en ;
+  rdfs:domain amblink:ModelLink ;
+  rdfs:range  xsd:string .
+
+amblink:confidence a owl:DatatypeProperty ;
+  rdfs:label "confidence"@en ;
+  rdfs:comment "Indicates the confidence or accuracy of a model link."@en ;
+  rdfs:domain amblink:ModelLink ;
+  rdfs:range  xsd:decimal .
+
+# Food Safety Incident Properties
+
+amblink:occursInRegion a owl:ObjectProperty ;
+  rdfs:domain amblink:FoodSafetyIncident ;
+  rdfs:range  <http://data.europa.eu/nuts/> .   # NUTS concepts
+
+amblink:occursOn a owl:DatatypeProperty ;
+  rdfs:domain amblink:FoodSafetyIncident ;
+  rdfs:range  xsd:dateTime .
+
+amblink:incidentHazard a owl:ObjectProperty ;
+  rdfs:domain amblink:FoodSafetyIncident ;
+  rdfs:range  skos:Concept . # from pathogen/mycotoxin scheme
+
+amblink:incidentProduct a owl:ObjectProperty ;
+  rdfs:domain amblink:FoodSafetyIncident ;
+  rdfs:range  skos:Concept . # from plant/product vocab
+
+amblink:incidentEconomicLoss a owl:DatatypeProperty ;
+  rdfs:domain amblink:FoodSafetyIncident ;
+  rdfs:range  xsd:decimal . # + currency via another property
+
+amblink:regulatoryLimit a owl:DatatypeProperty ;
+  rdfs:label "regulatory limit"@en ;
+  rdfs:comment "The legal maximum limit (e.g. from EC 2073/2005) value."@en ;
+  rdfs:domain amblink:FoodSafetyIncident ; # Or attach to the Hazard/Product pair context
+  rdfs:range xsd:string . # e.g. "100 CFU/g"
+
+# Mitigation Measure Properties
+
+amblink:mitigatesHazard a owl:ObjectProperty ;
+  rdfs:domain amblink:MitigationMeasure ;
+  rdfs:range  skos:Concept . # hazard
+
+amblink:mitigationForScenario a owl:ObjectProperty ;
+  rdfs:domain amblink:MitigationMeasure ;
+  rdfs:range  amblink:RiskLevel . # or Scenario Concept
+
+amblink:hasChecklistItem a owl:DatatypeProperty ;
+  rdfs:domain amblink:MitigationMeasure ;
+  rdfs:range  xsd:string .
+
+# Concept Schemes
+
+amblink:ObservedPropertyScheme a skos:ConceptScheme ;
+  skos:prefLabel "Observed properties used in AMBROSIA"@en ;
+  dct:description "Controlled vocabulary of observable quantities used in Ambrosia QMRA models."@en .
+
+amblink:EndpointScheme a skos:ConceptScheme ;
+  skos:prefLabel "Health endpoints (AMBROSIA)"@en .
+
+amblink:ExposureRouteScheme a skos:ConceptScheme ;
+  skos:prefLabel "Exposure routes (AMBROSIA)"@en .
+
+amblink:PopulationScheme a skos:ConceptScheme ;
+  skos:prefLabel "Target populations (AMBROSIA)"@en .
+amblink:RiskLevel a skos:ConceptScheme ;
+  skos:prefLabel "Risk level categories"@en .
+
+amblink:Statistic a skos:ConceptScheme ;
+  skos:prefLabel "Statistical metrics"@en .
+
+# Concepts
+
+amblink:RiskProbability a skos:Concept ;
+  skos:prefLabel "Risk probability"@en ;
+  skos:definition "Probability [0..1] of the hazard event under model assumptions."@en .
+
+amblink:PredictedConcentration a skos:Concept ;
+  skos:inScheme amblink:ObservedPropertyScheme ;
+  skos:prefLabel "Predicted concentration (e.g., CFU per g)"@en ;
+  skos:definition "Predicted concentration of the hazard (e.g., CFU/g, μg/kg)."@en .
+
+amblink:ToxinConcentration a skos:Concept ;
+  skos:inScheme amblink:ObservedPropertyScheme ;
+  skos:prefLabel "Toxin concentration (e.g. µg/kg)"@en ;
+  skos:definition "Concentration of a chemical hazard (mycotoxin) in the matrix."@en .
+
+amblink:Dose a skos:Concept ;
+  skos:inScheme amblink:ObservedPropertyScheme ;
+  skos:prefLabel "Dose (e.g., CFU per person/serving)"@en .
+
+amblink:IllnessCasesPer100k a skos:Concept ;
+  skos:inScheme amblink:ObservedPropertyScheme ;
+  skos:prefLabel "Illness cases per 100 000 persons"@en ;
+  skos:definition "Predicted number of illness cases per 100 000 exposed individuals over the modeled period."@en .
+
+amblink:Infection a skos:Concept ;
+  skos:inScheme amblink:EndpointScheme ;
+  skos:prefLabel "Infection"@en .
+
+amblink:Illness a skos:Concept ;
+  skos:inScheme amblink:EndpointScheme ;
+  skos:prefLabel "Illness"@en .
+
+amblink:Oral a skos:Concept ;
+  skos:inScheme amblink:ExposureRouteScheme ;
+  skos:prefLabel "Oral"@en .
+
+amblink:GeneralPopulation a skos:Concept ;
+  skos:inScheme amblink:PopulationScheme ;
+  skos:prefLabel "General population"@en .
+
+# Risk Levels
+
+amblink:RiskLow a skos:Concept ;
+  skos:inScheme amblink:RiskLevel ;
+  skos:prefLabel "Low risk"@en .
+
+amblink:RiskModerate a skos:Concept ;
+  skos:inScheme amblink:RiskLevel ;
+  skos:prefLabel "Moderate risk"@en .
+
+amblink:RiskHigh a skos:Concept ;
+  skos:inScheme amblink:RiskLevel ;
+  skos:prefLabel "High risk"@en .
+
+amblink:RiskVeryHigh a skos:Concept ;
+  skos:inScheme amblink:RiskLevel ;
+  skos:prefLabel "Very high risk"@en .
+
+# Statistical Metrics
+
+amblink:Mean a skos:Concept ;
+  skos:inScheme amblink:Statistic ;
+  skos:prefLabel "Mean"@en .
+
+amblink:Median a skos:Concept ;
+  skos:inScheme amblink:Statistic ;
+  skos:prefLabel "Median (P50)"@en .
+
+amblink:Percentile05 a skos:Concept ;
+  skos:inScheme amblink:Statistic ;
+  skos:prefLabel "5th Percentile (Lower Bound)"@en .
+
+amblink:Percentile95 a skos:Concept ;
+  skos:inScheme amblink:Statistic ;
+  skos:prefLabel "95th Percentile (Upper Bound)"@en .
+
+# Probabilities -> Risk & Rates
+
+amblink:TransferProbability a skos:Concept ;
+    skos:inScheme amblink:ObservedPropertyScheme ;
+    skos:prefLabel "Transfer rate"@en ;
+    skos:altLabel "Cross-contamination probability"@en .
+
+amblink:ExposureProbability a skos:Concept ;
+    skos:inScheme amblink:ObservedPropertyScheme ;
+    skos:prefLabel "Exposure risk"@en ;
+    skos:altLabel "Prevalence of exposure"@en .
+
+amblink:IllnessProbability a skos:Concept ;
+    skos:inScheme amblink:ObservedPropertyScheme ;
+    skos:prefLabel "Risk of illness"@en ;
+    skos:altLabel "Probability of illness"@en .
+
+amblink:MeanIllnessProbability a skos:Concept ;
+    skos:inScheme amblink:ObservedPropertyScheme ;
+    skos:prefLabel "Average population risk"@en ;
+    skos:altLabel "Mean illness probability"@en .
+
+# CFU counts -> Loads
+
+amblink:TransferredCFUCount a skos:Concept ;
+    skos:inScheme amblink:ObservedPropertyScheme ;
+    skos:prefLabel "Transferred load"@en ;
+    skos:altLabel "CFU per portion transferred"@en .
+
+# Doses
+
+amblink:IngestedDose a skos:Concept ;
+    skos:inScheme amblink:ObservedPropertyScheme ;
+    skos:prefLabel "Ingested dose"@en ;
+    skos:altLabel "Intake level"@en .
+
+# Concentrations
+
+amblink:FoodContaminationConcentration a skos:Concept ;
+    skos:inScheme amblink:ObservedPropertyScheme ;
+    skos:prefLabel "Pathogen concentration"@en ;
+    skos:altLabel "Contamination level"@en .
+
+# Time & Summary
+
+amblink:SimulationTimeSeries a skos:Concept ;
+    skos:inScheme amblink:ObservedPropertyScheme ;
+    skos:prefLabel "Simulation timeline"@en ;
+    skos:altLabel "Time series"@en .
+
+amblink:RiskSummaryTable a skos:Concept ;
+    skos:inScheme amblink:ObservedPropertyScheme ;
+    skos:prefLabel "Risk characterization"@en ;
+    skos:altLabel "Risk profile"@en, "Summary table"@en .
+
+
+#################################################################
+# 2. Linking alignments
+#################################################################
+
+# Observed properties as SOSA observable properties and SKOS concepts
+
+# FSK model behaves like a SOSA procedure and PROV plan
+
+# Food safety incidents are temporal entities (and activities)
+amblink:FoodSafetyIncident
+    rdfs:subClassOf time:TemporalEntity ,
+                    prov:Activity .
+
+# Mapping properties aligned with SSN
+amblink:hasInputMapping
+    rdfs:subPropertyOf ssn:hasInput .
+
+amblink:hasOutputMapping
+    rdfs:subPropertyOf ssn:hasOutput .
+
+# Observed property links aligned with SOSA
+amblink:producesObservedProperty
+    rdfs:subPropertyOf sosa:observedProperty .
+
+amblink:expectsObservedProperty
+    rdfs:subPropertyOf sosa:observedProperty .
+
+# Use DC Terms for dataset/source
+amblink:sourceDataset
+    rdfs:subPropertyOf dct:source .
+
+amblink:sourceVariableName
+    rdfs:subPropertyOf dct:identifier .
+
+# Region relation specialised from generic spatial relation
+amblink:occursInRegion
+    rdfs:subPropertyOf dct:spatial .
+
+# Units and quantity kinds aligned with QUDT core properties
+amblink:expectsUnit
+    rdfs:subPropertyOf qudt:unit .
+
+amblink:hasOutputUnit
+    rdfs:subPropertyOf qudt:unit .
+
+amblink:preferredInputUnit
+    rdfs:subPropertyOf qudt:unit .
+
+amblink:expectsQuantityKind
+    rdfs:subPropertyOf qudt:hasQuantityKind .
+
+amblink:hasOutputQuantityKind
+    rdfs:subPropertyOf qudt:hasQuantityKind .
+
+# OWL-Time pattern for incident timing
+
+amblink:incidentTime a owl:ObjectProperty ;
+    rdfs:label "incident time"@en ;
+    rdfs:comment "Connects a food safety incident to a time:Instant or time:Interval."@en ;
+    rdfs:domain amblink:FoodSafetyIncident ;
+    rdfs:range  time:TemporalEntity ;
+    rdfs:subPropertyOf time:hasTime .
+
+
+#################################################################
+# 3. Dashboard context
+#################################################################
+
+# Farm profile and location
+
+ambdash:FarmProfile a owl:Class ;
+    rdfs:label "Farm profile"@en ;
+    rdfs:comment "Profile of a farm used to drive climate and food safety queries in AMBROSIA."@en ;
+    rdfs:subClassOf
+        sosa:FeatureOfInterest ,
+        wgs84_pos:SpatialThing ,
+        ambag:Farm .
+
+ambdash:hasNUTSRegion a owl:ObjectProperty ;
+    rdfs:label "has NUTS region"@en ;
+    rdfs:comment "Links the farm profile to its NUTS region (e.g. NUTS2) selected on the map."@en ;
+    rdfs:domain ambdash:FarmProfile ;
+    rdfs:range  nuts: ;
+    rdfs:subPropertyOf dct:spatial .
+
+# Optional: explicit point location (separate resource)
+ambdash:hasPointLocation a owl:ObjectProperty ;
+    rdfs:label "has point location"@en ;
+    rdfs:comment "Links a farm profile to a WGS84 point representing the farm location."@en ;
+    rdfs:domain ambdash:FarmProfile ;
+    rdfs:range  wgs84_pos:SpatialThing ;
+    rdfs:subPropertyOf dct:spatial .
+
+# Crop and hazard selection
+
+ambdash:hasCrop a owl:ObjectProperty ;
+    rdfs:label "has crop"@en ;
+    rdfs:comment "Links the request to a selected crop/variety (cereal, leafy green, etc.)."@en ;
+    rdfs:domain ambdash:UserRequest ;
+    rdfs:range  skos:Concept .
+
+ambdash:hasPathogen a owl:ObjectProperty ;
+    rdfs:label "has pathogen"@en ;
+    rdfs:comment "Links the request to a selected pathogen or mycotoxin hazard."@en ;
+    rdfs:domain ambdash:UserRequest ;
+    rdfs:range  skos:Concept .
+
+ambdash:hasHazardType a owl:ObjectProperty ;
+    rdfs:label "has hazard type"@en ;
+    rdfs:comment "High-level hazard category (e.g. enteric pathogens, mycotoxins)."@en ;
+    rdfs:domain ambdash:UserRequest ;
+    rdfs:range  skos:Concept .
+
+# Time selection (period and scale)
+
+ambdash:TimeSelection a owl:Class ;
+    rdfs:label "Time selection"@en ;
+    rdfs:comment "User-selected time window and temporal scale (e.g. next 10 years, yearly)."@en .
+
+ambdash:hasTimePeriod a owl:ObjectProperty ;
+    rdfs:label "has time period"@en ;
+    rdfs:comment "Links a time selection to a time:Interval representing the overall period of interest."@en ;
+    rdfs:domain ambdash:TimeSelection ;
+    rdfs:range  time:Interval .
+
+ambdash:hasTimeScale a owl:ObjectProperty ;
+    rdfs:label "has time scale"@en ;
+    rdfs:comment "Temporal resolution (hour, day, week, month, year) used to aggregate/display results."@en ;
+    rdfs:domain ambdash:TimeSelection ;
+    rdfs:range  time:TemporalUnit .
+
+# Convenience datatype properties (optional) mirroring the interval bounds
+ambdash:startDate a owl:DatatypeProperty ;
+    rdfs:label "start date"@en ;
+    rdfs:comment "Start date selected by the user (inclusive)."@en ;
+    rdfs:domain ambdash:TimeSelection ;
+    rdfs:range  xsd:date .
+
+ambdash:endDate a owl:DatatypeProperty ;
+    rdfs:label "end date"@en ;
+    rdfs:comment "End date selected by the user (inclusive)."@en ;
+    rdfs:domain ambdash:TimeSelection ;
+    rdfs:range  xsd:date .
+
+# User request
+
+ambdash:UserRequest a owl:Class ;
+    rdfs:label "User request"@en ;
+    rdfs:comment "A single dashboard request, including farm, crop, time selection and selected hazards."@en ;
+    rdfs:subClassOf prov:Activity .
+
+ambdash:hasFarmProfile a owl:ObjectProperty ;
+    rdfs:label "has farm profile"@en ;
+    rdfs:comment "Farm profile context used for this request."@en ;
+    rdfs:domain ambdash:UserRequest ;
+    rdfs:range  ambdash:FarmProfile .
+
+ambdash:hasTimeSelection a owl:ObjectProperty ;
+    rdfs:label "has time selection"@en ;
+    rdfs:comment "Time period and scale of interest for this request."@en ;
+    rdfs:domain ambdash:UserRequest ;
+    rdfs:range  ambdash:TimeSelection .
+
+ambdash:usesModel a owl:ObjectProperty ;
+    rdfs:label "uses model"@en ;
+    rdfs:comment "Model used to answer this request (FSKXO model instance or class)."@en ;
+    rdfs:domain ambdash:UserRequest ;
+    rdfs:range  fskxo:FSKXO_0000018113 .
+
+# Linking user requests to agents and roles
+
+ambdash:requester a owl:ObjectProperty ;
+    rdfs:label "requester"@en ;
+    rdfs:comment "Agent (person or organisation) that initiated the request."@en ;
+    rdfs:domain ambdash:UserRequest ;
+    rdfs:range  ambag:Agent ;
+    rdfs:subPropertyOf prov:wasAssociatedWith .
+
+ambdash:hasUserRole a owl:ObjectProperty ;
+    rdfs:label "has user role"@en ;
+    rdfs:comment "Semantic role with which the user acts in this request (farmer, advisor, policy maker, food processor)."@en ;
+    rdfs:domain ambdash:UserRequest ;
+    rdfs:range  skos:Concept .
+
+# Scenario selection (climate / what-if)
+
+ambdash:ScenarioSelection a owl:Class ;
+    rdfs:label "Scenario selection"@en ;
+    rdfs:comment "Selection of one or more climate scenarios (e.g. worst-case, best-case, mid-range)."@en .
+
+ambdash:hasScenarioSelection a owl:ObjectProperty ;
+    rdfs:label "has scenario selection"@en ;
+    rdfs:comment "Links a user request to its scenario selection."@en ;
+    rdfs:domain ambdash:UserRequest ;
+    rdfs:range  ambdash:ScenarioSelection .
+
+ambdash:usesClimateScenario a owl:ObjectProperty ;
+    rdfs:label "uses climate scenario"@en ;
+    rdfs:comment "Selected climate scenario concept (e.g. RCP/SSP-like scenario)."@en ;
+    rdfs:domain ambdash:ScenarioSelection ;
+    rdfs:range  skos:Concept .
+
+ambdash:scenarioRole a owl:DatatypeProperty ;
+    rdfs:label "scenario role"@en ;
+    rdfs:comment "Role of the scenario (e.g. 'worst-case', 'best-case', 'average')."@en ;
+    rdfs:domain ambdash:ScenarioSelection ;
+    rdfs:range  xsd:string .
+
+# User roles scheme (for dashboard)
+
+ambdash:UserRoleScheme a skos:ConceptScheme ;
+    skos:prefLabel "AMBROSIA user roles"@en ;
+    dct:description "Controlled list of platform user roles (Farmer, Advisor, Food processor, Policy maker)."@en .
+
+ambdash:FarmerRole a skos:Concept ;
+    skos:inScheme ambdash:UserRoleScheme ;
+    skos:prefLabel "Farmer"@en ;
+    skos:definition "User acting as farmer interested in farm-level climate and food safety risks."@en .
+
+ambdash:AdvisorRole a skos:Concept ;
+    skos:inScheme ambdash:UserRoleScheme ;
+    skos:prefLabel "Advisor"@en ;
+    skos:definition "User acting as advisor or consultant supporting farmers or cooperatives."@en .
+
+ambdash:FoodProcessorRole a skos:Concept ;
+    skos:inScheme ambdash:UserRoleScheme ;
+    skos:prefLabel "Food processor"@en ;
+    skos:definition "User acting as representative of a food processing company interested in supply risks."@en .
+
+ambdash:PolicyMakerRole a skos:Concept ;
+    skos:inScheme ambdash:UserRoleScheme ;
+    skos:prefLabel "Policy maker"@en .
+
+
+#################################################################
+# 4. Agents and agricultural features
+#################################################################
+
+# Agents and roles
+
+ambag:Agent a owl:Class ;
+    rdfs:label "Agent"@en ;
+    rdfs:comment "Actor that can request predictions or receive alerts in AMBROSIA (person or organisation)."@en ;
+    rdfs:subClassOf prov:Agent ,
+                    foaf:Agent .
+
+ambag:Person a owl:Class ;
+    rdfs:label "Person"@en ;
+    rdfs:comment "Human user of the AMBROSIA platform."@en ;
+    rdfs:subClassOf ambag:Agent ,
+                    foaf:Person .
+
+ambag:Organization a owl:Class ;
+    rdfs:label "Organization"@en ;
+    rdfs:comment "Organisation (e.g. advisory service, authority) using AMBROSIA."@en ;
+    rdfs:subClassOf ambag:Agent ,
+                    foaf:Organization .
+
+ambag:Farmer a owl:Class ;
+    rdfs:label "Farmer"@en ;
+    rdfs:comment "Farmer using the AMBROSIA platform."@en ;
+    rdfs:subClassOf ambag:Person ;
+    owl:equivalentClass s4agri:Farmer .
+
+ambag:Advisor a owl:Class ;
+    rdfs:label "Advisor"@en ;
+    rdfs:comment "Advisor or consultant using the platform on behalf of farmers or cooperatives."@en ;
+    rdfs:subClassOf ambag:Person .
+
+ambag:FoodProcessor a owl:Class ;
+    rdfs:label "Food processor"@en ;
+    rdfs:comment "Representative of a food processing company using AMBROSIA."@en ;
+    rdfs:subClassOf ambag:Person .
+
+ambag:PolicyMaker a owl:Class ;
+    rdfs:label "Policy maker"@en ;
+    rdfs:comment "Policy maker or regulator using AMBROSIA to explore regional risks."@en ;
+    rdfs:subClassOf ambag:Person .
+
+# Agricultural features (farm, parcel)
+
+ambag:Farm a owl:Class ;
+    rdfs:label "Farm"@en ;
+    rdfs:comment "Farm as a spatial feature and management unit for AMBROSIA risk assessment."@en ;
+    rdfs:subClassOf
+        sosa:FeatureOfInterest ,
+        geosparql:Feature ;
+    owl:equivalentClass s4agri:Farm .
+
+ambag:Parcel a owl:Class ;
+    rdfs:label "Parcel"@en ;
+    rdfs:comment "Field or parcel belonging to a farm. Not strictly needed for MVP but aligns with DEMETER and supports future per-parcel maps."@en ;
+    rdfs:subClassOf geosparql:Feature ;
+    owl:equivalentClass s4agri:Parcel .
+
+# Relations between agents and farms
+
+ambag:ownsFarm a owl:ObjectProperty ;
+    rdfs:label "owns farm"@en ;
+    rdfs:comment "Links an agent (usually a farmer or organisation) to a farm they own or operate."@en ;
+    rdfs:domain ambag:Agent ;
+    rdfs:range  ambag:Farm ;
+    rdfs:subPropertyOf dct:relation .
+
+ambag:managesParcel a owl:ObjectProperty ;
+    rdfs:label "manages parcel"@en ;
+    rdfs:comment "Links an agent (e.g. farmer) to a managed parcel/field."@en ;
+    rdfs:domain ambag:Agent ;
+    rdfs:range  ambag:Parcel ;
+    rdfs:subPropertyOf dct:relation .
+
+
+#################################################################
+# 5. Observation model
+#################################################################
+
+# Feature of Interest: crop-in-region context
+
+amobs:CropInRegionContext a owl:Class ;
+    rdfs:label "Crop-in-region context"@en ;
+    rdfs:comment "Feature of interest combining a crop and a region (NUTS), optionally linked to a specific farm profile."@en ;
+    rdfs:subClassOf sosa:FeatureOfInterest .
+
+amobs:hasFarmProfile a owl:ObjectProperty ;
+    rdfs:label "has farm profile"@en ;
+    rdfs:comment "Farm profile associated with this crop-in-region context, if specific farm data is used."@en ;
+    rdfs:domain amobs:CropInRegionContext ;
+    rdfs:range  ambdash:FarmProfile .
+
+amobs:hasCropConcept a owl:ObjectProperty ;
+    rdfs:label "has crop concept"@en ;
+    rdfs:comment "Crop or variety concept (from the plant vocabulary) for this context."@en ;
+    rdfs:domain amobs:CropInRegionContext ;
+    rdfs:range  skos:Concept .
+
+amobs:hasRegion a owl:ObjectProperty ;
+    rdfs:label "has region"@en ;
+    rdfs:comment "NUTS region used as spatial aggregation unit."@en ;
+    rdfs:domain amobs:CropInRegionContext ;
+    rdfs:range  nuts: ;
+    rdfs:subPropertyOf dct:spatial .
+
+# Observation subclasses
+
+# Generic base for AMBROSIA observations
+amobs:AmbrosiaObservation a owl:Class ;
+    rdfs:label "AMBROSIA observation"@en ;
+    rdfs:comment "Base class for climate, hazard and impact observations used in AMBROSIA."@en ;
+    rdfs:subClassOf sosa:Observation .
+
+# Climate-related observations (tas, pr, GDD, etc.)
+amobs:ClimateObservation a owl:Class ;
+    rdfs:label "Climate observation"@en ;
+    rdfs:comment "Observation of a climate variable (temperature, precipitation, growing degree days, etc.)."@en ;
+    rdfs:subClassOf amobs:AmbrosiaObservation .
+
+# Hazard-related observations (pathogen conc., toxin level, risk probability, illness cases)
+amobs:HazardObservation a owl:Class ;
+    rdfs:label "Hazard observation"@en ;
+    rdfs:comment "Observation of a food safety hazard-related variable (pathogen concentration, toxin level, illness risk, cases)."@en ;
+    rdfs:subClassOf amobs:AmbrosiaObservation .
+
+# Yield / production effect observations
+amobs:YieldObservation a owl:Class ;
+    rdfs:label "Yield observation"@en ;
+    rdfs:comment "Observation of yield or production level, with or without associated hazard information."@en ;
+    rdfs:subClassOf amobs:AmbrosiaObservation .
+
+# Linking observations to user requests and context
+
+amobs:forRequest a owl:ObjectProperty ;
+    rdfs:label "for request"@en ;
+    rdfs:comment "Associates an observation with the user request it answers."@en ;
+    rdfs:domain amobs:AmbrosiaObservation ;
+    rdfs:range  ambdash:UserRequest ;
+    rdfs:subPropertyOf prov:wasGeneratedBy .
+
+amobs:hasContext a owl:ObjectProperty ;
+    rdfs:label "has context"@en ;
+    rdfs:comment "Associates an observation with its crop-in-region context."@en ;
+    rdfs:domain amobs:AmbrosiaObservation ;
+    rdfs:range  amobs:CropInRegionContext ;
+    rdfs:subPropertyOf sosa:hasFeatureOfInterest .
+
+# Result pattern using QUDT QuantityValue
+
+amobs:hasQuantityResult a owl:ObjectProperty ;
+    rdfs:label "has quantity result"@en ;
+    rdfs:comment "Result of an observation represented as a QUDT quantity value."@en ;
+    rdfs:domain amobs:AmbrosiaObservation ;
+    rdfs:range  qudt:QuantityValue ;
+    rdfs:subPropertyOf sosa:hasResult .
+
+
+#################################################################
+# 6. Alerts / incident alignments
+#################################################################
+
+# Food safety incident as alert-like entity
+
+amblink:FoodSafetyIncident
+    rdfs:subClassOf
+        sosa:FeatureOfInterest ,
+        prov:Activity ,
+        time:TemporalEntity ;
+    owl:equivalentClass fiware:Alert ,
+                        foodie:Alert .

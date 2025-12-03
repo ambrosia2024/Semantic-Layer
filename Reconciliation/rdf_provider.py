@@ -7,31 +7,70 @@ import re
 logger = logging.getLogger(__name__)
 
 def search_local_rdf(term, limit, graph, **kwargs):
-    """Searches the local RDF graph for a given term using fuzzy matching."""
     if graph is None:
         logger.warning("Local RDF graph is None.")
         return []
 
     logger.info(f"Fuzzily searching local RDF graph ({len(graph)} triples) for term: '{term}'")
-    
-    # Escape the term to make it safe for use in a regex
-    escaped_term = re.escape(term)
-    
-    # More robust SPARQL query using REGEX for case-insensitive matching
+
+    # Nur für die SPARQL-String-Literal-Sicherheit, nicht als Regex:
+    pattern = term.replace("\\", "\\\\").replace('"', '\\"')
+
     query = f"""
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    PREFIX dc: <http://purl.org/dc/elements/1.1/>
+    PREFIX dc:   <http://purl.org/dc/elements/1.1/>
+    PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+    PREFIX oboInOwl: <http://www.geneontology.org/formats/oboInOwl#>
+    PREFIX IAO:  <http://purl.obolibrary.org/obo/IAO_>
+    PREFIX terms: <http://purl.org/dc/terms/>
+    PREFIX dct:   <http://purl.org/dc/terms/>
 
-    SELECT DISTINCT ?uri ?label ?description
+    SELECT DISTINCT ?uri ?displayLabel ?description ?ontologyTitle
     WHERE {{
-        ?uri rdfs:label|skos:prefLabel|skos:altLabel|dc:title ?label .
-        
-        FILTER(REGEX(STR(?label), "{escaped_term}", "i"))
-        
-        OPTIONAL {{ 
-            ?uri rdfs:comment|skos:definition ?description .
+        # Typ-Filter: Klassen, Konzepte UND Individuen zulassen
+        {{
+            ?uri a owl:Class .
+        }} UNION {{
+            ?uri a rdfs:Class .
+        }} UNION {{
+            ?uri a skos:Concept .
+        }} UNION {{
+            ?uri a owl:NamedIndividual .
         }}
+
+        # Kandidaten-Labels: Label + Pref/Alt + OBO-Synonyme + Titel
+        {{
+            ?uri rdfs:label ?candidateLabel .
+        }} UNION {{
+            ?uri skos:prefLabel ?candidateLabel .
+        }} UNION {{
+            ?uri skos:altLabel ?candidateLabel .
+        }} UNION {{
+            ?uri dc:title ?candidateLabel .
+        }} UNION {{
+            ?uri oboInOwl:hasExactSynonym ?candidateLabel .
+        }} UNION {{
+            ?uri oboInOwl:hasRelatedSynonym ?candidateLabel .
+        }}
+
+        # Case-insensitive substring-Match, kein Regex
+        FILTER(CONTAINS(LCASE(STR(?candidateLabel)), LCASE("{pattern}")))
+
+        # Anzeigename: bevorzugt rdfs:label / skos:prefLabel
+        OPTIONAL {{
+            ?uri rdfs:label ?mainLabel .
+        }}
+        OPTIONAL {{
+            ?uri skos:prefLabel ?prefLabel .
+        }}
+        BIND(COALESCE(?mainLabel, ?prefLabel, ?candidateLabel) AS ?displayLabel)
+
+        # Optionale Beschreibung: rdfs:comment, skos:definition, IAO_0000115
+        OPTIONAL {{ ?uri rdfs:comment ?desc1 . }}
+        OPTIONAL {{ ?uri skos:definition ?desc2 . }}
+        OPTIONAL {{ ?uri IAO:0000115 ?desc3 . }}
+        BIND(COALESCE(?desc1, ?desc2, ?desc3) AS ?description)
     }}
     LIMIT {limit}
     """
@@ -42,7 +81,7 @@ def search_local_rdf(term, limit, graph, **kwargs):
         logger.info(f"SPARQL query returned {len(qres)} total labels to check for fuzzy matching.")
         
         for row in qres:
-            label_text = str(row.label)
+            label_text = str(row.displayLabel)
             score = calculate_levenshtein_score(term, label_text)
             
             # Set a threshold for what is considered a "similar" term
@@ -51,7 +90,8 @@ def search_local_rdf(term, limit, graph, **kwargs):
                     "uri": str(row.uri),
                     "label": label_text,
                     "description": str(row.description) if row.description else "",
-                    "source_provider": "Local RDF File",
+                    "source_provider": "Local RDF File", # This will be overridden in reconciliation_ui.py
+                    "ontology_title": str(row.ontologyTitle) if row.ontologyTitle else "", # New: for custom source provider
                     "levenshtein_score": score # Add score for sorting
                 })
 
