@@ -1013,29 +1013,34 @@ def process_fskx_file(fskx_file_path: Path, context_doc: dict, override=False):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Convert single or joined FSKX models to JSON-LD.")
-    parser.add_argument("fskx_path", type=str, help="Path to a single .fskx file or a directory containing .fskx files.")
-    parser.add_argument('--override', action='store_true', help='Override existing output files.')
-    args = parser.parse_args()
+    try:
+        parser = argparse.ArgumentParser(description="Convert single or joined FSKX models to JSON-LD.")
+        parser.add_argument("fskx_path", type=str, help="Path to a single .fskx file or a directory containing .fskx files.")
+        parser.add_argument('--override', action='store_true', help='Override existing output files.')
+        args = parser.parse_args()
 
-    ont_classes, ont_properties, ont_individuals, ont_synonyms = load_ontology_mappings(ONTOLOGY_FILE)
-    ONTOLOGY_CLASSES.update(ont_classes)
-    ONTOLOGY_PROPERTIES.update(ont_properties)
-    ONTOLOGY_INDIVIDUALS.update(ont_individuals)
-    ONTOLOGY_SYNONYMS.update(ont_synonyms)
+        ont_classes, ont_properties, ont_individuals, ont_synonyms = load_ontology_mappings(ONTOLOGY_FILE)
+        ONTOLOGY_CLASSES.update(ont_classes)
+        ONTOLOGY_PROPERTIES.update(ont_properties)
+        ONTOLOGY_INDIVIDUALS.update(ont_individuals)
+        ONTOLOGY_SYNONYMS.update(ont_synonyms)
 
-    context = loadContext("jsonld-context_fsk_enhanced.json")
-    if not context:
-        sys.exit("Failed to load context. Exiting.")
+        context = loadContext("jsonld-context_fsk_enhanced.json")
+        if not context:
+            sys.exit("Failed to load context. Exiting.")
 
-    fskx_path = Path(args.fskx_path)
-    if fskx_path.is_dir():
-        logging.info(f"Processing all .fskx files in directory: {fskx_path}")
-        for fskx_file in fskx_path.glob('*.fskx'):
-            process_fskx_file(fskx_file, context, args.override)
-    elif fskx_path.is_file() and fskx_path.suffix == '.fskx':
-        logging.info(f"Processing single .fskx file: {fskx_path}")
-        process_fskx_file(fskx_path, context, args.override)
-    else:
-        logging.error(f"Invalid path provided: {fskx_path}. Must be a .fskx file or a directory.")
+        fskx_path = Path(args.fskx_path)
+        if fskx_path.is_dir():
+            logging.info(f"Processing all .fskx files in directory: {fskx_path}")
+            for fskx_file in fskx_path.glob('*.fskx'):
+                process_fskx_file(fskx_file, context, args.override)
+        elif fskx_path.is_file() and fskx_path.suffix == '.fskx':
+            logging.info(f"Processing single .fskx file: {fskx_path}")
+            process_fskx_file(fskx_path, context, args.override)
+        else:
+            logging.error(f"Invalid path provided: {fskx_path}. Must be a .fskx file or a directory.")
+            sys.exit(1)
+    except Exception:
+        import traceback, sys
+        traceback.print_exc()
         sys.exit(1)

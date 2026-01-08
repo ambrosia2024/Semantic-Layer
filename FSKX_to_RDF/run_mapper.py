@@ -76,16 +76,21 @@ def process_files(input_file=None, override=False):
     logging.info("Processing complete.")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Apply vocabulary mapping to JSON-LD files.")
-    parser.add_argument(
-        '-i', '--input',
-        help='Path to a single JSON-LD file to process.'
-    )
-    parser.add_argument(
-        '--override',
-        action='store_true',
-        help='Override existing output files.'
-    )
-    args = parser.parse_args()
+    try:
+        parser = argparse.ArgumentParser(description="Apply vocabulary mapping to JSON-LD files.")
+        parser.add_argument(
+            '-i', '--input',
+            help='Path to a single JSON-LD file to process.'
+        )
+        parser.add_argument(
+            '--override',
+            action='store_true',
+            help='Override existing output files.'
+        )
+        args = parser.parse_args()
 
-    process_files(input_file=args.input, override=args.override)
+        process_files(input_file=args.input, override=args.override)
+    except Exception:
+        import traceback, sys
+        traceback.print_exc()
+        sys.exit(1)

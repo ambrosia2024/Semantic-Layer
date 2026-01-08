@@ -42,7 +42,7 @@ PREFIX_MAP = {
     "fskxo": "http://semanticlookup.zbmed.de/km/fskxo/",
     "model": "https://www.ambrosia-project.eu/model/",
     "vocab": "https://www.ambrosia-project.eu/vocab/",
-    "amblink": "https://www.ambrosia-project.eu/vocab/linking/",
+    "amblink": "https://w3id.org/ambrosia/linking#",
     "schema": "https://schema.org/",
     "dcterms": "http://purl.org/dc/terms/",
     "skos": "http://www.w3.org/2004/02/skos/core#",
@@ -401,8 +401,9 @@ Examples:
     except KeyboardInterrupt:
         print("\nConversion interrupted by user")
         sys.exit(1)
-    except Exception as e:
-        logging.critical(f"An unexpected error occurred: {e}", exc_info=True)
+    except Exception:
+        import traceback
+        traceback.print_exc()
         sys.exit(1)
 
 

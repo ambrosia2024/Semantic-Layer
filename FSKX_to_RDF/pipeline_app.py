@@ -5,6 +5,7 @@ import logging
 from pathlib import Path
 import os
 import pandas as pd
+from datetime import datetime
 from rdflib import Graph, Literal, Namespace, URIRef, BNode
 from rdflib.namespace import DCTERMS, RDF, SKOS, RDFS
 from rdflib.plugins.sparql import prepareQuery
@@ -14,6 +15,8 @@ import difflib
 import zipfile
 import json
 import io
+import xml.etree.ElementTree as ET
+from dataclasses import dataclass
 
 # Get the directory of the current script to build robust paths
 script_dir = Path(__file__).resolve().parent
@@ -27,9 +30,9 @@ VOCAB_DIR = script_dir.parent / "Vocabulary"
 
 # --- Namespaces ---
 FSKXO = Namespace("http://semanticlookup.zbmed.de/km/fskxo/")
-MODEL = Namespace("https://www.ambrosia-project.eu/model/")
-VOCAB = Namespace("https://www.ambrosia-project.eu/vocab/")
-AMBLINK = Namespace("https://www.ambrosia-project.eu/vocab/linking/")
+MODEL = Namespace("https://w3id.org/ambrosia/model#")
+VOCAB = Namespace("https://w3id.org/ambrosia/vocab#")
+AMBLINK = Namespace("https://w3id.org/ambrosia/linking#")
 SCHEMA = Namespace("https://schema.org/")
 QUDT_UNIT = Namespace("http://qudt.org/vocab/unit/")
 QK = Namespace("http://qudt.org/vocab/quantitykind/")
@@ -43,10 +46,196 @@ CLASSIFICATION_MAP = {
 
 # --- Helper Functions ---
 
+@dataclass
+class PipelineStepResult:
+    name: str
+    status: str  # "success", "warning", "error", "skipped"
+    message: str
+    outputs: list[Path] = None
+    warnings: list[str] = None
+
+@dataclass
+class FSKXValidationError(Exception):
+    message: str
+    is_fatal: bool = True
+
+def _norm_manifest_path(p: str) -> str:
+    # Normalize ./, .\, leading slashes, and backslashes
+    p = p.strip()
+    p = p.replace("\\", "/")
+    if p.startswith("./"):
+        p = p[2:]
+    if p.startswith("/"):
+        p = p[1:]
+    return p
+
+def validate_fskx(fskx_path: Path, strict_manifest: bool = True) -> list[str]:
+    warnings = []
+    if not fskx_path.exists():
+        raise FSKXValidationError(f"FSKX not found: {fskx_path}")
+    if fskx_path.stat().st_size == 0:
+        raise FSKXValidationError(f"FSKX is empty: {fskx_path}")
+
+    if not zipfile.is_zipfile(fskx_path):
+        raise FSKXValidationError("FSKX is not a valid ZIP archive.")
+
+    with zipfile.ZipFile(fskx_path, "r") as z:
+        zip_names_raw = z.namelist()
+        zip_names = {_norm_manifest_path(n) for n in zip_names_raw if not n.endswith("/")}
+
+        # 1) manifest.xml must exist at root (as per guidance)
+        if "manifest.xml" not in zip_names:
+            raise FSKXValidationError("Missing mandatory file: manifest.xml")
+
+        # 2) parse manifest.xml
+        manifest_bytes = z.read(next(n for n in zip_names_raw if _norm_manifest_path(n) == "manifest.xml"))
+        try:
+            root = ET.fromstring(manifest_bytes)
+        except Exception as e:
+            raise FSKXValidationError(f"manifest.xml is not valid XML: {e}")
+
+        # OMEX manifest namespace handling
+        ns = {"omex": "http://identifiers.org/combine.specifications/omex-manifest"}
+        content_elems = root.findall("omex:content", ns)
+        if not content_elems:
+            raise FSKXValidationError("manifest.xml contains no <content> entries.")
+
+        manifest_locations = []
+        for c in content_elems:
+            loc = c.attrib.get("location")
+            if loc is None:
+                continue
+            manifest_locations.append(loc)
+
+        # Must contain '.' entry (container itself)
+        if "." not in manifest_locations:
+            raise FSKXValidationError("manifest.xml must declare the container itself with location='.'")
+
+        manifest_files = {_norm_manifest_path(l) for l in manifest_locations if l != "."}
+
+        # 3) manifest -> zip: everything listed must exist
+        missing_in_zip = sorted([p for p in manifest_files if p not in zip_names])
+        if missing_in_zip:
+            raise FSKXValidationError(
+                "manifest.xml lists files that are missing in the archive:\n- " + "\n- ".join(missing_in_zip)
+            )
+
+        # 4) zip -> manifest (strict): everything in zip must be listed
+        if strict_manifest:
+            extras = sorted([p for p in zip_names if p not in manifest_files])
+            # optionally ignore typical junk files:
+            extras = [p for p in extras if not (p.startswith("__MACOSX/") or p.endswith(".DS_Store"))]
+            if extras:
+                warnings.append("Archive contains files not listed in manifest.xml:\n- " + "\n- ".join(extras))
+
+        # 5) metadata.rdf must exist (mandatory for models)
+        if "metadata.rdf" not in zip_names:
+            warnings.append("Missing mandatory file: metadata.rdf. Continuing with weaker validation.")
+            return warnings
+
+        # 6) parse metadata.rdf and verify required dc:type roles
+        rdf_bytes = z.read(next(n for n in zip_names_raw if _norm_manifest_path(n) == "metadata.rdf"))
+        g = Graph()
+        try:
+            g.parse(data=rdf_bytes.decode("utf-8", errors="replace"), format="xml")
+        except Exception as e:
+            raise FSKXValidationError(f"metadata.rdf is not valid RDF/XML: {e}")
+
+        DC = Namespace("http://purl.org/dc/elements/1.1/")
+
+        required_types = {"annotation", "modelScript", "readme", "dependencies"}
+
+        found_types = set()
+        type_to_files = {}
+
+        for s, p, o in g.triples((None, DC.type, None)):
+            t = str(o).strip()
+            found_types.add(t)
+            type_to_files.setdefault(t, []).append(str(s))
+
+        missing_types = sorted(list(required_types - found_types))
+        if missing_types:
+            warnings.append(f"metadata.rdf is missing some mandatory dc:type entries: {', '.join(missing_types)}")
+
+        # 7) ensure referenced files exist in zip (rdf:about paths)
+        def _about_to_path(about: str) -> str:
+            # examples show rdf:about="/model.r" etc.
+            about = about.replace("\\", "/")
+            if about.startswith("file:"):
+                about = about[5:]
+            if about.startswith("/"):
+                about = about[1:]
+            return about
+
+        # Check existing types references at least one real file
+        for t in found_types:
+            if t in required_types:
+                refs = type_to_files.get(t, [])
+                if not refs:
+                    continue
+                # at least one referenced file must exist
+                ok_any = False
+                for about in refs:
+                    path = _about_to_path(about)
+                    if path in zip_names:
+                        ok_any = True
+                if not ok_any:
+                    raise FSKXValidationError(
+                        f"metadata.rdf references for dc:type '{t}' do not exist in the archive:\n- " +
+                        "\n- ".join(_about_to_path(a) for a in refs)
+                    )
+    return warnings
+
+def abort(msg, status_obj=None, exc: Exception | None = None):
+    if status_obj:
+        status_obj.update(label="Pipeline failed!", state="error", expanded=True)
+    st.error(msg)
+    if exc:
+        st.exception(exc)
+    st.stop()
+
+def require_file(path: Path, label: str):
+    if not path.exists():
+        abort(f"Missing required file: {label}\n\nExpected at: `{path}`")
+    if path.stat().st_size == 0:
+        abort(f"Empty required file: {label}\n\nFile: `{path}`")
+
+def require_json(path: Path, label: str):
+    require_file(path, label)
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            json.load(f)
+    except Exception as e:
+        abort(f"Invalid JSON in {label}\n\nFile: `{path}`", e)
+
+def require_turtle(path: Path, label: str):
+    require_file(path, label)
+    try:
+        g = Graph()
+        g.parse(str(path), format="turtle")
+        if len(g) == 0:
+            abort(f"Turtle graph is empty: {label}\n\nFile: `{path}`")
+    except Exception as e:
+        abort(f"Invalid Turtle in {label}\n\nFile: `{path}`", e)
+
+def preflight_fskx(path: Path, status_obj=None) -> list[str]:
+    st.write(f"--- Running Preflight Integrity Checks for {path.name} ---")
+    try:
+        warnings = validate_fskx(path)
+        if warnings:
+            for w in warnings:
+                st.warning(w)
+        st.success(f"Preflight for {path.name} passed.")
+        return warnings
+    except FSKXValidationError as e:
+        abort(f"FSKX Validation Failed for {path.name}: {e.message}", status_obj=status_obj)
+    except Exception as e:
+        abort(f"An error occurred during FSKX validation of {path.name}: {e}", status_obj=status_obj)
+
 def get_model_statuses():
     """
     Scans FSKX and mapped turtle directories to determine model statuses.
-    Returns new models and a dictionary of existing models with their titles from the FSKX file.
+    Returns new models and a dictionary of existing models with their metadata (title, mtime) from the FSKX and Turtle files.
     """
     if not FSKX_DIR.exists():
         return [], {}
@@ -55,13 +244,15 @@ def get_model_statuses():
     if not MAPPED_TURTLE_DIR.exists() or not any(MAPPED_TURTLE_DIR.iterdir()):
         return sorted(list(fskx_files)), {}
 
-    mapped_files_stems = {p.stem for p in MAPPED_TURTLE_DIR.glob("*.ttl")}
+    mapped_files = {p.stem: p for p in MAPPED_TURTLE_DIR.glob("*.ttl")}
+    mapped_files_stems = set(mapped_files.keys())
     new_models = sorted(list(fskx_files - mapped_files_stems))
     
     existing_models_stems = sorted(list(fskx_files.intersection(mapped_files_stems)))
-    existing_models_with_titles = {}
+    existing_models_metadata = {}
     for stem in existing_models_stems:
         title = "Title not found"
+        mtime_str = "Unknown"
         try:
             fskx_file_path = FSKX_DIR / f"{stem}.fskx"
             if fskx_file_path.exists():
@@ -71,13 +262,22 @@ def get_model_statuses():
                         with zip_ref.open(metadata_filename) as meta_file:
                             fskx_content = json.load(meta_file)
                             title = fskx_content.get('generalInformation', {}).get('name', 'Title not found in JSON')
+            
+            # Get mtime from the turtle file
+            turtle_file_path = mapped_files[stem]
+            mtime = os.path.getmtime(turtle_file_path)
+            mtime_str = datetime.fromtimestamp(mtime).strftime('%Y-%m-%d %H:%M')
         except Exception:
             title = "Error reading FSKX"
-        existing_models_with_titles[stem] = title
+        
+        existing_models_metadata[stem] = {
+            "title": title,
+            "last_processed": mtime_str
+        }
             
-    return new_models, existing_models_with_titles
+    return new_models, existing_models_metadata
 
-def run_script(script_name, args=[]):
+def run_script(script_name, args=[], validation_func=None, validation_args=None):
     st.write(f"--- Running {script_name} ---")
     script_path = Path(__file__).resolve().parent / script_name
     command = [sys.executable, str(script_path)] + args
@@ -95,9 +295,24 @@ def run_script(script_name, args=[]):
     return_code = process.wait()
     if return_code != 0:
         st.error(f"{script_name} failed with return code {return_code}.")
-        return False
-    st.success(f"{script_name} completed successfully.")
-    return True
+        return False, None
+    
+    # Run post-validation if provided
+    try:
+        if validation_func and validation_args:
+            validation_func(*validation_args)
+    except Exception as e:
+        st.error(f"Output validation failed for {script_name}: {e}")
+        return False, None
+        
+    st.success(f"{script_name} completed successfully and output validated.")
+    
+    # Extract output path from validation_args if it looks like one
+    artifact = None
+    if validation_args and len(validation_args) > 0 and isinstance(validation_args[0], Path):
+        artifact = validation_args[0]
+        
+    return True, artifact
 
 @st.cache_data
 def load_master_mapping(file_path):
@@ -412,6 +627,12 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
         st.set_page_config(layout="wide")
     
     st.title("FSKX to RDF")
+    
+    st.info("""
+    **Getting Started:**  
+    To process new models, ensure your `.fskx` files are placed in the dedicated `fskx_models` folder:  
+    `Semantic-Layer/FSKX_to_RDF/fskx_models/`
+    """)
 
     # --- Main Pipeline Runner ---
     st.sidebar.header("Controls")
@@ -440,60 +661,248 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
     run_pipeline = st.sidebar.button("▶️ Run Pipeline", key=f"{key_ns}_run")
 
     st.header("Model Status")
-    new_models, existing_models_with_titles = get_model_statuses()
+    new_models, existing_models_metadata = get_model_statuses()
     col1, col2 = st.columns(2)
     with col1:
-        st.dataframe({"New Models": new_models or ["-"]}, use_container_width=True)
+        st.subheader("New Models")
+        st.dataframe({"Model ID": new_models or ["-"]}, use_container_width=True)
     with col2:
-        processed_df = pd.DataFrame(
-            {"Model ID": existing_models_with_titles.keys(), "Title": existing_models_with_titles.values()}
-        )
+        st.subheader("Processed Models")
+        processed_data = []
+        for stem, meta in existing_models_metadata.items():
+            processed_data.append({
+                "Model ID": stem,
+                "Title": meta["title"],
+                "Last Processed": meta["last_processed"]
+            })
+        processed_df = pd.DataFrame(processed_data)
         st.dataframe(processed_df, use_container_width=True)
 
     if run_pipeline:
         st.session_state.pipeline_run = True
-        st.header("Pipeline Output")
+        st.header("Pipeline Run Details")
         script_args = ["--override"] if override_existing else []
         
-        with st.status("Running pipeline...", expanded=True) as status:
-            if execution_mode == "Process Single Model" and target_model_file:
-                st.write(f"Processing single model: **{target_model_file}**")
-                model_stem = Path(target_model_file).stem
-                
-                # 1. FSKX_to_JSONLD.py
-                fskx_path = FSKX_DIR / target_model_file
-                fskx_args = [str(fskx_path)] + script_args
-                if not run_script("FSKX_to_JSONLD.py", fskx_args): st.stop()
-                
-                # 2. ValidityChecker.py
-                if not run_script("ValidityChecker.py"): st.stop()
-                
-                # 3. run_mapper.py
-                # Need to point to the generated unmapped jsonld file
-                unmapped_jsonld = Path("unmapped/jsonld") / f"{model_stem}.jsonld"
-                mapper_args = ["-i", str(unmapped_jsonld)] + script_args
-                if not run_script("run_mapper.py", mapper_args): st.stop()
-                
-                # 4. jsonld_serialization_converter.py
-                # Need to point to the mapped jsonld file
-                mapped_jsonld = Path("mapped/jsonld") / f"{model_stem}.jsonld"
-                converter_args = ["-i", str(mapped_jsonld), "-f", "turtle", "-o", "mapped/turtle"] + script_args
-                if not run_script("jsonld_serialization_converter.py", converter_args): st.stop()
-            
-            else:
-                # Process All
-                fskx_to_jsonld_args = [str(FSKX_DIR)] + script_args
-                if not run_script("FSKX_to_JSONLD.py", fskx_to_jsonld_args): st.stop()
-                if not run_script("ValidityChecker.py"): st.stop()
-                if not run_script("run_mapper.py", script_args): st.stop()
-                converter_args = ["-d", "mapped/jsonld", "-f", "turtle", "-o", "mapped/turtle"]
-                if override_existing: converter_args.append("--override")
-                if not run_script("jsonld_serialization_converter.py", converter_args): st.stop()
+        # Summary Panel Placeholder
+        summary_placeholder = st.empty()
+        
+        step_results = []
+        all_warnings = []
 
-            status.update(label="Pipeline finished successfully!", state="complete", expanded=False)
+        def update_summary(final=False):
+            with summary_placeholder.container():
+                status_color = "green"
+                if any(r.status == "error" for r in step_results):
+                    status_color = "red"
+                elif any(r.status == "warning" for r in step_results) or all_warnings:
+                    status_color = "orange"
+                
+                state_text = "Running..." if not final else ("Failed" if status_color=="red" else ("Success with warnings" if status_color=="orange" else "Success"))
+                st.markdown(f"### Overall Status: :{status_color}[{state_text}]")
+                
+                cols = st.columns(len(step_results) if step_results else 1)
+                for i, res in enumerate(step_results):
+                    icon = "✅" if res.status == "success" else ("⚠️" if res.status == "warning" else ("❌" if res.status == "error" else "⏭️"))
+                    cols[i].markdown(f"**Step {i}**\n{icon} {res.name}")
+                
+                if final and all_warnings:
+                    with st.expander(f"Total Warnings ({len(all_warnings)})"):
+                        for w in all_warnings: st.warning(w)
+
+        with st.status("Executing Pipeline Steps...", expanded=True) as status:
+            try:
+                if execution_mode == "Process Single Model" and target_model_file:
+                    model_stem = Path(target_model_file).stem
+                    fskx_path = FSKX_DIR / target_model_file
+                    
+                    # 0. Preflight
+                    warnings = preflight_fskx(fskx_path, status_obj=status)
+                    all_warnings.extend(warnings)
+                    step_results.append(PipelineStepResult("Preflight", "warning" if warnings else "success", "Preflight passed", warnings=warnings))
+                    update_summary()
+
+                    # 1. FSKX_to_JSONLD.py
+                    fskx_args = [str(fskx_path)] + script_args
+                    unmapped_jsonld = script_dir / "unmapped" / "jsonld" / f"{model_stem}.jsonld"
+                    ok, art = run_script("FSKX_to_JSONLD.py", fskx_args, validation_func=require_json, validation_args=(unmapped_jsonld, "Unmapped JSON-LD"))
+                    if not ok:
+                        step_results.append(PipelineStepResult("FSKX→JSONLD", "error", "Script failed"))
+                        for i in range(2, 5): step_results.append(PipelineStepResult(f"Step {i}", "skipped", "Prerequisite failed"))
+                        update_summary(True)
+                        abort("FSKX→JSONLD failed.", status_obj=status)
+                    step_results.append(PipelineStepResult("FSKX→JSONLD", "success", "Produced unmapped JSON-LD", outputs=[art]))
+                    update_summary()
+                    
+                    # 2. ValidityChecker.py
+                    ok, art = run_script("ValidityChecker.py")
+                    if not ok:
+                        step_results.append(PipelineStepResult("Validity Check", "error", "Script failed"))
+                        for i in range(3, 5): step_results.append(PipelineStepResult(f"Step {i}", "skipped", "Prerequisite failed"))
+                        update_summary(True)
+                        st.stop()
+                    step_results.append(PipelineStepResult("Validity Check", "success", "Metadata validated"))
+                    update_summary()
+                    
+                    # 3. run_mapper.py
+                    mapper_args = ["-i", str(unmapped_jsonld)] + script_args
+                    mapped_jsonld = script_dir / "mapped" / "jsonld" / f"{model_stem}.jsonld"
+                    ok, art = run_script("run_mapper.py", mapper_args, validation_func=require_json, validation_args=(mapped_jsonld, "Mapped JSON-LD"))
+                    if not ok:
+                        step_results.append(PipelineStepResult("Vocabulary Mapping", "error", "Mapping failed"))
+                        step_results.append(PipelineStepResult("Serialization", "skipped", "Prerequisite failed"))
+                        update_summary(True)
+                        st.stop()
+                    step_results.append(PipelineStepResult("Vocabulary Mapping", "success", "Produced mapped JSON-LD", outputs=[art]))
+                    update_summary()
+                    
+                    # 4. jsonld_serialization_converter.py
+                    converter_args = ["-i", str(mapped_jsonld), "-f", "turtle", "-o", "mapped/turtle"] + script_args
+                    mapped_ttl = script_dir / "mapped" / "turtle" / f"{model_stem}.ttl"
+                    ok, art = run_script("jsonld_serialization_converter.py", converter_args, validation_func=require_turtle, validation_args=(mapped_ttl, "Mapped Turtle"))
+                    if not ok:
+                        step_results.append(PipelineStepResult("Serialization", "error", "Conversion failed"))
+                        update_summary(True)
+                        st.stop()
+                    step_results.append(PipelineStepResult("Serialization", "success", "Produced Turtle RDF", outputs=[art]))
+                
+                else:
+                    # Process All
+                    if not FSKX_DIR.exists() or not any(FSKX_DIR.glob("*.fskx")):
+                        abort("No FSKX models found in fskx_models directory.", status_obj=status)
+                    
+                    # Preflight all
+                    for fskx_file in FSKX_DIR.glob("*.fskx"):
+                        all_warnings.extend(preflight_fskx(fskx_file, status_obj=status))
+                    step_results.append(PipelineStepResult("Preflight", "warning" if all_warnings else "success", "All models preflighted"))
+                    update_summary()
+
+                    fskx_to_jsonld_args = [str(FSKX_DIR)] + script_args
+                    ok, _ = run_script("FSKX_to_JSONLD.py", fskx_to_jsonld_args)
+                    if not ok: 
+                        step_results.append(PipelineStepResult("Extraction", "error", "Failed"))
+                        update_summary(True)
+                        st.stop()
+                    
+                    if not (script_dir / "unmapped" / "jsonld").exists() or not any((script_dir / "unmapped" / "jsonld").glob("*.jsonld")):
+                        step_results.append(PipelineStepResult("Extraction", "error", "No output"))
+                        update_summary(True)
+                        abort("No JSON-LD files produced.", status_obj=status)
+                    step_results.append(PipelineStepResult("Extraction", "success", "Models extracted"))
+                    update_summary()
+
+                    run_script("ValidityChecker.py")
+                    step_results.append(PipelineStepResult("Validity", "success", "Checked"))
+                    update_summary()
+                    
+                    run_script("run_mapper.py", script_args)
+                    step_results.append(PipelineStepResult("Mapping", "success", "Mapped"))
+                    update_summary()
+
+                    converter_args = ["-d", "mapped/jsonld", "-f", "turtle", "-o", "mapped/turtle"]
+                    if override_existing: converter_args.append("--override")
+                    run_script("jsonld_serialization_converter.py", converter_args)
+                    step_results.append(PipelineStepResult("Serialization", "success", "Converted"))
+
+            except Exception as e:
+                status.update(label="Pipeline encountered an unexpected error!", state="error", expanded=True)
+                raise e
+
+            final_label = "Pipeline finished successfully!"
+            final_state = "complete"
+            if any(r.status == "error" for r in step_results):
+                final_label = "Pipeline failed!"
+                final_state = "error"
+            elif any(r.status == "warning" for r in step_results) or all_warnings:
+                final_label = "Pipeline finished with warnings."
+            
+            update_summary(True)
+            status.update(label=final_label, state=final_state, expanded=False)
 
     st.markdown("---")
     st.header("Interactive Mapping")
+    
+    with st.expander("How to map correctly (Mapping Guide)", expanded=False):
+        st.markdown("""
+### What is “Interactive Mapping” and why is it necessary?
+
+This step connects a predictive model (from an `.fskx` file) to the concepts used by the dashboard.  
+The model has its own parameter names (e.g., `temp_celsius`, `tmax`, `model_values`). The dashboard, however, works with *domain concepts* (crop, hazard, climate variables, predicted concentration, risk outputs).  
+Without a mapping, the dashboard cannot reliably decide:
+- which models match a selected **hazard** and **crop/product**,
+- which **NetCDF climate variable** should be used to populate a specific model input,
+- which **unit conversions** are needed,
+- and which **visualizations / risk scenarios** are applicable based on the model outputs.
+
+The mapping is saved into the model’s semantic Turtle representation (RDF).  
+In practice, this means the model parameters are linked to dashboard concepts (e.g., using `skos:exactMatch`) and enriched with unit information. The dashboard later reads these links to automate model selection and execution.
+
+---
+
+### What gets mapped?
+
+1) **Hazards and Products**  
+These tags decide whether the model is eligible when the user selects a hazard and crop/product in the dashboard.
+
+2) **Input parameters**  
+Inputs can come from two sources:
+- **Climate-derived inputs** from NetCDF (e.g., near-surface air temperature, humidity).  
+  These require a mapping so the dashboard knows which NetCDF variable to use.
+- **Scenario / simulation settings** (e.g., simulation duration, initial load).  
+  These are typically set by the user or derived from the selected timeframe — they are *not* climate variables.
+
+3) **Output parameters**  
+Outputs determine what the dashboard can show:
+- a **predicted concentration time series** enables threshold checks, growth factors, and downstream risk calculations,
+- a **risk summary / risk table output** would enable direct display of risk matrices,
+- a **time axis** output is needed for plotting.
+
+---
+
+### How to map correctly (best practice)
+
+**Always map by meaning + unit, not by variable name.**  
+Some names look similar but mean different things (classic example: `tmax` can mean “maximum time” in a model, while climate “daily maximum temperature” is usually called `tasmax`).
+
+Use these checks before choosing a mapping:
+- **Parameter description:** what does the model parameter *actually represent*?
+- **Unit compatibility:** hours vs °C vs log10(CFU/g) must match (or be convertible).
+- **Temporal semantics:** is the model expecting an instantaneous value, a daily mean, or a daily maximum?
+- **Dashboard intent:** will the dashboard treat this as a climate input, a scenario setting, or an output for visualization/risk?
+
+If the unit or concept does not exist in the mapping vocabulary, it is better to leave it unmapped and treat it as a scenario parameter, or introduce a dedicated concept (e.g., “Simulation horizon (hours)”) instead of forcing a wrong match.
+
+---
+
+### Example (model: *Listeria monocytogenes growth on iceberg lettuce*)
+
+**Hazard / Product mapping**
+- Hazard: `Listeria monocytogenes`
+- Product: `Iceberg Lettuce` (optionally also the broader category `Lettuce` if you want the model discoverable under both)
+
+**Input mapping**
+- `temp_celsius` (°C): map to a climate temperature concept, e.g.  
+  - **Near-Surface Air Temperature (tas)** if the model should use the “typical/mean” temperature for the selected period, or  
+  - **Daily Maximum Near-Surface Air Temperature (tasmax)** if you explicitly want daily maxima as driver.
+- `tmax` (h): **do not map this to a climate temperature variable.**  
+  This parameter is the **simulation horizon/duration** (time window for the model run). It should be set from the dashboard scenario (e.g., 72 h), or mapped to a dedicated “simulation duration” concept if available.
+
+**Output mapping**
+- `t` (h): map to **Simulation timeline / simulation time series** (time axis for plots)
+- `model_values` (log10 CFU/g): map to **Predicted concentration (e.g., CFU per g)**  
+  This output is a concentration time series and is the basis for plots and any derived risk indicators.
+
+---
+
+### Typical mistakes to avoid
+
+- Mapping by name only (e.g., `tmax` → “max temperature”) even though units/meaning do not match.
+- Mapping a concentration output (`model_values`, log10 CFU/g) to a risk-table concept.  
+  A risk table is already a processed endpoint; a growth model output is usually an intermediate concentration trajectory.
+- Ignoring temporal aggregation (tas vs tasmax vs daily mean): it changes the biology and the results.
+
+If you map parameters consistently (meaning, unit, temporal semantics), the dashboard can later select the correct model automatically and feed it with the right climate-derived inputs for future scenarios.
+        """)
+
     st.info("ℹ️ **Note:** The fields below are pre-filled with the currently saved mappings for this model. Any changes you make will be applied when you click the 'Apply All Mappings' button at the bottom.")
 
     if not MAPPED_TURTLE_DIR.exists() or not any(MAPPED_TURTLE_DIR.iterdir()):
@@ -519,22 +928,38 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
     (pathogen_uris, pathogen_display) = build_vocab_struct_for_path(str(VOCAB_DIR / "ambrosia-pathogen-vocab.ttl"))
     (plant_uris, plant_display) = build_vocab_struct_for_path(str(VOCAB_DIR / "ambrosia-plant-vocab.ttl"))
 
-    _, existing_models_with_titles = get_model_statuses()
-    existing_models_options = list(existing_models_with_titles.keys())
+    _, existing_models_metadata = get_model_statuses()
+    existing_models_options = list(existing_models_metadata.keys())
 
     def format_model_option(model_stem):
         """Custom function to format the display in the selectbox."""
-        title = existing_models_with_titles.get(model_stem, "N/A")
+        title = existing_models_metadata.get(model_stem, {}).get("title", "N/A")
         return f"{model_stem} ({title})"
+
+    def on_model_change():
+        """Clears temporary session state when switching models to force a reload from file."""
+        # Get the PREVIOUS value if it exists, or use the current widget value
+        m = st.session_state.get(f"{key_ns}_model_select")
+        if m:
+            for k in ['parameter_mappings', 'output_concepts', 'hazard_mappings', 'product_mappings', 'input_units', 'output_units']:
+                if k in st.session_state and m in st.session_state[k]:
+                    del st.session_state[k][m]
+            st.session_state[f"mappings_applied_{m}"] = False
+            st.session_state[f"{key_ns}_prefill_warning"] = False
 
     selected_model = st.selectbox(
         "Select a model to map:",
         existing_models_options,
         format_func=format_model_option,
-        key=f"{key_ns}_model_select"
+        key=f"{key_ns}_model_select",
+        on_change=on_model_change
     )
 
     if selected_model:
+        # Mapping Completeness Check
+        # Defined later in the flow after widgets are rendered to reflect session state
+        sidebar_placeholder = st.sidebar.empty()
+
         turtle_file = MAPPED_TURTLE_DIR / f"{selected_model}.ttl"
         fskx_file = FSKX_DIR / f"{selected_model}.fskx"
         if turtle_file.exists() and fskx_file.exists():
@@ -542,8 +967,12 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
             model_data = extract_data_from_turtle(g)
 
             # --- Automatic Prefill Option ---
-            if st.button("Automatic Prefill Option", help="Attempt to automatically infer Hazards, Products, Parameters, and Units from the FSKX/Turtle files.", key=f"{key_ns}_auto_prefill"):
+            if st.session_state.get(f"{key_ns}_prefill_warning"):
+                st.warning("⚠️ **Mapping suggestions generated.** Please re-check every suggested entry carefully. Suggestions are based on heuristics and may require manual correction before applying.")
+
+            if st.button("Suggest Mappings via Auto-Prefill", help="Attempt to automatically infer Hazards, Products, Parameters, and Units from the FSKX/Turtle files as suggestions.", key=f"{key_ns}_auto_prefill"):
                 st.info("Running automatic inference...")
+                st.session_state[f"{key_ns}_prefill_warning"] = True
                 
                 # Configure Logging
                 log_file = script_dir / "inference_debug.log"
@@ -674,7 +1103,7 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
                                 FILTER(LCASE(STR(?pref)) = LCASE(?target_label) || LCASE(STR(?alt)) = LCASE(?target_label))
                             }
                         """, initNs={"skos": SKOS})
-                         for match in plant_graph.query(q_label, initBindings={'target_label': Literal(p_label)}):
+                         for match in pathogen_graph.query(q_label, initBindings={'target_label': Literal(p_label)}):
                              inferred_products.add(str(match.concept))
                              logging.info(f"Product Match (Label): {match.concept} matches label '{p_label}'")
 
@@ -774,10 +1203,16 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
                     pass # Ignore errors here, just best effort
 
             # Prepare concept dataframes for matching
+            # Split Climate vs Scenario
+            climate_concepts_df = master_mapping_df[master_mapping_df['ConceptGroup'] == 'Climate Variables']
             input_concepts_df = master_mapping_df[master_mapping_df['ConceptGroup'] == 'InputParameter']
+            scenario_concepts_df = input_concepts_df[~input_concepts_df['Term'].isin(climate_concepts_df['Term'])]
+            
             output_concepts_df = master_mapping_df[master_mapping_df['ConceptGroup'] == 'OutputParameter']
             
-            input_concept_options = [""] + sorted(input_concepts_df['prefLabel'].unique().tolist())
+            climate_options = sorted(climate_concepts_df['prefLabel'].unique().tolist())
+            scenario_options = sorted(scenario_concepts_df['prefLabel'].unique().tolist())
+            input_concept_options = [""] + climate_options + scenario_options
             output_concept_options = [""] + sorted(output_concepts_df['prefLabel'].unique().tolist())
 
             # Initialize session state for the selected model
@@ -932,6 +1367,9 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
                 output_units = st.session_state.setdefault('output_units', {}).setdefault(selected_model, {})
 
                 st.subheader("Map Input Parameters")
+                st.markdown("""
+                Connect model parameters to **Climate Data concepts** (e.g., Temperature, Precipitation) to enable automatic data feeding from climate datasets.
+                """)
                 # Initialize session state for input units (already done above, but keep for safety if moved)
                 input_units = st.session_state.setdefault('input_units', {}).setdefault(selected_model, {})
 
@@ -945,30 +1383,42 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
                     if len(model_data["models"]) > 1:
                         st.markdown(f"#### Model: `{model['name']}`")
                     else:
-                        st.markdown("#### Input Parameters")
+                        st.markdown("#### Input Parameter Selection")
 
                     for param in inputs:
                         col_concept, col_unit = st.columns(2)
                         with col_concept:
                             default_concept = st.session_state.parameter_mappings[selected_model].get(param['id'], "")
                             
+                            # Determine if current mapping is Climate or Scenario for visual grouping
+                            concept_type = "Scenario Setting"
+                            if default_concept in climate_options:
+                                concept_type = "Climate Variable"
+                            
                             # Construct label: Always show parenthesis if schema_name exists
-                            label_str = f"Concept: **{param['id']}**"
+                            label_str = f"Mapping for: **{param['id']}**"
                             if param.get('schema_name'):
                                 label_str += f" ({param['schema_name']})"
-                                
+                            
+                            # Grouping in selectbox via label formatting (Streamlit doesn't support optgroup natively)
+                            # but we can at least show where the concept belongs.
                             selected_concept = st.selectbox(
                                 label_str,
                                 input_concept_options,
                                 index=input_concept_options.index(default_concept) if default_concept in input_concept_options else 0,
-                                key=f"{key_ns}_input_concept_map_{selected_model}_{param['uri']}"
+                                key=f"{key_ns}_input_concept_map_{selected_model}_{param['uri']}",
+                                help=f"Current assignment: {concept_type}. Select a Climate Variable to link this parameter to automatic data sources."
                             )
+
                             st.session_state.parameter_mappings[selected_model][param['id']] = selected_concept
                         
                         with col_unit:
-                            # Pre-fill input units from graph if available
-                            # This needs to be done during pre-fill logic, but for now, we'll assume fresh.
+                            # Unit Guardrail
                             current_input_unit = st.session_state.input_units[selected_model].get(param['id'], "")
+                            
+                            # If concept is selected, check for suggested units in master mapping (future enhancement)
+                            # For now, just show the current selection.
+                            
                             raw_unit_disp = f"({param.get('raw_unit_label', '')})" if param.get('raw_unit_label') else ""
                             new_input_unit = st.selectbox(
                                 f"Unit for **{param['id']}** {raw_unit_disp}",
@@ -977,6 +1427,9 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
                                 key=f"{key_ns}_input_unit_map_{selected_model}_{param['uri']}"
                             )
                             st.session_state.input_units[selected_model][param['id']] = new_input_unit
+                            
+                            if selected_concept and not new_input_unit:
+                                st.caption("⚠️ Mapping a concept usually requires a unit.")
 
                 if not any_inputs_found:
                     st.info("No input parameters found to map in this model.")
@@ -993,15 +1446,9 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
             all_output_params = []
             for model in model_data["cascade"]:
                  model_outputs = sorted([p for p in model["parameters"] if "Output" in p.get('classifications', set())], key=lambda x: x['name'])
-                 for p in m_outputs: all_output_params.append((model['name'], p)) # Just using local var from above loop would be cleaner but let's stick to existing structure or reuse what we calculated above.
-                 # Actually, we calculated all_output_params_list above. We can just check if it is empty.
-                 # But to minimize change, I will let this loop run or reuse `all_output_params_list`.
-                 # Let's reuse all_output_params_list for checking emptiness, but the loop structure below relies on `model['parameters']` iteration which is fine.
+                 for p in model_outputs: all_output_params.append((model['name'], p)) 
             
-            # Just re-collect for local use in loop if needed, but we already did it above.
-            # Let's stick to the original structure minus the button.
-            
-            if not all_output_params_list: # Use the list we calculated above
+            if not all_output_params_list: 
                 st.info("No output parameters found.")
             else:
                 # Pre-fill existing output concepts and units from graph
@@ -1013,19 +1460,19 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
                         existing_output_concept_match = g.value(subject=param_uri, predicate=SKOS.exactMatch)
                         if existing_output_concept_match:
                             uri_str = str(existing_output_concept_match)
-                            if uri_str in param_uri_to_rows: # Use general param_uri_to_rows, as output concepts might also be there
+                            if uri_str in param_uri_to_rows: 
                                 rows = param_uri_to_rows[uri_str]
-                                # Similar disambiguation logic as for input concepts if needed, for simplicity take first
                                 output_concepts[param['id']] = rows[0]['prefLabel']
                             else:
                                 st.warning(f"Output Concept URI {uri_str} found in graph but not in Master Mapping.")
 
-                        # Pre-fill Output Units from Graph (Existing logic remains)
+                        # Pre-fill Output Units from Graph
                         if "Output" in param.get('classifications', set()):
                             om_node = next(g.subjects(AMBLINK.mapsParameter, param_uri), None)
                             if om_node and (om_node, RDF.type, AMBLINK.OutputMapping) in g:
                                 unit_uri = g.value(om_node, AMBLINK.hasOutputUnit)
                                 if unit_uri:
+                                    # Reverse lookup unit label from URI in unit_df
                                     u_match = unit_df[
                                         (unit_df['URI1'] == str(unit_uri)) | 
                                         (unit_df['URI2'] == str(unit_uri)) | 
@@ -1075,9 +1522,53 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
                             st.session_state.output_units[selected_model][p_id] = new_unit
 
             st.markdown("---")
-            if st.button(f"Apply All Mappings to {selected_model}", key=f"{key_ns}_apply_mappings"):
-                # Validation removed as per user feedback: "it is okay that Units or Parameters are kept empty"
+            # Final Guardrail check - Moved and updated to reflect current session state
+            current_param_mappings = st.session_state.parameter_mappings[selected_model]
+            current_input_units = st.session_state.input_units[selected_model]
+            current_output_concepts = st.session_state.output_concepts[selected_model]
+            current_output_units = st.session_state.output_units[selected_model]
+            
+            missing_units = []
+            # Check inputs
+            for model in model_data["models"]:
+                for p in model["parameters"]:
+                    p_id = p['id']
+                    if "Input" in p.get('classifications', set()):
+                        if current_param_mappings.get(p_id) and not current_input_units.get(p_id):
+                            missing_units.append(p_id)
+                    if "Output" in p.get('classifications', set()):
+                        if current_output_concepts.get(p_id) and not current_output_units.get(p_id):
+                            missing_units.append(p_id)
+            
+            if missing_units:
+                st.warning(f"The following mapped parameters are missing units in the current selection: {', '.join(missing_units)}. This may lead to incorrect calculations. Click 'Apply' to save.")
+
+            # --- Sidebar Progress Update ---
+            with sidebar_placeholder.container():
+                st.markdown("---")
+                st.subheader("Mapping Progress")
                 
+                # Check status
+                hazard_set = len(st.session_state.hazard_mappings[selected_model]) > 0
+                product_set = len(st.session_state.product_mappings[selected_model]) > 0
+                
+                # Check if all required inputs (for this specific model) are mapped
+                all_mapped_have_units = len(missing_units) == 0
+                
+                # Status Badge
+                if st.session_state.get(f"mappings_applied_{selected_model}", False):
+                    st.success("Status: Finished / Saved")
+                elif hazard_set and product_set and all_mapped_have_units:
+                    st.success("Status: Ready to Apply")
+                elif not hazard_set and not product_set:
+                    st.info("Status: Not Started")
+                else:
+                    st.warning("Status: In Progress")
+
+            if st.button(f"Apply All Mappings to {selected_model}", key=f"{key_ns}_apply_mappings", type="primary"):
+                # Mark as applied for this model
+                st.session_state[f"mappings_applied_{selected_model}"] = True
+
                 model_uri = model_data["model_uri"]
                 
                 # 1. Hazards and Products
@@ -1184,7 +1675,7 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
                             if not mapped_concept:
                                 continue
 
-                            param_rows = input_concepts_df[input_concepts_df['prefLabel'] == mapped_concept] # Use input_concepts_df here
+                            param_rows = input_concepts_df[input_concepts_df['prefLabel'] == mapped_concept] 
                             if param_rows.empty:
                                 continue
                             param_row = param_rows.iloc[0]
@@ -1228,7 +1719,7 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
                                 # Disambiguation (Fuzzy String Scoring)
                                 # Gather search terms from Excel
                                 provider_term = param_row['ProviderTerm1'] if 'ProviderTerm1' in param_row else ''
-                                search_terms = [str(val).lower() for val in [param_row['Term'], param_row['altLabels'], provider_term] if pd.notna(val) and val]
+                                search_terms = [str(val).lower() for i, val in enumerate([param_row['Term'], param_row['altLabels'], provider_term]) if pd.notna(val) and val]
                                 
                                 best_cand, best_score = None, -1
                                 
@@ -1270,4 +1761,9 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
                 st.rerun()
 
 if __name__ == "__main__":
-    render_fskx_to_rdf_ui()
+    try:
+        render_fskx_to_rdf_ui()
+    except Exception:
+        import traceback, sys
+        traceback.print_exc()
+        sys.exit(1)

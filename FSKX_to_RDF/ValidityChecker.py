@@ -97,10 +97,15 @@ def validate_jsonld_folder(folder_path, output_csv=None):
     return results
 
 if __name__ == "__main__":
-    # Get the directory where this script is located
-    script_dir = Path(__file__).parent
-    jsonld_folder = script_dir / "unmapped" / "jsonld"
-    output_csv_path = script_dir / "validation_results.csv"
+    try:
+        # Get the directory where this script is located
+        script_dir = Path(__file__).parent
+        jsonld_folder = script_dir / "unmapped" / "jsonld"
+        output_csv_path = script_dir / "validation_results.csv"
 
-    # Validate all JSON-LD files in the folder
-    results = validate_jsonld_folder(jsonld_folder, output_csv_path)
+        # Validate all JSON-LD files in the folder
+        results = validate_jsonld_folder(jsonld_folder, output_csv_path)
+    except Exception:
+        import traceback, sys
+        traceback.print_exc()
+        sys.exit(1)
