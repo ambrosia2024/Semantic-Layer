@@ -22,19 +22,18 @@ def query_qudt(term: str, limit: int, user_agent: str, config: dict) -> list:
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX qudt: <http://qudt.org/schema/qudt/>
     PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    PREFIX dcterms: <http://purl.org/dc/terms/>
 
     SELECT DISTINCT ?uri ?label ?description WHERE {{
       {{
         ?uri a qudt:Unit ;
              rdfs:label ?label .
         FILTER (CONTAINS(LCASE(STR(?label)), LCASE("{sanitized_term}")))
-        OPTIONAL {{ ?uri dcterms:description ?description . }}
+        OPTIONAL {{ ?uri rdfs:comment ?description . }}
       }} UNION {{
         ?uri a qudt:QuantityKind ;
              rdfs:label ?label .
         FILTER (CONTAINS(LCASE(STR(?label)), LCASE("{sanitized_term}")))
-        OPTIONAL {{ ?uri dcterms:description ?description . }}
+        OPTIONAL {{ ?uri rdfs:comment ?description . }}
       }}
       FILTER (lang(?label) = 'en')
     }}

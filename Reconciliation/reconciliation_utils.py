@@ -11,8 +11,6 @@ import traceback
 import yaml
 import logging
 import concurrent.futures
-import rdflib
-from rdflib.util import guess_format
 
 # --- Configure Logging (Console Only) ---
 logger = logging.getLogger(__name__)
@@ -241,12 +239,14 @@ def get_combined_and_sorted_suggestions(term_main, all_suggestions_for_term, max
     # If calculate_levenshtein_score returns a non-numeric, it's already 0.0.
 
     # Sort the suggestions.
-    # The key lambda now handles cases where the score value is None or not a number.
+    # If the score for the selected strategy is missing, fall back to Levenshtein score
+    # to avoid penalizing providers that don't return an API score.
     def sort_key_func(x):
         val = x.get(sort_key_str)
         if isinstance(val, (int, float)):
             return val
-        return -1.0 # Default value for sorting if score is missing or invalid
+        # Fallback to levenshtein_score if API score is missing
+        return x.get('levenshtein_score', -1.0)
 
     sorted_suggestions = sorted(
         filtered_suggestions, 
@@ -340,13 +340,6 @@ def prefill_best_matches():
     st.rerun()
 
 # --- Pagination Control UI Function ---
-def parse_rdf_data(rdf_data, filename):
-    """Parses RDF data from an uploaded file."""
-    graph = rdflib.Graph()
-    file_format = guess_format(filename)
-    graph.parse(data=rdf_data, format=file_format)
-    return graph
-
 def render_pagination_controls_ui(total_pages, current_page_session_key, key_prefix):
     """Renders pagination controls horizontally using a single st.columns layout."""
     if total_pages <= 1:

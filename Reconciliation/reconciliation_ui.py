@@ -3,10 +3,13 @@ import sys
 import streamlit as st
 import os
 import pandas as pd
+import io
 import time
 import concurrent.futures
 import logging
-import io # Import the io module
+import tempfile
+from pathlib import Path
+from . import local_resource_provider
 
 # --- Configure Logging (Console Only) ---
 logger = logging.getLogger(__name__)
@@ -78,6 +81,8 @@ def render_reconciliation_ui():
     if 'last_uploaded_filename' not in st.session_state: st.session_state['last_uploaded_filename'] = None
     if 'semantic_model' not in st.session_state: st.session_state['semantic_model'] = None
     if 'provider_queue' not in st.session_state: st.session_state['provider_queue'] = []
+    if 'local_resources' not in st.session_state: st.session_state['local_resources'] = []
+    if 'local_backend' not in st.session_state: st.session_state['local_backend'] = "auto"
     if 'provider_status' not in st.session_state: st.session_state['provider_status'] = {} 
     if 'total_indices_to_process' not in st.session_state: st.session_state['total_indices_to_process'] = [] 
     if 'display_provider' not in st.session_state: st.session_state['display_provider'] = None 
@@ -122,16 +127,14 @@ def render_reconciliation_ui():
     if 'items_per_page' not in st.session_state: st.session_state['items_per_page'] = 10 # Default items per page
     if 'current_page' not in st.session_state: st.session_state['current_page'] = 1
     if 'skos_matching_enabled' not in st.session_state: st.session_state['skos_matching_enabled'] = False
-    if 'rdf_graph' not in st.session_state: st.session_state['rdf_graph'] = None # For storing the parsed RDF graph
-    if 'rdf_file_loaded' not in st.session_state: st.session_state['rdf_file_loaded'] = False # Flag to indicate if a local RDF file is loaded
 
     # New state variables for ontology filtering
     if 'available_ontologies_by_provider' not in st.session_state: st.session_state['available_ontologies_by_provider'] = {}
     if 'selected_ontologies_by_provider' not in st.session_state: st.session_state['selected_ontologies_by_provider'] = {}
     if 'ontology_loading_status' not in st.session_state: st.session_state['ontology_loading_status'] = {} # e.g., {'BioPortal': 'loading', 'AgroPortal': 'loaded', 'OLS (EBI)': 'error'}
 
-    st.title("Reconciliation Service")
-    st.write("Upload CSV, select sources, manage queue via sidebar, reconcile terms.")
+    st.title("Data Reconciliation Tool")
+    st.write("Upload tabular data, select sources, manage queue via sidebar, reconcile terms.")
 
     st.subheader("Matching Table Structure Information")
     st.info("""
@@ -148,7 +151,12 @@ Your matching table (CSV or Excel) should be structured with the following colum
     # Create an empty DataFrame for the template
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-        pd.DataFrame(columns=template_columns).to_excel(writer, index=False, sheet_name='Reconciliation_Template')
+        pd.DataFrame(columns=template_columns).to_excel(
+            writer,
+            index=False,
+            sheet_name='Reconciliation_Template'
+        )
+
     data = output.getvalue()
 
     st.download_button(
@@ -159,8 +167,7 @@ Your matching table (CSV or Excel) should be structured with the following colum
         help="Download an Excel template with the required column headers for reconciliation."
     )
 
-    st.markdown("---") # Add a separator for clarity
-
+    st.markdown("---")
 
     if CONFIG is None:
         st.error("Critical Error: 'config.yaml' could not be loaded. App cannot continue.")
@@ -266,35 +273,6 @@ Your matching table (CSV or Excel) should be structured with the following colum
 
     # Option 2: Upload a new CSV or Excel file
     uploaded_file = st.file_uploader("Upload New Matching Table (CSV, XLSX, XLS)", type=["csv", "xlsx", "xls"], key="file_uploader_csv_excel")
-
-    # --- RDF File Uploader ---
-    st.subheader("2. (Optional) Upload Local RDF Vocabulary")
-    uploaded_rdf_file = st.file_uploader(
-        "Upload an RDF file (.owl, .rdf, .ttl, .nt, .json-ld)",
-        type=["owl", "rdf", "ttl", "nt", "jsonld"],
-        key="rdf_file_uploader",
-        help="Supported formats include RDF/XML (.rdf, .owl), Turtle (.ttl), N-Triples (.nt), and JSON-LD (.jsonld). The file format is automatically detected from the extension."
-    )
-
-    if uploaded_rdf_file is not None:
-        if not st.session_state.get('rdf_file_loaded') or uploaded_rdf_file.name != st.session_state.get('last_rdf_filename'):
-            try:
-                with st.spinner("Loading and parsing RDF file..."):
-                    # Read the content of the uploaded file
-                    rdf_data = uploaded_rdf_file.getvalue()
-                    # Attempt to parse the RDF data
-                    # You might need a utility function in processing_service or similar to handle this
-                    # For now, let's assume a function `parse_rdf_data` exists
-                    from .reconciliation_utils import parse_rdf_data
-                    st.session_state['rdf_graph'] = parse_rdf_data(rdf_data, uploaded_rdf_file.name)
-                    st.session_state['rdf_file_loaded'] = True
-                    st.session_state['last_rdf_filename'] = uploaded_rdf_file.name
-                    st.success(f"Successfully loaded and parsed '{uploaded_rdf_file.name}'.")
-            except Exception as e:
-                st.error(f"Failed to load or parse RDF file: {e}")
-                st.session_state['rdf_graph'] = None
-                st.session_state['rdf_file_loaded'] = False
-
 
     should_process_upload = False
     if uploaded_file is not None and not data_loaded_this_run:
@@ -418,15 +396,67 @@ Your matching table (CSV or Excel) should be structured with the following colum
             CUSTOM_SPARQL_PROVIDER_NAME: "Connect to your own custom SPARQL endpoint. Requires Endpoint URL and a valid SPARQL query template."
         }
         st.subheader("Reconciliation Sources")
-        standard_providers = ["Wikidata", "NCBI", "BioPortal", "OLS (EBI)", "AgroPortal", "EarthPortal", "SemLookP", "QUDT"]
+        standard_providers = ["Wikidata", "NCBI", "BioPortal", "OLS (EBI)", "AgroPortal", "EarthPortal", "SemLookP", "QUDT", "Local Ontology"]
         available_providers = standard_providers.copy()
-        
-        if st.session_state.get('rdf_file_loaded'):
-            available_providers.insert(0, "Local RDF File")
-
         if st.session_state.get('custom_sparql_enabled'):
             available_providers.append(CUSTOM_SPARQL_PROVIDER_NAME)
         
+        with st.expander("Local ontology / thesaurus files", expanded=False):
+            backend = st.selectbox(
+                "Parser backend",
+                ["auto", "oak", "rdflib", "tabular"],
+                key="local_backend",
+                help="OAK takes very long on larger files > 2 MB. Use rdflib for faster RDF/OWL parsing."
+            )
+            uploaded_ontos = st.file_uploader(
+                "Upload OWL/OBO/RDF/TTL/JSON-LD or CSV/TSV/XLSX",
+                accept_multiple_files=True,
+                key="local_onto_uploader"
+            )
+
+            if st.button("Index uploaded files"):
+                resources = []
+                status_placeholder = st.empty()
+                progress_placeholder = st.empty()
+
+                for uf in uploaded_ontos or []:
+                    status_placeholder.info(f"Indexing {uf.name}...")
+                    
+                    # Save to a temp file with correct suffix
+                    suffix = Path(uf.name).suffix
+                    tmp = tempfile.NamedTemporaryFile(delete=False, suffix=suffix)
+                    tmp.write(uf.getbuffer())
+                    tmp.close()
+
+                    try:
+                        def update_progress(count):
+                            progress_placeholder.text(f"Extracting entities from {uf.name}: {count:,} found so far...")
+
+                        with st.spinner(f"Parsing {uf.name} with {backend} backend..."):
+                            idx = local_resource_provider.load_local_resource_index(
+                                tmp.name,
+                                resource_name=uf.name,
+                                force_backend=backend,
+                                progress_callback=update_progress,
+                                max_entities=50000  # Safety limit
+                            )
+                        resources.append({"name": uf.name, "path": tmp.name, "index": idx, "backend": backend})
+                    except Exception as e:
+                        st.error(f"Error indexing {uf.name}: {e}")
+
+                st.session_state["local_resources"] = resources
+                status_placeholder.empty()
+                progress_placeholder.empty()
+                
+                if resources:
+                    st.success(f"Indexed {len(resources)} local resources.")
+                    for res in resources:
+                        st.info(f" - {res['name']} indexed using backend: **{res['index'].parse_backend}** ({len(res['index'].entities):,} entities)")
+                        with st.expander(f"Sample entities from {res['name']}", expanded=False):
+                            sample = res['index'].entities[:5]
+                            for ent in sample:
+                                st.text(f"• {ent.label} <{ent.uri}>")
+
         st.write("Select providers to add to the queue:")
         cols_prov = st.columns(2)
         for i, provider_name_iter in enumerate(available_providers):
@@ -659,38 +689,16 @@ Your matching table (CSV or Excel) should be structured with the following colum
         st.markdown("---")
 
         st.subheader("Matching Strategy")
-        
-        # Original strategy options
-        all_strategy_options = ["API Ranking", "Levenshtein Similarity", "Cosine Similarity"]
-        
-        # Determine if "API Ranking" should be available
-        # It should be disabled if "Local RDF File" is the currently displayed provider and it's not a mixed results view.
-        is_local_rdf_only_display = (st.session_state.get('display_provider') == "Local RDF File" and 
-                                     not st.session_state.get('display_mixed_results', False))
-        
-        # Create display options list based on condition
-        display_strategy_options = all_strategy_options.copy()
-        if is_local_rdf_only_display:
-            if "API Ranking" in display_strategy_options:
-                display_strategy_options.remove("API Ranking")
-        
+        strategy_options = ["API Ranking", "Levenshtein Similarity", "Cosine Similarity"]
         current_strategy = st.session_state.get('matching_strategy_radio', "API Ranking")
-
-        # If "API Ranking" was selected but is no longer an option, switch to "Levenshtein Similarity"
-        if is_local_rdf_only_display and current_strategy == "API Ranking":
-            st.session_state['matching_strategy_radio'] = "Levenshtein Similarity"
-            current_strategy = "Levenshtein Similarity" # Update for index calculation
-
-        # Determine the index for the radio button
         try:
-            current_strategy_idx = display_strategy_options.index(current_strategy)
+            current_strategy_idx = strategy_options.index(current_strategy)
         except ValueError:
-            # Fallback if current_strategy is not in display_strategy_options (e.g., "API Ranking" was removed)
-            current_strategy_idx = 0 # Default to the first available option
-
+            current_strategy_idx = 0
+        
         chosen_strategy = st.radio(
             "Matching/Sorting Strategy", 
-            options=display_strategy_options, 
+            options=strategy_options, 
             index=current_strategy_idx, 
             key="matching_strategy_radio_widget"
         )
@@ -885,6 +893,9 @@ Your matching table (CSV or Excel) should be structured with the following colum
                                     }
                                 elif provider_name == "NCBI":
                                     current_config_for_provider['ncbi_databases'] = st.session_state.get('ncbi_selected_databases', [])
+                                elif provider_name == "Local Ontology":
+                                    current_config_for_provider['local_resources'] = st.session_state.get('local_resources', [])
+                                    current_config_for_provider['local_backend'] = st.session_state.get('local_backend', "auto")
                                 
                                 if provider_name in st.session_state.get('selected_ontologies_by_provider', {}):
                                     current_config_for_provider['selected_ontologies_by_provider'] = {
@@ -893,12 +904,8 @@ Your matching table (CSV or Excel) should be structured with the following colum
                                 
                                 future = executor.submit(
                                     fetch_suggestions_for_term_from_provider,
-                                    provider_name,
-                                    term_to_process,
-                                    current_config_for_provider,
-                                    USER_AGENT,
-                                    st.session_state.suggestion_slider,
-                                    rdf_graph=st.session_state.get('rdf_graph')
+                                    provider_name, term_to_process, current_config_for_provider,
+                                    USER_AGENT, st.session_state.suggestion_slider
                                 )
                                 future_to_provider[future] = provider_name
 
@@ -1239,10 +1246,7 @@ Your matching table (CSV or Excel) should be structured with the following colum
                         if s_uri and s_label:
                             display_text = format_suggestion_display(sugg, st.session_state.get('matching_strategy_radio'))
                             if display_text not in inline_options_map:
-                                source_for_map = (
-                                    sugg.get('ontology_title') if current_display_mode == "Local RDF File" and sugg.get('ontology_title') else
-                                    sugg.get('source_provider') or sugg.get('db') or sugg.get('ontology') or sugg.get('source_db') or current_display_mode
-                                )
+                                source_for_map = sugg.get('source_provider') or sugg.get('db') or sugg.get('ontology') or sugg.get('source_db') or current_display_mode
                                 inline_options_map[display_text] = (s_uri, source_for_map, sugg)
                     
                     current_selection_display = NO_MATCH_DISPLAY 
@@ -1422,6 +1426,9 @@ Your matching table (CSV or Excel) should be structured with the following colum
                                                     }
                                                 if p_name == "NCBI":
                                                     dynamic_dialog_config['ncbi_databases'] = st.session_state.get('ncbi_selected_databases', [])
+                                                if p_name == "Local Ontology":
+                                                    dynamic_dialog_config['local_resources'] = st.session_state.get('local_resources', [])
+                                                    dynamic_dialog_config['local_backend'] = st.session_state.get('local_backend', "auto")
                                                 if p_name == CUSTOM_SPARQL_PROVIDER_NAME and st.session_state.get('custom_sparql_enabled'):
                                                     dynamic_dialog_config['custom_sparql'] = {
                                                         'endpoint': st.session_state.get('custom_sparql_endpoint'),
@@ -1433,12 +1440,7 @@ Your matching table (CSV or Excel) should be structured with the following colum
 
                                                 future = executor.submit(
                                                     fetch_suggestions_for_term_from_provider,
-                                                    p_name,
-                                                    term_for_api,
-                                                    dynamic_dialog_config,
-                                                    USER_AGENT,
-                                                    st.session_state.get('suggestion_slider', 10),
-                                                    rdf_graph=st.session_state.get('rdf_graph')
+                                                    p_name, term_for_api, dynamic_dialog_config, USER_AGENT, st.session_state.get('suggestion_slider', 10)
                                                 )
                                                 future_to_provider[future] = p_name
                                             for future in concurrent.futures.as_completed(future_to_provider):
@@ -1462,13 +1464,9 @@ Your matching table (CSV or Excel) should be structured with the following colum
                             options_dialog_custom = {NO_MATCH_DISPLAY: (NO_MATCH_URI, "", None)}
                             if dialog_results:
                                 for sugg in dialog_results:
-                                    # Prioritize ontology_title if from Local RDF File, otherwise use existing logic
-                                    source_provider_for_dialog = (
-                                        sugg.get('ontology_title') if sugg.get('source_provider') == "Local RDF File" and sugg.get('ontology_title') else
-                                        sugg.get('source_provider') or sugg.get('db') or sugg.get('ontology') or sugg.get('source_db') or "Unknown"
-                                    )
+                                    source_provider = sugg.get('source_provider') or sugg.get('db') or sugg.get('ontology') or sugg.get('source_db') or "Unknown"
                                     display_text = format_suggestion_display(sugg, st.session_state.get('matching_strategy_radio'))
-                                    options_dialog_custom[display_text] = (sugg.get('uri'), source_provider_for_dialog, sugg)
+                                    options_dialog_custom[display_text] = (sugg.get('uri'), source_provider, sugg)
 
                             selected_dialog_uri_display = st.selectbox(
                                 "Select URI from custom search:", options=list(options_dialog_custom.keys()),
