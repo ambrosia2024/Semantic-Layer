@@ -15,6 +15,10 @@
 ### Scheme Definitions ###
 
 <https://w3id.org/ambrosia/netcdf-vocab#scheme/netcdf> a skos:ConceptScheme ;
+    dct:hasVersion "1.0.0" ;
+    dct:issued "2026-01-01"^^xsd:date ;
+    dct:modified "2026-01-01"^^xsd:date ;
+    dct:creator <https://orcid.org/0000-0003-4691-0483> ;
     dct:title "NetCDF Vocabulary"@en ;
     dct:description "A controlled vocabulary of NetCDF concepts from the Ambrosia project."@en .
 

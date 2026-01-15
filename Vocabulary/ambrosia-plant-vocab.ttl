@@ -3,21 +3,38 @@
 @prefix fskxo: <http://semanticlookup.zbmed.de/km/fskxo/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix wikidata: <http://www.wikidata.org/entity/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix ambplant: <https://w3id.org/ambrosia/plant-vocab#> .
 
 <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> a skos:ConceptScheme ;
+    dct:hasVersion "1.0.0" ;
+    dct:issued "2026-01-01"^^xsd:date ;
+    dct:modified "2026-01-01"^^xsd:date ;
+    dct:creator <https://orcid.org/0000-0003-4691-0483> ;
     dct:title "Cereal Vocabulary" ;
     dct:description "A controlled vocabulary of Cereal concepts from the Ambrosia project." .
 
 <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> a skos:ConceptScheme ;
+    dct:hasVersion "1.0.0" ;
+    dct:issued "2026-01-01"^^xsd:date ;
+    dct:modified "2026-01-01"^^xsd:date ;
+    dct:creator <https://orcid.org/0000-0003-4691-0483> ;
     dct:title "Fruit Vocabulary" ;
     dct:description "A controlled vocabulary of Fruit concepts from the Ambrosia project." .
 
 <https://w3id.org/ambrosia/plant-vocab#scheme/nut> a skos:ConceptScheme ;
+    dct:hasVersion "1.0.0" ;
+    dct:issued "2026-01-01"^^xsd:date ;
+    dct:modified "2026-01-01"^^xsd:date ;
+    dct:creator <https://orcid.org/0000-0003-4691-0483> ;
     dct:title "Nut Vocabulary" ;
     dct:description "A controlled vocabulary of Nut concepts from the Ambrosia project." .
 
 <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> a skos:ConceptScheme ;
+    dct:hasVersion "1.0.0" ;
+    dct:issued "2026-01-01"^^xsd:date ;
+    dct:modified "2026-01-01"^^xsd:date ;
+    dct:creator <https://orcid.org/0000-0003-4691-0483> ;
     dct:title "Vegetable Vocabulary" ;
     dct:description "A controlled vocabulary of Vegetable concepts from the Ambrosia project." .
 

@@ -4,9 +4,10 @@ import re
 import io
 import rdflib
 import json # Import the json module
+import datetime
 from .prefix_manager import extract_prefixes, find_relevant_prefixes
 from rdflib import Graph, URIRef, Literal, BNode
-from rdflib.namespace import SKOS, DCTERMS, RDF, RDFS
+from rdflib.namespace import SKOS, DCTERMS, RDF, RDFS, XSD
 
 # Define vocabulary mappings
 VOCAB_MAPPINGS = {
@@ -37,6 +38,120 @@ def determine_vocabulary_type(identifier_value):
             if group.lower() in identifier_value.lower():
                 return vocab_type
     return None
+
+SEMVER_RE = re.compile(r"^\s*(\d+)\.(\d+)\.(\d+)\s*$")
+
+def bump_semver(version: str, bump: str = "patch") -> str:
+    """
+    Bump a semantic version string 'MAJOR.MINOR.PATCH'.
+    bump in {'patch','minor','major'}.
+    """
+    m = SEMVER_RE.match(version or "")
+    if not m:
+        # fallback: start at 0.1.0 if missing/invalid
+        major, minor, patch = 0, 1, 0
+    else:
+        major, minor, patch = map(int, m.groups())
+
+    bump = (bump or "patch").lower()
+    if bump == "major":
+        return f"{major + 1}.0.0"
+    if bump == "minor":
+        return f"{major}.{minor + 1}.0"
+    return f"{major}.{minor}.{patch + 1}"
+
+def _parse_agents(raw: str):
+    """
+    Comma-separated list. If token starts with http(s), return URIRef, else Literal.
+    """
+    agents = []
+    if not raw:
+        return agents
+    for token in [t.strip() for t in raw.split(",")]:
+        if not token:
+            continue
+        if token.startswith("http://") or token.startswith("https://"):
+            agents.append(URIRef(token))
+        else:
+            agents.append(Literal(token))
+    return agents
+
+def extract_scheme_provenance(g: Graph) -> dict:
+    """
+    Returns provenance fields from the first ConceptScheme found.
+    If multiple schemes exist, it picks one deterministically (sorted by URI).
+    """
+    schemes = sorted(set(g.subjects(RDF.type, SKOS.ConceptScheme)), key=str)
+    if not schemes:
+        return {}
+
+    s = schemes[0]
+
+    def _first_literal(pred):
+        for o in g.objects(s, pred):
+            if isinstance(o, Literal):
+                return str(o)
+        return None
+
+    data = {
+        "version": _first_literal(DCTERMS.hasVersion),
+        "issued": _first_literal(DCTERMS.issued),
+        "modified": _first_literal(DCTERMS.modified),
+        "creators": list(g.objects(s, DCTERMS.creator)),
+        "contributors": list(g.objects(s, DCTERMS.contributor)),
+    }
+    return data
+
+def apply_scheme_provenance(
+    g: Graph,
+    version: str | None,
+    issued_date: str | None,
+    modified_date: str | None,
+    creators_raw: str | None,
+    contributor_raw: str | None,
+):
+    """
+    Applies provenance to all skos:ConceptScheme resources in the graph.
+    - version stored as dcterms:hasVersion
+    - issued/modified as xsd:date
+    - creator set (overwrites old creator values if provided)
+    - contributor: appends (does not wipe existing) if provided
+    """
+    schemes = set(g.subjects(RDF.type, SKOS.ConceptScheme))
+    if not schemes:
+        return
+
+    creators = _parse_agents(creators_raw or "")
+    new_contribs = _parse_agents(contributor_raw or "")
+
+    for s in schemes:
+        # version
+        if version:
+            # optional: also remove any old owl:versionInfo if present
+            g.remove((s, URIRef("http://www.w3.org/2002/07/owl#versionInfo"), None))
+            
+            g.remove((s, DCTERMS.hasVersion, None))
+            g.add((s, DCTERMS.hasVersion, Literal(version)))
+
+        # issued/modified (keep as xsd:date)
+        if issued_date:
+            g.remove((s, DCTERMS.issued, None))
+            g.add((s, DCTERMS.issued, Literal(issued_date, datatype=XSD.date)))
+
+        if modified_date:
+            g.remove((s, DCTERMS.modified, None))
+            g.add((s, DCTERMS.modified, Literal(modified_date, datatype=XSD.date)))
+
+        # creators: overwrite only if user provided something
+        if creators_raw is not None:
+            g.remove((s, DCTERMS.creator, None))
+            for c in creators:
+                g.add((s, DCTERMS.creator, c))
+
+        # contributors: append (don’t delete old ones)
+        for c in new_contribs:
+            if (s, DCTERMS.contributor, c) not in g:
+                g.add((s, DCTERMS.contributor, c))
 
 def slugify(value):
     """
@@ -278,6 +393,8 @@ def serialize_graph_to_custom_turtle(graph):
 
     # 4. Define the absolute property order
     prop_order = [
+        DCTERMS.hasVersion, DCTERMS.issued, DCTERMS.modified,
+        DCTERMS.creator, DCTERMS.contributor,
         DCTERMS.title, DCTERMS.description, SKOS.inScheme, SKOS.prefLabel,
         SKOS.altLabel, SKOS.definition, DCTERMS.source, SKOS.exactMatch,
         SKOS.closeMatch, SKOS.broadMatch, SKOS.narrowMatch, SKOS.relatedMatch
@@ -445,6 +562,44 @@ Your Excel file should be structured with the following columns:
         existing_vocab_file = st.file_uploader(
             "Upload existing SKOS vocabulary file",
             type=["ttl", "jsonld", "rdf", "xml"]
+        )
+
+    today = datetime.date.today().isoformat()
+
+    # Prefill from existing vocab if present
+    existing_meta = {}
+    if existing_vocab_file and st.session_state.get("graph") is not None:
+        existing_meta = extract_scheme_provenance(st.session_state.graph) or {}
+
+    default_version = existing_meta.get("version") or "0.1.0"
+    default_issued  = existing_meta.get("issued") or today
+    default_modified = today  # always today for new generation
+
+    with st.expander("Provenance (optional)", expanded=True):
+        auto_bump = st.checkbox(
+            "Auto-increment version when extending existing vocabulary",
+            value=bool(existing_vocab_file),
+            disabled=not bool(existing_vocab_file),
+        )
+        bump_kind = st.selectbox(
+            "Version bump",
+            options=["patch", "minor", "major"],
+            index=0,
+            disabled=not bool(existing_vocab_file),
+        )
+
+        version_in = st.text_input("Version (semver)", value=default_version)
+        issued_in = st.text_input("Issued date (YYYY-MM-DD)", value=default_issued)
+        modified_in = st.text_input("Modified date (YYYY-MM-DD)", value=default_modified)
+
+        creators_in = st.text_input(
+            "Creator(s) (comma-separated; use ORCID/URLs if available)",
+            value=", ".join(str(x) for x in existing_meta.get("creators", [])) if existing_vocab_file else ""
+        )
+
+        contributor_in = st.text_input(
+            "Contributor (this update) (comma-separated; ORCID/URL or name)",
+            value=""
         )
 
     if "conflicts" not in st.session_state:
@@ -659,6 +814,13 @@ Your Excel file should be structured with the following columns:
                 if not base_namespace.strip():
                     st.error("Base Namespace URI cannot be empty.")
                 else:
+                    final_version = version_in
+                    if existing_vocab_file and auto_bump:
+                        final_version = bump_semver(default_version, bump_kind)
+
+                    final_modified = datetime.date.today().isoformat()
+                    final_issued = issued_in  # keep original issued when extending
+
                     with st.spinner("Generating SKOS vocabulary..."):
                         try:
                             g = st.session_state.graph if st.session_state.graph else Graph()
@@ -679,6 +841,16 @@ Your Excel file should be structured with the following columns:
                                     g, df, base_namespace, pref_label_lang, alt_label_lang, definition_lang
                                 )
                                 st.session_state.report = report
+
+                            # Apply provenance to the graph
+                            apply_scheme_provenance(
+                                g,
+                                version=final_version,
+                                issued_date=final_issued,
+                                modified_date=final_modified,
+                                creators_raw=creators_in if creators_in.strip() else None,
+                                contributor_raw=contributor_in
+                            )
 
                             # --- Finalize and Serialize Graph ---
                             # Determine format and file extension
@@ -704,7 +876,6 @@ Your Excel file should be structured with the following columns:
                             st.success("SKOS vocabulary generated successfully!")
                             
                             # Prepare and provide downloadable log file (moved before vocabulary download)
-                            import datetime
                             log_data = {
                                 "timestamp": datetime.datetime.now().isoformat(),
                                 "excel_file_name": uploaded_file.name if uploaded_file else None,

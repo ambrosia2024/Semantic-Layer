@@ -4,13 +4,22 @@
 @prefix ncbi: <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix wikidata: <http://www.wikidata.org/entity/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix ambpath: <https://w3id.org/ambrosia/pathogen-vocab#> .
 
 <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> a skos:ConceptScheme ;
+    dct:hasVersion "1.0.0" ;
+    dct:issued "2026-01-01"^^xsd:date ;
+    dct:modified "2026-01-01"^^xsd:date ;
+    dct:creator <https://orcid.org/0000-0003-4691-0483> ;
     dct:title "Mycotoxin Vocabulary" ;
     dct:description "A controlled vocabulary of Mycotoxin concepts from the Ambrosia project." .
 
 <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> a skos:ConceptScheme ;
+    dct:hasVersion "1.0.0" ;
+    dct:issued "2026-01-01"^^xsd:date ;
+    dct:modified "2026-01-01"^^xsd:date ;
+    dct:creator <https://orcid.org/0000-0003-4691-0483> ;
     dct:title "Pathogen Vocabulary" ;
     dct:description "A controlled vocabulary of Pathogen concepts from the Ambrosia project." .
 

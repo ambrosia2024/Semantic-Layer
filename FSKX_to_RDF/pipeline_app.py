@@ -5,9 +5,10 @@ import logging
 from pathlib import Path
 import os
 import pandas as pd
-from datetime import datetime
+import hashlib
+from datetime import datetime, timezone
 from rdflib import Graph, Literal, Namespace, URIRef, BNode
-from rdflib.namespace import DCTERMS, RDF, SKOS, RDFS
+from rdflib.namespace import DCTERMS, RDF, SKOS, RDFS, OWL, XSD
 from rdflib.plugins.sparql import prepareQuery
 import re
 import unicodedata
@@ -36,6 +37,11 @@ AMBLINK = Namespace("https://w3id.org/ambrosia/linking#")
 SCHEMA = Namespace("https://schema.org/")
 QUDT_UNIT = Namespace("http://qudt.org/vocab/unit/")
 QK = Namespace("http://qudt.org/vocab/quantitykind/")
+PROV = Namespace("http://www.w3.org/ns/prov#")
+PAV  = Namespace("http://purl.org/pav/")
+AMB = Namespace("https://w3id.org/ambrosia/ontology#")
+OBO = Namespace("http://purl.obolibrary.org/obo/")
+PIPELINE_VERSION = "0.1.0"
 
 # --- Mappings ---
 CLASSIFICATION_MAP = {
@@ -45,6 +51,65 @@ CLASSIFICATION_MAP = {
 }
 
 # --- Helper Functions ---
+
+def sha256_file(path: Path) -> str:
+    """Calculates the SHA-256 hash of a file."""
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+def add_fskx_provenance(
+    g: Graph,
+    model_uri: URIRef,
+    fskx_path: Path,
+):
+    """
+    Adds PROV-O provenance metadata to the graph.
+    Connects the model representation to its source FSKX file using a stable URN.
+    """
+    now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    src_hash = sha256_file(fskx_path)
+
+    # Stable identity for the source package (portable across machines)
+    source_id = URIRef(f"urn:sha256:{src_hash}")
+
+    # Optional local path as location hint (NOT identity)
+    local_loc = URIRef(f"file://{fskx_path.resolve().as_posix()}")
+
+    # Activity node (deterministic-ish)
+    activity_uri = URIRef(f"{str(model_uri)}/prov/activity/{src_hash[:12]}")
+
+    # Software agent
+    agent_uri = URIRef("https://w3id.org/ambrosia/software/pipeline")
+
+    # Model-level provenance
+    g.add((model_uri, PROV.generatedAtTime, Literal(now, datatype=XSD.dateTime)))
+    g.add((model_uri, PROV.wasDerivedFrom, source_id))
+    g.add((model_uri, DCTERMS.source, source_id))
+    g.add((model_uri, AMB.sourceHash, Literal(src_hash)))
+    g.add((model_uri, PROV.wasGeneratedBy, activity_uri))
+
+    # Activity
+    g.add((activity_uri, RDF.type, PROV.Activity))
+    g.add((activity_uri, PROV.used, source_id))
+    g.add((activity_uri, PROV.endedAtTime, Literal(now, datatype=XSD.dateTime)))
+    g.add((activity_uri, PROV.atLocation, local_loc))
+    g.add((activity_uri, PROV.wasAssociatedWith, agent_uri))
+
+    # SoftwareAgent
+    g.add((agent_uri, RDF.type, PROV.SoftwareAgent))
+    g.add((agent_uri, DCTERMS.title, Literal("AMBROSIA semantic extraction pipeline")))
+    g.add((agent_uri, OWL.versionInfo, Literal(PIPELINE_VERSION)))
+
+    # Optional: contributor of this mapping/enrichment step
+    contributor = st.session_state.get("provenance_contributor")
+    if contributor:
+        if contributor.startswith("http://") or contributor.startswith("https://"):
+            g.add((model_uri, DCTERMS.contributor, URIRef(contributor)))
+        else:
+            g.add((model_uri, DCTERMS.contributor, Literal(contributor)))
 
 @dataclass
 class PipelineStepResult:
@@ -609,6 +674,22 @@ def extract_data_from_turtle(graph):
         
     return data
 
+def read_provenance_info(ttl_path: Path) -> dict:
+    """Reads provenance information from a turtle file."""
+    info = {"time": None, "hash": None}
+    g = Graph()
+    try:
+        g.parse(str(ttl_path), format="turtle")
+        for _, _, o in g.triples((None, PROV.generatedAtTime, None)):
+            info["time"] = str(o)
+            break
+        for _, _, o in g.triples((None, AMB.sourceHash, None)):
+            info["hash"] = str(o)
+            break
+    except Exception:
+        pass
+    return info
+
 def _bind_common_namespaces(g: Graph):
     """Binds all common namespaces to a graph for clean serialization."""
     g.bind("fskxo", FSKXO)
@@ -621,11 +702,15 @@ def _bind_common_namespaces(g: Graph):
     g.bind("rdfs", RDFS)
     g.bind("qudt-unit", QUDT_UNIT)
     g.bind("qk", QK)
+    g.bind("amb", AMB)
+    g.bind("obo", OBO)
 
 def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
     if not embedded:
         st.set_page_config(layout="wide")
     
+    st.sidebar.caption(f"Pipeline Version: {PIPELINE_VERSION}")
+
     st.title("FSKX to RDF")
     
     st.info("""
@@ -658,6 +743,12 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
             st.sidebar.error(f"FSKX Directory not found: {FSKX_DIR}")
 
     override_existing = st.sidebar.checkbox("Re-process/Overwrite", value=False, key=f"{key_ns}_override")
+    provenance_contributor = st.sidebar.text_input(
+        "Contributor (ORCID/Name)",
+        value=st.session_state.get("provenance_contributor", ""),
+        help="Optional: Your ORCID or Name to be added as a contributor to the generated metadata.",
+        key="provenance_contributor"
+    )
     run_pipeline = st.sidebar.button("▶️ Run Pipeline", key=f"{key_ns}_run")
 
     st.header("Model Status")
@@ -670,10 +761,15 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
         st.subheader("Processed Models")
         processed_data = []
         for stem, meta in existing_models_metadata.items():
+            turtle_path = MAPPED_TURTLE_DIR / f"{stem}.ttl"
+            prov_info = read_provenance_info(turtle_path)
+            
             processed_data.append({
                 "Model ID": stem,
                 "Title": meta["title"],
-                "Last Processed": meta["last_processed"]
+                "Generated (prov)": prov_info["time"] if prov_info["time"] else meta["last_processed"],
+                "Source Hash": prov_info["hash"][:12] if prov_info["hash"] else "N/A",
+                "File Updated": meta["last_processed"]
             })
         processed_df = pd.DataFrame(processed_data)
         st.dataframe(processed_df, use_container_width=True)
@@ -1570,12 +1666,42 @@ If you map parameters consistently (meaning, unit, temporal semantics), the dash
                 st.session_state[f"mappings_applied_{selected_model}"] = True
 
                 model_uri = model_data["model_uri"]
-                
+
+                # Ensure model_uri is a URIRef (extract_data_from_turtle often returns a URIRef already, but be defensive)
+                if isinstance(model_uri, str):
+                    model_uri = URIRef(model_uri)
+
+                # Ensure the model is explicitly typed (do NOT rely on inference in the dashboard/triplestore)
+                g.add((model_uri, RDF.type, AMBLINK.PredictiveModel))
+
+                # Optional but recommended: also assert the equivalent FSKXO type explicitly
+                g.add((model_uri, RDF.type, FSKXO.FSKXO_0000018113))
+
                 # 1. Hazards and Products
                 if model_uri:
-                    g.remove((model_uri, FSKXO.FSKXO_0000000008, None)); g.remove((model_uri, FSKXO.FSKXO_0000000007, None))
-                    for uri in st.session_state.hazard_mappings[selected_model]: g.add((model_uri, FSKXO.FSKXO_0000000008, URIRef(uri)))
-                    for uri in st.session_state.product_mappings[selected_model]: g.add((model_uri, FSKXO.FSKXO_0000000007, URIRef(uri)))
+                    # --- Clear existing crop/hazard assertions (both schemas) ---
+                    # Old / colleague schema
+                    g.remove((model_uri, FSKXO.FSKXO_0000000008, None))  # taxon/hazard
+                    g.remove((model_uri, FSKXO.FSKXO_0000000007, None))  # matrix/crop
+
+                    # Your Ambrosia schema (this is Strategy 1)
+                    g.remove((model_uri, AMBLINK.forTaxon, None))
+                    g.remove((model_uri, AMBLINK.forMatrix, None))
+
+                    # --- Re-add from the user's selected URIs (your controlled vocab URIs) ---
+                    for uri in st.session_state.hazard_mappings[selected_model]:
+                        o = URIRef(uri)
+                        # Keep the colleague's triples if you want backward compatibility:
+                        g.add((model_uri, FSKXO.FSKXO_0000000008, o))
+                        # The important new one for your dashboard/ontology:
+                        g.add((model_uri, AMBLINK.forTaxon, o))
+
+                    for uri in st.session_state.product_mappings[selected_model]:
+                        o = URIRef(uri)
+                        # Keep the colleague's triples if you want backward compatibility:
+                        g.add((model_uri, FSKXO.FSKXO_0000000007, o))
+                        # The important new one for your dashboard/ontology:
+                        g.add((model_uri, AMBLINK.forMatrix, o))
 
                     # Remove all existing OutputMappings and associated triples for the model to ensure idempotency
                     for s, p, o in list(g.triples((URIRef(model_uri), AMBLINK.hasOutputMapping, None))):
@@ -1754,6 +1880,14 @@ If you map parameters consistently (meaning, unit, temporal semantics), the dash
                     except Exception as e:
                         st.error(f"An error occurred during the wiring process: {e}")
 
+                # Add provenance
+                fskx_file = FSKX_DIR / f"{selected_model}.fskx"
+                if fskx_file.exists():
+                    add_fskx_provenance(
+                        g=g,
+                        model_uri=URIRef(model_uri),
+                        fskx_path=fskx_file
+                    )
 
                 _bind_common_namespaces(g)
                 g.serialize(destination=str(turtle_file), format="turtle")

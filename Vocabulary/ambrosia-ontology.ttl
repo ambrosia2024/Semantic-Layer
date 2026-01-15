@@ -44,8 +44,11 @@
     a owl:Ontology ;
     dct:title "AMBROSIA Ontology"@en ;
     dct:description "Ontology for the AMBROSIA project: linking, agents, dashboard context, observation model and alert/incident patterns."@en ;
-    owl:versionInfo "1.0" ;
-    dct:creator "Michael Zarske" ;
+    owl:versionInfo "1.0.1" ;
+    owl:versionIRI <https://w3id.org/ambrosia/ontology/1.0.1> ;
+    dcterms:issued "2025-12-03"^^xsd:date ;
+    dcterms:modified "2026-01-14"^^xsd:date ;
+    dct:creator "https://orcid.org/0000-0003-4691-0483" ;
     owl:imports
         <http://www.w3.org/2004/02/skos/core> ,
         <http://www.w3.org/ns/sosa/> ,
@@ -162,9 +165,8 @@ amblink:representsStatistic a owl:ObjectProperty ;
 
 amblink:hasOutputUnit a owl:ObjectProperty ;
   rdfs:label "has output unit"@en ;
-  rdfs:comment "Unit of the output values (QUDT Unit)."@en ;
-  rdfs:domain amblink:OutputMapping ;
-  rdfs:range  qudt:Unit .
+  rdfs:comment "Unit of the output values."@en ;
+  rdfs:domain amblink:OutputMapping .
 
 # Aggregation / Temporal / Transformation Hints
 
@@ -553,7 +555,7 @@ amblink:expectsUnit
     rdfs:subPropertyOf qudt:unit .
 
 amblink:hasOutputUnit
-    rdfs:subPropertyOf qudt:unit .
+    rdfs:seeAlso qudt:unit .
 
 amblink:preferredInputUnit
     rdfs:subPropertyOf qudt:unit .
