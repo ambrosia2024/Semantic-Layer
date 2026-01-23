@@ -1,0 +1,112 @@
+Starting inference...
+Loading master mapping from /Users/michael/Desktop/Semantic-Layer-main/Semantic-Layer/FSKX_to_RDF/master_mapping.xlsx...
+Loaded 313 rows from master mapping.
+Processing c4adaff8-96af-40b5-adb9-79bca46c0b04.ttl...
+  [Param: Tmin]
+    Unit matched: '°C' -> '°C (degrees Celsius, ° Celsius)'
+    Classification:   (Raw: {'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017508', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017480', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017795'})
+    Skipping parameter matching (not Input/Output or no candidates)
+  [Param: alpha0]
+    Unit matched: 'Dimensionless' -> '[] (Dimensionless)'
+    Classification:   (Raw: {'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017540', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017480', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017778'})
+    Skipping parameter matching (not Input/Output or no candidates)
+  [Param: b]
+    Unit NOT matched: '1/√(°C·h)'
+    Classification:   (Raw: {'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000362', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017480', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017506'})
+    Skipping parameter matching (not Input/Output or no candidates)
+  [Param: model_values]
+    Unit matched: 'log10 CFU/g' -> 'log10(CFU/g) (log₁₀ colony-forming units per gram)'
+    Classification:  Output (Raw: {'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017789', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017482', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017611'})
+  Matching term: 'Predicted bacterial population'
+  Tokens: {'bacterial', 'predicted', 'population'}
+    Candidate 'Risk summary table (risk summary per subpopulation, risk matrix)' score: 0.8 (population~subpopulation)
+  -> Best match: 'Risk summary table (risk summary per subpopulation, risk matrix)' (Score: 0.8)
+    Parameter matched: 'Predicted bacterial population' -> 'Risk summary table (risk summary per subpopulation, risk matrix)'
+  [Param: t]
+    Unit matched: 'h' -> 'h (hours)'
+    Classification:  Output (Raw: {'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017482', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017796', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017569'})
+  Matching term: 'Time'
+  Tokens: {'time'}
+    Candidate 'Simulation time series (time axis of simulation)' score: 1.0 (time==time)
+  -> Best match: 'Simulation time series (time axis of simulation)' (Score: 1.0)
+    Parameter matched: 'Time' -> 'Simulation time series (time axis of simulation)'
+  [Param: temp_celsius]
+    Unit matched: '°C' -> '°C (degrees Celsius, ° Celsius)'
+    Classification: Input  (Raw: {'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017481', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017795', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017508'})
+  Matching term: 'Temperature'
+  Tokens: {'temperature'}
+    Candidate 'Temperature (Near-Surface Air Temperature)' score: 1.0 (temperature==temperature)
+    Candidate 'Daily Maximum Temperature (Daily Maximum Near-Surface Air Temperature)' score: 1.0 (temperature==temperature)
+  -> Best match: 'Temperature (Near-Surface Air Temperature)' (Score: 1.0)
+    Parameter matched: 'Temperature' -> 'Temperature (Near-Surface Air Temperature)'
+  [Param: tmax]
+    Unit matched: 'h' -> 'h (hours)'
+    Classification: Input  (Raw: {'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017481', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017796', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017569'})
+  Matching term: 'Maximum simulation time'
+  Tokens: {'maximum', 'time', 'simulation'}
+    Candidate 'Daily Maximum Temperature (Daily Maximum Near-Surface Air Temperature)' score: 1.0 (maximum==maximum)
+  -> Best match: 'Daily Maximum Temperature (Daily Maximum Near-Surface Air Temperature)' (Score: 1.0)
+    Parameter matched: 'Maximum simulation time' -> 'Daily Maximum Temperature (Daily Maximum Near-Surface Air Temperature)'
+  [Param: y0]
+    Unit matched: 'log10 CFU/g' -> 'log10(CFU/g) (log₁₀ colony-forming units per gram)'
+    Classification: Input  (Raw: {'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017789', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017481', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017611'})
+  Matching term: 'Initial population'
+  Tokens: {'initial', 'population'}
+  Matching term: 'y0'
+  No valid tokens found in 'y0'
+    Parameter NOT matched for ['Initial population', 'y0']
+Processing ac398182-01ab-48f0-b25c-ca432631b018.ttl...
+  [Param: Tmin]
+    Unit matched: '[]' -> '[] (Dimensionless)'
+    Classification:   (Raw: {'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017480', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017490'})
+    Skipping parameter matching (not Input/Output or no candidates)
+  [Param: alpha0]
+    Unit matched: '[]' -> '[] (Dimensionless)'
+    Classification:   (Raw: {'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017480', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017490'})
+    Skipping parameter matching (not Input/Output or no candidates)
+  [Param: b]
+    Unit matched: '[]' -> '[] (Dimensionless)'
+    Classification:   (Raw: {'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017480', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017490'})
+    Skipping parameter matching (not Input/Output or no candidates)
+  [Param: model_values]
+    Unit matched: '[]' -> '[] (Dimensionless)'
+    Classification:  Output (Raw: {'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017482', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017490'})
+  Matching term: 'model_values'
+  Tokens: {'model', 'values'}
+  Matching term: 'model_values'
+  Tokens: {'model', 'values'}
+    Parameter NOT matched for ['model_values', 'model_values']
+  [Param: t]
+    Unit matched: '[]' -> '[] (Dimensionless)'
+    Classification:  Output (Raw: {'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017482', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017490'})
+  Matching term: 't'
+  No valid tokens found in 't'
+  Matching term: 't'
+  No valid tokens found in 't'
+    Parameter NOT matched for ['t', 't']
+  [Param: temp_celsius]
+    Unit matched: '° Celsius' -> '°C (degrees Celsius, ° Celsius)'
+    Classification: Input  (Raw: {'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017481', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017506'})
+  Matching term: 'temp_celsius'
+  Tokens: {'temp', 'celsius'}
+    Candidate 'Temperature (Near-Surface Air Temperature)' score: 0.8 (temp~temperature)
+    Candidate 'Daily Maximum Temperature (Daily Maximum Near-Surface Air Temperature)' score: 0.8 (temp~temperature)
+  -> Best match: 'Temperature (Near-Surface Air Temperature)' (Score: 0.8)
+    Parameter matched: 'temp_celsius' -> 'Temperature (Near-Surface Air Temperature)'
+  [Param: tmax]
+    Unit matched: '[]' -> '[] (Dimensionless)'
+    Classification: Input  (Raw: {'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017481', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017490'})
+  Matching term: 'tmax'
+  Tokens: {'tmax'}
+  Matching term: 'tmax'
+  Tokens: {'tmax'}
+    Parameter NOT matched for ['tmax', 'tmax']
+  [Param: y0]
+    Unit matched: 'log CFU/ml' -> 'log10(CFU/mL) (log₁₀ colony-forming units per milliliter)'
+    Classification: Input  (Raw: {'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017481', 'http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017519'})
+  Matching term: 'y0'
+  No valid tokens found in 'y0'
+  Matching term: 'y0'
+  No valid tokens found in 'y0'
+    Parameter NOT matched for ['y0', 'y0']
+Inferred units saved to /Users/michael/Desktop/Semantic-Layer-main/Semantic-Layer/FSKX_to_RDF/inferred_units.json

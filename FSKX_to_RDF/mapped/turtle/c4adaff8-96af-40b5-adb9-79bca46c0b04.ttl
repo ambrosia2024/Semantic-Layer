@@ -1,0 +1,241 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix fskxo: <http://semanticlookup.zbmed.de/km/fskxo/> .
+@prefix ns1: <http://purl.obolibrary.org/obo/> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+fskxo:c4adaff8-96af-40b5-adb9-79bca46c0b04 fskxo:FSKXO_0000000003 <http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/generalInformation> ;
+    fskxo:FSKXO_0000000006 <http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/scope> ;
+    fskxo:FSKXO_0000000010 [ fskxo:FSKXO_0000000011 <http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/dataBackground/study/Koseki_Isobe_2005> ] ;
+    fskxo:FSKXO_0000000016 [ fskxo:FSKXO_0000000017 <http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/parameter/Tmin>,
+                <http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/parameter/alpha0>,
+                <http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/parameter/b>,
+                <http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/parameter/model_values>,
+                <http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/parameter/t>,
+                <http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/parameter/temp_celsius>,
+                <http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/parameter/tmax>,
+                <http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/parameter/y0> ] ;
+    fskxo:FSKXO_0000000044 "predictiveModel" .
+
+fskxo:FSKXO_0000000315 schema:label "English" .
+
+fskxo:FSKXO_0000000362 schema:label "Other" .
+
+fskxo:FSKXO_0000007123 schema:label "Microorganisms" .
+
+fskxo:FSKXO_0000012561 schema:label "Plastic bag" .
+
+fskxo:FSKXO_0000017477 schema:label "None" .
+
+fskxo:FSKXO_0000017506 schema:label "1/√(°C·h)" .
+
+fskxo:FSKXO_0000017600 schema:label "Listeriosis" .
+
+<http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/creator/13e38a6e> schema:addressCountry "International" ;
+    schema:affiliation "Manus" ;
+    schema:email "ai.assistant@example.com" ;
+    schema:givenName "AI Assistant" .
+
+<http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/creator/d9c71653> schema:email "matthias.filter@bfr.bund.de" ;
+    schema:familyName "Filter" ;
+    schema:givenName "Matthias" .
+
+<http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/dataBackground/study/Koseki_Isobe_2005> dcterms:description "Study of pathogen growth on iceberg lettuce under real temperature history during distribution from farm to table" ;
+    dcterms:identifier "Koseki_Isobe_2005" ;
+    dcterms:title "Pathogen growth on iceberg lettuce study" .
+
+<http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/generalInformation> a fskxo:FSKXO_0000000003 ;
+    ns1:IAO_0000114 "Uncurated" ;
+    dcterms:accessRights "true" ;
+    dcterms:created 3,
+        26,
+        2025 ;
+    dcterms:creator <http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/creator/13e38a6e>,
+        <http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/creator/d9c71653> ;
+    dcterms:description "This model predicts the growth of Listeria monocytogenes on iceberg lettuce using the Baranyi primary growth model with temperature-dependent secondary models for maximum growth rate, lag time, and maximum population density. The model is adapted from the original paper by Koseki and Isobe (2005) which studied pathogen growth on iceberg lettuce under real temperature history during distribution from farm to table." ;
+    dcterms:identifier "c4adaff8-96af-40b5-adb9-79bca46c0b04" ;
+    dcterms:modified 3,
+        28,
+        2025 ;
+    dcterms:rights "Creative Commons Attribution (CC BY)" ;
+    dcterms:source "PUBLISHED SCIENTIFIC STUDIES" ;
+    dcterms:title "Listeria monocytogenes growth model on iceberg lettuce" ;
+    fskxo:FSKXO_0000000004 <http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/reference/10_1016_j_ijfoodmicro_2005_02_012> ;
+    fskxo:FSKXO_0000000052 "The objective of the model is to predict the growth of Listeria monocytogenes on iceberg lettuce under different temperature conditions." ;
+    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000000315,
+        fskxo:FSKXO_0000017569 ;
+    schema:programmingLanguage "Python 3.12.9" .
+
+<http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/parameter/Tmin> dcterms:description "Conceptual minimum temperature for growth in the Ratkowsky model" ;
+    dcterms:identifier "Tmin" ;
+    dcterms:source "Paper" ;
+    dcterms:subject "Other" ;
+    fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
+    fskxo:FSKXO_0000000088 "Point estimate" ;
+    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017480,
+        fskxo:FSKXO_0000017508,
+        fskxo:FSKXO_0000017795 ;
+    schema:name "Minimum growth temperature" ;
+    schema:unit_label "°C" ;
+    schema:value "-4.26" .
+
+<http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/parameter/alpha0> dcterms:description "Parameter related to the physiological state of cells affecting lag time" ;
+    dcterms:identifier "alpha0" ;
+    dcterms:source "Paper" ;
+    dcterms:subject "Other" ;
+    fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
+    fskxo:FSKXO_0000000088 "Point estimate" ;
+    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017480,
+        fskxo:FSKXO_0000017540,
+        fskxo:FSKXO_0000017778 ;
+    schema:name "Physiological state parameter" ;
+    schema:unit_label "Dimensionless" ;
+    schema:value "0.072" .
+
+<http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/parameter/b> dcterms:description "Constant in the Ratkowsky square root model" ;
+    dcterms:identifier "b" ;
+    dcterms:source "Paper" ;
+    dcterms:subject "Other" ;
+    fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
+    fskxo:FSKXO_0000000088 "Point estimate" ;
+    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000000362,
+        fskxo:FSKXO_0000017480,
+        fskxo:FSKXO_0000017506 ;
+    schema:name "Growth rate constant" ;
+    schema:unit_label "1/√(°C·h)" ;
+    schema:value "0.016" .
+
+<http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/parameter/model_values> dcterms:description "Predicted bacterial population over time" ;
+    dcterms:identifier "model_values" ;
+    fskxo:FSKXO_0000000041 "VECTOROFNUMBERS" ;
+    fskxo:FSKXO_0000000088 "Time series" ;
+    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017482,
+        fskxo:FSKXO_0000017611,
+        fskxo:FSKXO_0000017789 ;
+    schema:name "Predicted bacterial population" ;
+    schema:unit_label "log10 CFU/g" .
+
+<http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/parameter/t> dcterms:description "Time points for simulation" ;
+    dcterms:identifier "t" ;
+    fskxo:FSKXO_0000000041 "VECTOROFNUMBERS" ;
+    fskxo:FSKXO_0000000088 "Time series" ;
+    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017482,
+        fskxo:FSKXO_0000017569,
+        fskxo:FSKXO_0000017796 ;
+    schema:name "Time" ;
+    schema:unit_label "h" .
+
+<http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/parameter/temp_celsius> dcterms:description "Storage temperature" ;
+    dcterms:identifier "temp_celsius" ;
+    dcterms:source "Paper" ;
+    dcterms:subject "Environment" ;
+    fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
+    fskxo:FSKXO_0000000088 "Point estimate" ;
+    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017481,
+        fskxo:FSKXO_0000017508,
+        fskxo:FSKXO_0000017795 ;
+    schema:name "Temperature" ;
+    schema:unit_label "°C" ;
+    schema:value "15" .
+
+<http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/parameter/tmax> dcterms:description "Maximum time for simulation" ;
+    dcterms:identifier "tmax" ;
+    dcterms:source "Paper" ;
+    dcterms:subject "Other" ;
+    fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
+    fskxo:FSKXO_0000000088 "Point estimate" ;
+    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017481,
+        fskxo:FSKXO_0000017569,
+        fskxo:FSKXO_0000017796 ;
+    schema:name "Maximum simulation time" ;
+    schema:unit_label "h" ;
+    schema:value "72" .
+
+<http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/parameter/y0> dcterms:description "Initial bacterial population" ;
+    dcterms:identifier "y0" ;
+    dcterms:source "Paper" ;
+    dcterms:subject "Product" ;
+    fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
+    fskxo:FSKXO_0000000088 "Point estimate" ;
+    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017481,
+        fskxo:FSKXO_0000017611,
+        fskxo:FSKXO_0000017789 ;
+    schema:name "Initial population" ;
+    schema:unit_label "log10 CFU/g" ;
+    schema:value "3.5" .
+
+<http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/reference/10_1016_j_ijfoodmicro_2005_02_012> dcterms:abstract "The growth of pathogenic bacteria Escherichia coli O157:H7, Salmonella spp., and Listeria monocytogenes on iceberg lettuce under constant and fluctuating temperatures was modelled in order to estimate the microbial safety of this vegetable during distribution from the farm to the table. Firstly, we examined pathogen growth on lettuce at constant temperatures, ranging from 5 to 25 °C, and then we obtained the growth kinetic parameters (lag time, maximum growth rate (μmax), and maximum population density (MPD)) using the Baranyi primary growth model. The parameters were similar to those predicted by the pathogen modelling program (PMP), with the exception of MPD. The MPD of each pathogen on lettuce was 2–3 log10 CFU/g lower than that predicted by PMP. Furthermore, the MPD of pathogens decreased with decreasing temperature. The relationship between √μmax and temperature was linear in accordance with Ratkowsky secondary model as was the relationship between the MPD and temperature. Predictions of pathogen growth under fluctuating temperature used the Baranyi primary microbial growth model along with the Ratkowsky secondary model and MPD equation. The fluctuating temperature profile used in this study was the real temperature history measured during distribution from the field at harvesting to the retail store. Overall predictions for each pathogen agreed well with observed viable counts in most cases. The bias and root mean square error (RMSE) of the prediction were small. The prediction in which μmax was based on PMP showed a trend of overestimation relative to prediction based on lettuce. However, the prediction concerning E. coli O157:H7 and Salmonella spp. on lettuce greatly overestimated growth in the case of a temperature history starting relatively high, such as 25 °C for 5 h. In contrast, the overall prediction of L. monocytogenes under the same circumstances agreed with the observed data." ;
+    dcterms:identifier "10.1016/j.ijfoodmicro.2005.02.012" ;
+    dcterms:title "Prediction of pathogen growth on iceberg lettuce under real temperature history during distribution from farm to table" ;
+    fskxo:FSKXO_0000000021 "Koseki, S., Isobe, S." ;
+    fskxo:FSKXO_0000000046 true ;
+    fskxo:FSKXO_00000000486 "Published" ;
+    schema:datePublished "2005" ;
+    schema:issueNumber "3" ;
+    schema:url "https://www.sciencedirect.com/science/article/pii/S0168160505002564" ;
+    schema:volumeNumber "104" .
+
+<http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/scope> a fskxo:FSKXO_0000000006 ;
+    dcterms:temporal "Growth prediction over time at constant temperatures" ;
+    fskxo:FSKXO_0000000007 <http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/scope/product/Iceberg_lettuce> ;
+    fskxo:FSKXO_0000000008 fskxo:FSKXO_0000006903 .
+
+<http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/scope/product/Iceberg_lettuce> dcterms:description fskxo:FSKXO_0000000507 ;
+    fskxo:FSKXO_0000000022 fskxo:FSKXO_0000017519 ;
+    fskxo:FSKXO_0000000023 fskxo:FSKXO_0000012561 ;
+    fskxo:FSKXO_0000000024 fskxo:FSKXO_0000017477 ;
+    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017548 ;
+    schema:name fskxo:FSKXO_0000000507 ;
+    schema:unit_label fskxo:FSKXO_0000017548 .
+
+fskxo:FSKXO_0000000507 schema:label "Fresh iceberg lettuce",
+        "Iceberg lettuce" .
+
+fskxo:FSKXO_0000006903 dcterms:type fskxo:FSKXO_0000007123 ;
+    fskxo:FSKXO_0000000053 fskxo:FSKXO_0000017600 ;
+    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017611 ;
+    schema:label "Listeria monocytogenes" ;
+    schema:name fskxo:FSKXO_0000006903 ;
+    schema:unit_label fskxo:FSKXO_0000017519 .
+
+fskxo:FSKXO_0000017540 schema:label fskxo:FSKXO_0000017540,
+        "Dimensionless" .
+
+fskxo:FSKXO_0000017778 schema:label fskxo:FSKXO_0000017778,
+        "Dimensionless Quantity" .
+
+fskxo:FSKXO_0000017482 schema:label fskxo:FSKXO_0000017482,
+        "OUTPUT" .
+
+fskxo:FSKXO_0000017508 schema:label fskxo:FSKXO_0000017508,
+        "°C" .
+
+fskxo:FSKXO_0000017519 schema:label "Conventional",
+        "log10 CFU/g" .
+
+fskxo:FSKXO_0000017548 schema:label fskxo:FSKXO_0000017548,
+        "g" .
+
+fskxo:FSKXO_0000017611 schema:label fskxo:FSKXO_0000017519 .
+
+fskxo:FSKXO_0000017789 schema:label fskxo:FSKXO_0000017789,
+        "Number Content (count/mass)" .
+
+fskxo:FSKXO_0000017795 schema:label fskxo:FSKXO_0000017795,
+        "Temperature" .
+
+fskxo:FSKXO_0000017796 schema:label fskxo:FSKXO_0000017796,
+        "Time" .
+
+fskxo:FSKXO_0000017480 schema:label fskxo:FSKXO_0000017480,
+        "CONSTANT" .
+
+fskxo:FSKXO_0000017481 schema:label fskxo:FSKXO_0000017481,
+        "INPUT" .
+
+fskxo:FSKXO_0000017569 schema:label fskxo:FSKXO_0000017569,
+        "Python",
+        "h" .
+
+fskxo:FSKXO_0000017803 schema:label "DOUBLE" .
+

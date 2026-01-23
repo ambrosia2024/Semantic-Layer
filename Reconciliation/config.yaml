@@ -10,7 +10,7 @@ wikidata:
 
 # --- NCBI Configuration ---
 ncbi:
-  api_key: 015218aa479106ba5f3bd34790819e474008   
+  api_key: API_KEY  # Replace with your NCBI API Key
   
   tool_name: "MyStreamlitReconTool"
   eutils_base_url: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
@@ -19,7 +19,7 @@ ncbi:
 
 # --- BioPortal Configuration ---
 bioportal:
-  api_key: "17ffc865-32d1-47cf-8e58-533252fa97ff"
+  api_key: "API_KEY"  # Replace with your BioPortal API Key
 
   base_url: "https://data.bioontology.org"
   default_ontologies: "NCIT,MESH,SNOMEDCT,GO"
@@ -36,9 +36,14 @@ ols:
   field_list: "iri,label,synonym,description,ontology_prefix"
   preferred_ontologies: "chebi"
 
+# --- GeoNames Configuration ---
+geonames:
+  username: "USERNAME"  # Replace with your GeoNames Username
+  base_url: "https://secure.geonames.org"
+
 # --- AgroPortal Configuration ---
 agroportal:
-  api_key: "4f1f94d8-8b37-404e-8889-fbae64fe5d8b" # Replace with your EarthPortal API Key
+  api_key: "API_KEY" # Replace with your EarthPortal API Key
   base_url: "https://data.agroportal.lirmm.fr"
   default_pagesize: 15
   include_fields: "prefLabel,synonym,definition"
@@ -46,7 +51,7 @@ agroportal:
 
 # --- EarthPortal Configuration ---
 earthportal:
-  api_key: "f43f3049-f30e-4895-a66b-642799b1bb2a" # Replace with your EarthPortal API Key
+  api_key: "API_KEY" # Replace with your EarthPortal API Key
   base_url: "https://data.earthportal.eu"
   default_pagesize: 15
   include_fields: "prefLabel,synonym,definition"
