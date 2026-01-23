@@ -2,6 +2,11 @@
 
 This application provides a suite of tools to build and manage the AMBROSIA semantic layer. Each tool is designed to handle a specific part of the semantic workflow, from reconciling terms to generating linked data from models.
 
+## Live Visualizer
+
+The semantic layer can be visualized and explored online using our Reactodia-based visualizer:
+👉 **[AMBROSIA Semantic Layer Visualizer](https://ambrosia2024.github.io/Semantic-Layer/)**
+
 ## Prerequisites
 
 - Python 3.10.16
@@ -67,3 +72,5 @@ This project is organized into several directories, each serving a specific purp
 
 *   **`Reconciliation/`**: This directory contains the logic for the Reconciliation Service.
     *   `config.yaml`: This is a critical configuration file where you must provide your API keys and usernames for the various reconciliation providers (e.g., NCBI, BioPortal). You can also specify preferred ontologies to appear at the top of the dropdown lists for providers that support a large number of ontologies.
+
+*   **`reactodia/`**: A React application that uses the [Reactodia](https://github.com/reactodia/reactodia) library to provide an interactive, diagram-based visualization of the AMBROSIA ontologies and vocabularies. It allows users to explore relationships between entities in the semantic layer visually.

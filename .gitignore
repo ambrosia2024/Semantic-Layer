@@ -1,4 +1,13 @@
-﻿*.nc
+﻿# macOS
+.DS_Store
+**/.DS_Store
+
+# React app (reactodia)
+reactodia/node_modules/
+reactodia/build/
+reactodia/.env*
+
+*.nc
 *.fskx
 *.jsonld
 *.pkl
