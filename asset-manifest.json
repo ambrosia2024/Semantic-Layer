@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/Semantic-Layer/static/css/main.e6c13ad2.css",
+    "main.js": "/Semantic-Layer/static/js/main.13857b9a.js",
+    "static/js/97.6a968824.chunk.js": "/Semantic-Layer/static/js/97.6a968824.chunk.js",
+    "static/js/453.2f4bb558.chunk.js": "/Semantic-Layer/static/js/453.2f4bb558.chunk.js",
+    "index.html": "/Semantic-Layer/index.html",
+    "main.e6c13ad2.css.map": "/Semantic-Layer/static/css/main.e6c13ad2.css.map",
+    "main.13857b9a.js.map": "/Semantic-Layer/static/js/main.13857b9a.js.map",
+    "97.6a968824.chunk.js.map": "/Semantic-Layer/static/js/97.6a968824.chunk.js.map",
+    "453.2f4bb558.chunk.js.map": "/Semantic-Layer/static/js/453.2f4bb558.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.13857b9a.js"
+  ]
+}

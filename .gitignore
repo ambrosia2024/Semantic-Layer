@@ -1,0 +1,6 @@
+﻿*.nc
+*.fskx
+*.jsonld
+*.pkl
+*.pyc
+__pycache__/
