@@ -4,8 +4,8 @@ This application provides a suite of tools to build and manage the AMBROSIA sema
 
 ## Live Visualizer
 
-The semantic layer can be visualized and explored online using our Reactodia-based visualizer:
-👉 **[AMBROSIA Semantic Layer Visualizer](https://ambrosia2024.github.io/Semantic-Layer/)**
+The semantic layer can be visualized and explored online using the Reactodia-based visualizer:
+**[AMBROSIA Semantic Layer Visualizer](https://ambrosia2024.github.io/Semantic-Layer/)**
 
 ## Prerequisites
 
