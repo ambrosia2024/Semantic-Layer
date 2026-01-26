@@ -5,7 +5,7 @@ This is the React-based visualizer for the AMBROSIA semantic layer, built using 
 ## Live Demo
 
 The application is hosted at:
-👉 **[https://ambrosia2024.github.io/Semantic-Layer/](https://ambrosia2024.github.io/Semantic-Layer/)**
+**[https://ambrosia2024.github.io/Semantic-Layer/](https://ambrosia2024.github.io/Semantic-Layer/)**
 
 ## About Reactodia
 
