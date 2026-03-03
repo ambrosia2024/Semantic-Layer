@@ -1,16 +1,46 @@
+@prefix amb: <https://w3id.org/ambrosia/ontology#> .
+@prefix amblink: <https://w3id.org/ambrosia/linking#> .
 @prefix base: <http://id.zbmed.de/fskxo/> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix fskxo: <http://semanticlookup.zbmed.de/km/fskxo/> .
-@prefix ns1: <http://schema.org/> .
-@prefix ns2: <http://purl.obolibrary.org/obo/> .
+@prefix ns2: <http://schema.org/> .
+@prefix obo: <http://purl.obolibrary.org/obo/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix qk: <http://qudt.org/vocab/quantitykind/> .
+@prefix qudt-unit: <http://qudt.org/vocab/unit/> .
 @prefix schema: <https://schema.org/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-fskxo:ac398182-01ab-48f0-b25c-ca432631b018 fskxo:FSKXO_0000000003 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/generalInformation> ;
+fskxo:ac398182-01ab-48f0-b25c-ca432631b018 a fskxo:FSKXO_0000018113,
+        amblink:PredictiveModel ;
+    dcterms:source <urn:sha256:d3b83a211b84a2e287596e5cb74b3bb301e110a1e96270979fe131ea63f5f9ca> ;
+    fskxo:FSKXO_0000000003 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/generalInformation> ;
     fskxo:FSKXO_0000000006 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/scope> ;
+    fskxo:FSKXO_0000000007 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/lettuce> ;
+    fskxo:FSKXO_0000000008 <https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/salmonella> ;
     fskxo:FSKXO_0000000010 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/dataBackground> ;
     fskxo:FSKXO_0000000016 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/modelMath> ;
-    fskxo:FSKXO_0000000044 "genericModel" .
+    fskxo:FSKXO_0000000044 "genericModel" ;
+    prov:generatedAtTime "2026-03-03T13:08:24+00:00"^^xsd:dateTime ;
+    prov:wasDerivedFrom <urn:sha256:d3b83a211b84a2e287596e5cb74b3bb301e110a1e96270979fe131ea63f5f9ca> ;
+    prov:wasGeneratedBy <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/prov/activity/d3b83a211b84> ;
+    amblink:forMatrix <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/lettuce> ;
+    amblink:forTaxon <https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/salmonella> ;
+    amblink:hasInputMapping [ a amblink:InputMapping ;
+            amblink:isFulfilledBy <https://w3id.org/ambrosia/netcdf-vocab#concept/netcdf/tas> ;
+            amblink:mapsParameter <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/temp_celsius> ;
+            amblink:sourceVariableName "tas" ] ;
+    amblink:hasOutputMapping [ a amblink:OutputMapping ;
+            amblink:hasOutputUnit fskxo:FSKXO_0000017611 ;
+            amblink:mapsParameter <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/model_values> ;
+            amblink:producesObservedProperty amblink:FoodContaminationConcentration ],
+        [ a amblink:OutputMapping ;
+            amblink:hasOutputUnit qudt-unit:HR ;
+            amblink:mapsParameter <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/t> ;
+            amblink:producesObservedProperty amblink:SimulationTimeSeries ] ;
+    amb:sourceHash "d3b83a211b84a2e287596e5cb74b3bb301e110a1e96270979fe131ea63f5f9ca" .
 
 fskxo:FSKXO_0000000315 schema:label "English" .
 
@@ -19,8 +49,6 @@ fskxo:FSKXO_0000007123 schema:label "Microorganism" .
 fskxo:FSKXO_0000017506 schema:label "° Celsius" .
 
 fskxo:FSKXO_0000017577 schema:label ".fskx" .
-
-fskxo:FSKXO_0000017611 schema:label fskxo:FSKXO_0000017519 .
 
 fskxo:FSKXO_0000018038 schema:label "FSK-Lab" .
 
@@ -45,14 +73,14 @@ fskxo:FSKXO_0000018038 schema:label "FSK-Lab" .
     dcterms:title "Prediction of pathogen growth on iceberg lettuce under real temperature history during distribution from farm to table" ;
     fskxo:FSKXO_0000000067 "Growth study under controlled and real temperature conditions" .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/dataBackground/studySample/3c859539> ns2:HSO_0000288 "Outer leaves and core removed, cut into 3x3 cm pieces using sterile surgical knife" ;
-    ns2:HSO_0000331 "100g leaf samples placed in plastic bags for inoculation" ;
-    ns2:HSO_0000357 "100g initial sample weight" ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/dataBackground/studySample/3c859539> obo:HSO_0000288 "Outer leaves and core removed, cut into 3x3 cm pieces using sterile surgical knife" ;
+    obo:HSO_0000331 "100g leaf samples placed in plastic bags for inoculation" ;
+    obo:HSO_0000357 "100g initial sample weight" ;
     schema:identifier "Iceberg lettuce" ;
     schema:size "10g samples used for analysis" .
 
 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/generalInformation> a fskxo:FSKXO_0000000003 ;
-    ns2:IAO_0000114 "Uncurated" ;
+    obo:IAO_0000114 "Uncurated" ;
     dcterms:accessRights "Open access" ;
     dcterms:created 3,
         22,
@@ -116,34 +144,9 @@ fskxo:FSKXO_0000018038 schema:label "FSK-Lab" .
     schema:unit_label "[]" ;
     schema:value "0.033" .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/model_values> dcterms:identifier "model_values" ;
-    fskxo:FSKXO_0000000041 "VECTOROFNUMBERS" ;
-    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017482,
-        fskxo:FSKXO_0000017490 ;
-    schema:name "model_values" ;
-    schema:unit_label "[]" .
-
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/t> dcterms:identifier "t" ;
-    fskxo:FSKXO_0000000041 "VECTOROFNUMBERS" ;
-    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017482,
-        fskxo:FSKXO_0000017490 ;
-    schema:name "t" ;
-    schema:unit_label "[]" .
-
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/temp_celsius> dcterms:description "Temperature" ;
-    dcterms:identifier "temp_celsius" ;
-    ns1:maxValue "25" ;
-    fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
-    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017481,
-        fskxo:FSKXO_0000017506 ;
-    schema:minValue "5" ;
-    schema:name "temp_celsius" ;
-    schema:unit_label "° Celsius" ;
-    schema:value "10" .
-
 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/tmax> dcterms:description "maximal simulation duration" ;
     dcterms:identifier "tmax" ;
-    ns1:maxValue "100" ;
+    ns2:maxValue "100" ;
     fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
     fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017481,
         fskxo:FSKXO_0000017490 ;
@@ -154,7 +157,7 @@ fskxo:FSKXO_0000018038 schema:label "FSK-Lab" .
 
 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/y0> dcterms:description "Initial concentration" ;
     dcterms:identifier "y0" ;
-    ns1:maxValue "9" ;
+    ns2:maxValue "9" ;
     fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
     fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017481,
         fskxo:FSKXO_0000017519 ;
@@ -162,6 +165,12 @@ fskxo:FSKXO_0000018038 schema:label "FSK-Lab" .
     schema:name "y0" ;
     schema:unit_label "log CFU/ml" ;
     schema:value "4" .
+
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/prov/activity/d3b83a211b84> a prov:Activity ;
+    prov:atLocation <file:///Users/michael/Desktop/Ambrosia/Semantic-Layer-main/Semantic-Layer/FSKX_to_RDF/fskx_models/ac398182-01ab-48f0-b25c-ca432631b018.fskx> ;
+    prov:endedAtTime "2026-03-03T13:08:24+00:00"^^xsd:dateTime ;
+    prov:used <urn:sha256:d3b83a211b84a2e287596e5cb74b3bb301e110a1e96270979fe131ea63f5f9ca> ;
+    prov:wasAssociatedWith <https://w3id.org/ambrosia/software/pipeline> .
 
 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/reference/10_1016_j_ijfoodmicro_2005_02_012> dcterms:identifier "10.1016/j.ijfoodmicro.2005.02.012" ;
     dcterms:title "Prediction of pathogen growth on iceberg lettuce under real temperature history during distribution from farm to table" ;
@@ -183,6 +192,10 @@ fskxo:FSKXO_0000018038 schema:label "FSK-Lab" .
     schema:name fskxo:FSKXO_0000000507 ;
     schema:unit_label fskxo:FSKXO_0000017548 .
 
+<https://w3id.org/ambrosia/software/pipeline> a prov:SoftwareAgent ;
+    dcterms:title "AMBROSIA semantic extraction pipeline" ;
+    owl:versionInfo "0.1.0" .
+
 fskxo:FSKXO_0000000507 schema:label "Fresh cut iceberg lettuce pieces",
         "Iceberg lettuce" .
 
@@ -191,6 +204,38 @@ fskxo:FSKXO_0000010627 dcterms:type fskxo:FSKXO_0000007123 ;
     schema:label "Salmonella spp." ;
     schema:name fskxo:FSKXO_0000010627 ;
     schema:unit_label fskxo:FSKXO_0000017519 .
+
+fskxo:FSKXO_0000017611 schema:label fskxo:FSKXO_0000017519 .
+
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/model_values> dcterms:identifier "model_values" ;
+    fskxo:FSKXO_0000000041 "VECTOROFNUMBERS" ;
+    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017482,
+        fskxo:FSKXO_0000017490 ;
+    skos:exactMatch amblink:FoodContaminationConcentration ;
+    schema:name "model_values" ;
+    schema:unit_label "[]" .
+
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/t> dcterms:identifier "t" ;
+    fskxo:FSKXO_0000000041 "VECTOROFNUMBERS" ;
+    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017482,
+        fskxo:FSKXO_0000017490 ;
+    skos:exactMatch amblink:SimulationTimeSeries ;
+    schema:name "t" ;
+    schema:unit_label "[]" .
+
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/temp_celsius> dcterms:description "Temperature" ;
+    dcterms:identifier "temp_celsius" ;
+    ns2:maxValue "25" ;
+    fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
+    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017481,
+        fskxo:FSKXO_0000017506 ;
+    skos:exactMatch qk:Temperature,
+        <https://cfconventions.org/Data/cf-standard-names/current/build/cf-standard-name-table.html#air_temperature> ;
+    schema:minValue "5" ;
+    schema:name "temp_celsius" ;
+    schema:unit_label "° Celsius" ;
+    schema:value "10" ;
+    amblink:preferredInputUnit qudt-unit:DEG_C .
 
 fskxo:FSKXO_0000017482 schema:label fskxo:FSKXO_0000017482,
         "OUTPUT" .
