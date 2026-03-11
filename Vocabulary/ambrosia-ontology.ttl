@@ -44,10 +44,10 @@
     a owl:Ontology ;
     dct:title "AMBROSIA Ontology"@en ;
     dct:description "Ontology for the AMBROSIA project: linking, agents, dashboard context, observation model and alert/incident patterns."@en ;
-    owl:versionInfo "1.0.1" ;
-    owl:versionIRI <https://w3id.org/ambrosia/ontology/1.0.1> ;
+    owl:versionInfo "1.1.0" ;
+    owl:versionIRI <https://w3id.org/ambrosia/ontology/1.1.0> ;
     dct:issued "2025-12-03"^^xsd:date ;
-    dct:modified "2026-01-14"^^xsd:date ;
+    dct:modified "2026-03-11"^^xsd:date ;
     dct:creator "https://orcid.org/0000-0003-4691-0483" ;
     owl:imports
         <http://www.w3.org/2004/02/skos/core> ,
@@ -115,6 +115,14 @@ amblink:PredictiveModel a owl:Class ;
     rdfs:comment "Predictive model used in AMBROSIA (typically encoded as an FSKX/FSKXO model)."@en ;
     rdfs:subClassOf sosa:Procedure , prov:Plan ;
     owl:equivalentClass <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000018113> .
+
+amblink:TransformationRule a owl:Class ;
+    rdfs:label "Transformation rule"@en ;
+    rdfs:comment "A rule describing how a source data concept or variable must be transformed to satisfy a model input parameter."@en .
+
+amblink:TransformationType a owl:Class ;
+    rdfs:label "Transformation type"@en ;
+    rdfs:comment "A category of transformation applied to derive a model-ready input from source data."@en .
 
 # Core Object Properties (Input side — static knowledge)
 
@@ -184,15 +192,91 @@ amblink:temporalAlignment a owl:ObjectProperty ;
 
 amblink:requiresTransformation a owl:ObjectProperty ;
   rdfs:label "requires transformation"@en ;
-  rdfs:comment "Indicates a derived-input transformation (e.g., precip → RH proxy), referenced as a concept."@en ;
+  rdfs:comment "Links an input mapping to a transformation rule required to derive the mapped parameter from the source variable."@en ;
   rdfs:domain amblink:InputMapping ;
+  rdfs:range  amblink:TransformationRule .
+
+amblink:hasTransformationType a owl:ObjectProperty ;
+  rdfs:label "has transformation type"@en ;
+  rdfs:comment "Specifies the type of transformation performed by a transformation rule."@en ;
+  rdfs:domain amblink:TransformationRule ;
+  rdfs:range  amblink:TransformationType .
+
+amblink:hasSourceConcept a owl:ObjectProperty ;
+  rdfs:label "has source concept"@en ;
+  rdfs:comment "Specifies the semantic source concept used as input to a transformation rule."@en ;
+  rdfs:domain amblink:TransformationRule ;
   rdfs:range  skos:Concept .
+
+amblink:hasSourceVariable a owl:ObjectProperty ;
+  rdfs:label "has source variable"@en ;
+  rdfs:comment "Specifies the concrete source dataset variable used as input to a transformation rule."@en ;
+  rdfs:domain amblink:TransformationRule ;
+  rdfs:range  skos:Concept .
+
+amblink:hasTargetConcept a owl:ObjectProperty ;
+  rdfs:label "has target concept"@en ;
+  rdfs:comment "Specifies the target concept produced by a transformation rule."@en ;
+  rdfs:domain amblink:TransformationRule ;
+  rdfs:range  skos:Concept .
+
+amblink:hasSourceUnit a owl:ObjectProperty ;
+  rdfs:label "has source unit"@en ;
+  rdfs:comment "Specifies the unit expected for the source values of a transformation rule."@en ;
+  rdfs:domain amblink:TransformationRule ;
+  rdfs:range  qudt:Unit .
+
+amblink:hasTargetUnit a owl:ObjectProperty ;
+  rdfs:label "has target unit"@en ;
+  rdfs:comment "Specifies the unit produced by a transformation rule."@en ;
+  rdfs:domain amblink:TransformationRule ;
+  rdfs:range  qudt:Unit .
+
+amblink:hasFormula a owl:DatatypeProperty ;
+  rdfs:label "has formula"@en ;
+  rdfs:comment "Provides a human-readable or machine-oriented formula describing the transformation."@en ;
+  rdfs:domain amblink:TransformationRule ;
+  rdfs:range  xsd:string .
+
+amblink:hasImplementationHint a owl:DatatypeProperty ;
+  rdfs:label "has implementation hint"@en ;
+  rdfs:comment "Provides a backend-oriented identifier, function name, or processing hint for implementing the transformation."@en ;
+  rdfs:domain amblink:TransformationRule ;
+  rdfs:range  xsd:string .
+
+amblink:dependsOnTimeAggregation a owl:DatatypeProperty ;
+  rdfs:label "depends on time aggregation"@en ;
+  rdfs:comment "Indicates that the transformation depends on the selected time interval or aggregation window."@en ;
+  rdfs:domain amblink:TransformationRule ;
+  rdfs:range  xsd:boolean .
+
+amblink:hasAggregationDescription a owl:DatatypeProperty ;
+  rdfs:label "has aggregation description"@en ;
+  rdfs:comment "Describes how temporal aggregation must be applied in the transformation."@en ;
+  rdfs:domain amblink:TransformationRule ;
+  rdfs:range  xsd:string .
 
 amblink:temporalWindow a owl:DatatypeProperty ;
   rdfs:label "temporal window"@en ;
   rdfs:comment "ISO 8601 duration describing the window for aggregation (e.g., P1M, P7D)."@en ;
   rdfs:domain amblink:InputMapping ;
   rdfs:range  xsd:duration .
+
+amblink:TemporalIntegration a amblink:TransformationType ;
+    rdfs:label "Temporal integration"@en ;
+    rdfs:comment "Transformation that integrates a rate or flux over a time interval."@en .
+
+amblink:UnitConversion a amblink:TransformationType ;
+    rdfs:label "Unit conversion"@en ;
+    rdfs:comment "Transformation that converts values from one unit to another."@en .
+
+amblink:TemporalAggregation a amblink:TransformationType ;
+    rdfs:label "Temporal aggregation"@en ;
+    rdfs:comment "Transformation that aggregates values over a selected time window."@en .
+
+amblink:DerivedClimateInput a amblink:TransformationType ;
+    rdfs:label "Derived climate input"@en ;
+    rdfs:comment "Transformation used to derive a model-ready climate input from a raw climate variable."@en .
 
 # Data Properties for the Data Access Layer
 
@@ -456,6 +540,15 @@ amblink:Percentile95 a skos:Concept ;
   skos:inScheme amblink:Statistic ;
   skos:prefLabel "95th Percentile (Upper Bound)"@en .
 
+# Units
+
+amblink:CasesPer100KConsumersPerYear a qudt:Unit, skos:Concept ;
+    skos:prefLabel "cases per 100000 consumers per year"@en ;
+    skos:altLabel "annual incidence rate per 100000"@en ;
+    skos:altLabel "illness cases per 100000 consumers per year"@en ;
+    skos:altLabel "yearly cases per 100000 consumers"@en ;
+    skos:definition "Estimated illness cases per 100000 consumers over one year."@en .
+
 # Probabilities -> Risk & Rates
 
 amblink:TransferProbability a skos:Concept ;
@@ -478,6 +571,13 @@ amblink:MeanIllnessProbability a skos:Concept ;
     skos:prefLabel "Average population risk"@en ;
     skos:altLabel "Mean illness probability"@en .
 
+amblink:AnnualCases a skos:Concept ;
+    skos:inScheme amblink:ObservedPropertyScheme ;
+    skos:prefLabel "Annual cases"@en ;
+    skos:altLabel "Annual number of cases"@en ;
+    skos:altLabel "Yearly cases"@en ;
+    skos:definition "Estimated number of illness cases in a defined population over one year under the conditions represented by the model."@en .
+
 # CFU counts -> Loads
 
 amblink:TransferredCFUCount a skos:Concept ;
@@ -498,6 +598,30 @@ amblink:FoodContaminationConcentration a skos:Concept ;
     skos:inScheme amblink:ObservedPropertyScheme ;
     skos:prefLabel "Pathogen concentration"@en ;
     skos:altLabel "Contamination level"@en .
+
+# Probabilities, prevalence & uncertainty
+
+amblink:Prevalence a skos:Concept ;
+    skos:inScheme amblink:ObservedPropertyScheme ;
+    skos:prefLabel "Prevalence"@en ;
+    skos:altLabel "Pathogen prevalence"@en ;
+    skos:altLabel "Contamination prevalence"@en ;
+    skos:definition "Proportion of units in a defined population or batch that are contaminated or test positive for the hazard of interest."@en .
+
+amblink:StandardError a skos:Concept ;
+    skos:inScheme amblink:ObservedPropertyScheme ;
+    skos:prefLabel "Standard error"@en ;
+    skos:altLabel "Standard error of estimate"@en ;
+    skos:altLabel "Standard error of prediction"@en ;
+    skos:definition "Measure of uncertainty of an estimated model quantity, expressed as the standard error of the estimate."@en .
+
+amblink:ConfidenceInterval a skos:Concept ;
+    skos:inScheme amblink:ObservedPropertyScheme ;
+    skos:prefLabel "Confidence interval"@en ;
+    skos:altLabel "Uncertainty interval"@en ;
+    skos:altLabel "Confidence bounds"@en ;
+    skos:altLabel "Confidence limits"@en ;
+    skos:definition "Range expressing uncertainty around a model estimate, typically given by lower and upper bounds for a specified confidence level."@en .
 
 # Time & Summary
 
