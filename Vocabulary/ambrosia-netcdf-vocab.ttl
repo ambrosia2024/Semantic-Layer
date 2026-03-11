@@ -15,9 +15,9 @@
 ### Scheme Definitions ###
 
 <https://w3id.org/ambrosia/netcdf-vocab#scheme/netcdf> a skos:ConceptScheme ;
-    dct:hasVersion "1.0.0" ;
+    dct:hasVersion "1.1.0" ;
     dct:issued "2026-01-01"^^xsd:date ;
-    dct:modified "2026-01-01"^^xsd:date ;
+    dct:modified "2026-03-11"^^xsd:date ;
     dct:creator <https://orcid.org/0000-0003-4691-0483> ;
     dct:title "NetCDF Vocabulary"@en ;
     dct:description "A controlled vocabulary of NetCDF concepts from the Ambrosia project."@en .
@@ -221,32 +221,49 @@
     a skos:Concept , nc:Variable ;
     skos:inScheme <https://w3id.org/ambrosia/netcdf-vocab#scheme/netcdf> ;
     skos:prefLabel "Precipitation Flux"@en ;
-    skos:altLabel "pr"@en , "Precipitation"@en ;
+    skos:altLabel "pr"@en ;
+    skos:definition "Precipitation flux expressed as mass flux per unit area and time, typically in kilograms per square metre per second."@en ;
 
-    qudt:unit unit:KiloGM-PER-M2-SEC ;  # SI unit according to CF conventions
+    qudt:unit unit:KiloGM-PER-M2-SEC ;
 
-    # Informative, non-standard unit representation for human readability
-    qudt:applicableUnit [
-        a qudt:Unit ;
-        qudt:symbol "mm/day" ;
-        rdfs:label "Millimetres per day"@en ;
-        qudt:conversionMultiplier "86400"^^xsd:decimal ;  # kg/(m²·s) → mm/day (assuming water density = 1 kg/L)
-        rdfs:comment "Informal human-readable unit for precipitation flux. 1 kg/(m²·s) = 86400 mm/day, assuming water density is 1 kg/L."@en
-    ] ;
+    rdfs:comment "Source climate variable as provided by the NetCDF dataset. This variable represents precipitation flux and must be integrated over time to obtain precipitation amount or water height."@en ;
 
-    rdfs:comment "Although the official CF unit is kg m-2 s-1, precipitation is commonly provided and interpreted as mm/day in climate datasets."@en ;
-
-    # netCDF-LD metadata
     nc:hasDataType nc:float ;
-    nc:long_name "Precipitation"@en ;
-    nc:units "mm d-1" ;
+    nc:long_name "Precipitation Flux"@en ;
+    nc:units "kg m-2 s-1" ;
     nc:cell_methods "time: mean" ;
     nc:coordinates "lat lon" ;
     nc:grid_mapping <https://w3id.org/ambrosia/netcdf-vocab#concept/netcdf/rotated_pole> ;
-    nc:hasDimension ( <https://w3id.org/ambrosia/netcdf-vocab#concept/netcdf/time> <https://w3id.org/ambrosia/netcdf-vocab#concept/netcdf/rlat> <https://w3id.org/ambrosia/netcdf-vocab#concept/netcdf/rlon> ) ;
+    nc:hasDimension (
+        <https://w3id.org/ambrosia/netcdf-vocab#concept/netcdf/time>
+        <https://w3id.org/ambrosia/netcdf-vocab#concept/netcdf/rlat>
+        <https://w3id.org/ambrosia/netcdf-vocab#concept/netcdf/rlon>
+    ) ;
 
     skos:exactMatch <https://cfconventions.org/Data/cf-standard-names/current/build/cf-standard-name-table.html#precipitation_flux> ;
-    skos:closeMatch wikidata:Q25257 .  # Wikidata: "Precipitation"
+    skos:closeMatch wikidata:Q25257 .
+
+<https://w3id.org/ambrosia/netcdf-vocab#concept/derived/PrecipitationFlux>
+    a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/netcdf-vocab#scheme/netcdf> ;
+    skos:prefLabel "Precipitation Flux"@en ;
+    skos:altLabel "Precipitation rate"@en ;
+    skos:definition "Semantic source concept for precipitation flux, independent of any specific NetCDF variable identifier."@en ;
+    qudt:unit unit:KiloGM-PER-M2-SEC ;
+    rdfs:comment "Abstract precipitation flux concept used as semantic source in transformation rules. The concrete dataset variable is linked separately (e.g., netcdf/pr)."@en ;
+    skos:exactMatch <https://cfconventions.org/Data/cf-standard-names/current/build/cf-standard-name-table.html#precipitation_flux> ;
+    skos:relatedMatch <https://w3id.org/ambrosia/netcdf-vocab#concept/netcdf/pr> .
+
+<https://w3id.org/ambrosia/netcdf-vocab#concept/derived/precipitationAmount>
+    a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/netcdf-vocab#scheme/netcdf> ;
+    skos:prefLabel "Precipitation Amount"@en ;
+    skos:altLabel "Integrated Precipitation"@en ;
+    skos:altLabel "Precipitation Height"@en ;
+    skos:definition "Accumulated precipitation amount derived from precipitation flux by temporal integration. The result is expressed as water height over a specified aggregation period."@en ;
+
+    qudt:unit unit:M ;
+    rdfs:comment "Derived variable used as model input. Computed from precipitation flux by integrating over the relevant time interval and converting the result to metres of water equivalent."@en .
 
 <https://w3id.org/ambrosia/netcdf-vocab#concept/netcdf/height>
     a skos:Concept , nc:Variable ;

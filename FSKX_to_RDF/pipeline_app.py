@@ -50,6 +50,28 @@ CLASSIFICATION_MAP = {
     "FSKXO_0000017480": "Constant",
 }
 
+# Minimal registry for derived climate concepts that require explicit
+# transformation metadata in generated model-instance mappings.
+DERIVED_TRANSFORMATIONS = {
+    "https://w3id.org/ambrosia/netcdf-vocab#concept/derived/precipitationamount": {
+        "source_concept_uri": "https://w3id.org/ambrosia/netcdf-vocab#concept/derived/PrecipitationFlux",
+        "source_variable_uri": "https://w3id.org/ambrosia/netcdf-vocab#concept/netcdf/pr",
+        "source_variable_local_id": "pr",
+        "source_variable_name": "pr",
+        "target_concept_uri": "https://w3id.org/ambrosia/netcdf-vocab#concept/derived/PrecipitationAmount",
+        "transformation_types": [
+            str(AMBLINK.TemporalIntegration),
+            str(AMBLINK.UnitConversion),
+        ],
+        "source_unit": str(QUDT_UNIT["KiloGM-PER-M2-SEC"]),
+        "target_unit": str(QUDT_UNIT["M"]),
+        "formula": "precipitation_amount_m = precipitation_flux * delta_t_seconds * 0.001",
+        "implementation_hint": "integrate_precipitation_flux_to_m",
+        "depends_on_time_aggregation": True,
+        "aggregation_description": "Integrate precipitation flux over the user-selected time interval and convert to metres of liquid water equivalent.",
+    }
+}
+
 # --- Helper Functions ---
 
 def sha256_file(path: Path) -> str:
@@ -401,6 +423,109 @@ def _get_display_label(term, alt_labels):
     return f"{term} ({alt_labels_str})" if alt_labels_str else str(term)
 
 def _txt(v): return str(v) if v is not None else ""
+
+def _clean_uri_value(value):
+    """Normalizes URI-like values read from DataFrame cells."""
+    if value is None:
+        return None
+    if pd.isna(value):
+        return None
+    text = str(value).strip()
+    if not text or text.lower() == "nan":
+        return None
+    return text
+
+def get_target_uris(param_row):
+    """Collects all valid target URIs from URI1..URI3 in order."""
+    uris = []
+    for col in ["URI1", "URI2", "URI3"]:
+        if col in param_row:
+            uri = _clean_uri_value(param_row.get(col))
+            if uri:
+                uris.append(uri)
+    return uris
+
+def get_primary_target_uri(param_row):
+    """Returns the first non-empty URI among URI1..URI3."""
+    uris = get_target_uris(param_row)
+    return uris[0] if uris else None
+
+def _normalize_derived_key(uri: str) -> str:
+    """Normalizes a derived concept URI to a registry key."""
+    value = (uri or "").strip().lower()
+    for marker in ("#concept/derived/", "/concept/derived/"):
+        if marker in value:
+            return value.split(marker, 1)[1]
+    return value.rsplit("/", 1)[-1].split("#")[-1]
+
+def is_derived_climate_concept(uri: str) -> bool:
+    value = (uri or "").strip().lower()
+    return "#concept/derived/" in value or "/concept/derived/" in value
+
+def get_transformation_metadata(target_uri: str):
+    if not target_uri:
+        return None
+
+    normalized_target_uri = (target_uri or "").strip().lower()
+    if normalized_target_uri in DERIVED_TRANSFORMATIONS:
+        return DERIVED_TRANSFORMATIONS[normalized_target_uri]
+
+    # Backward-compatible fallback: resolve by the derived local ID.
+    normalized_local_key = _normalize_derived_key(target_uri)
+    for registry_uri, metadata in DERIVED_TRANSFORMATIONS.items():
+        if _normalize_derived_key(registry_uri) == normalized_local_key:
+            return metadata
+
+    return None
+
+def find_netcdf_source_by_varname(graph: Graph, var_name: str):
+    """
+    Finds NetCDF concept candidates by technical variable token, using local URI
+    id and SKOS labels/altLabels (plus optional amblink:sourceVariableName).
+    """
+    wanted = (var_name or "").strip().lower()
+    if not wanted:
+        return []
+
+    candidates = []
+    seen = set()
+    subjects = (
+        set(graph.subjects(RDF.type, SKOS.Concept))
+        | set(graph.subjects(SKOS.prefLabel, None))
+        | set(graph.subjects(SKOS.altLabel, None))
+    )
+
+    for ds in subjects:
+        uri_str = str(ds)
+        local_id = uri_str.split('/')[-1]
+
+        source_names = [str(v) for v in graph.objects(ds, AMBLINK.sourceVariableName)]
+        pref_labels = [str(v) for v in graph.objects(ds, SKOS.prefLabel)]
+        alt_labels = [str(v) for v in graph.objects(ds, SKOS.altLabel)]
+
+        match_space = source_names + alt_labels + pref_labels + [local_id]
+        if not any(v and v.strip().lower() == wanted for v in match_space):
+            continue
+
+        if ds in seen:
+            continue
+        seen.add(ds)
+
+        preferred_var = (
+            next((v for v in source_names if v.strip()), None)
+            or next((v for v in alt_labels if v.strip().lower() == wanted), None)
+            or local_id
+        )
+
+        candidates.append({
+            'ds': ds,
+            'varName': preferred_var,
+            'pref': pref_labels[0] if pref_labels else "",
+            'alt': alt_labels[0] if alt_labels else "",
+            'id': local_id,
+        })
+
+    return candidates
 
 @st.cache_resource
 def load_vocab_graph(path: str) -> Graph:
@@ -1280,7 +1405,14 @@ If you map parameters consistently (meaning, unit, temporal semantics), the dash
             # --- Pre-fill mappings from existing turtle file ---
             # Build reverse lookup maps from URI to list of rows for disambiguation
             param_uri_to_rows = {}
-            param_concepts_df = master_mapping_df[master_mapping_df['ConceptGroup'].isin(['Model Parameters', 'Parameter', 'Climate Variables', 'InputParameter', 'OutputParameter'])]
+            param_concepts_df = master_mapping_df[master_mapping_df['ConceptGroup'].isin([
+                'Model Parameters',
+                'Parameter',
+                'Climate Variables',
+                'InputParameter',
+                'OutputParameter',
+                'InputOutputParameter'
+            ])]
             for _, row in param_concepts_df.iterrows():
                 for uri_col in ['URI1', 'URI2', 'URI3']:
                     uri = row[uri_col]
@@ -1301,10 +1433,16 @@ If you map parameters consistently (meaning, unit, temporal semantics), the dash
             # Prepare concept dataframes for matching
             # Split Climate vs Scenario
             climate_concepts_df = master_mapping_df[master_mapping_df['ConceptGroup'] == 'Climate Variables']
-            input_concepts_df = master_mapping_df[master_mapping_df['ConceptGroup'] == 'InputParameter']
+            input_concepts_df = master_mapping_df[master_mapping_df['ConceptGroup'].isin([
+                'InputParameter',
+                'InputOutputParameter'
+            ])]
             scenario_concepts_df = input_concepts_df[~input_concepts_df['Term'].isin(climate_concepts_df['Term'])]
             
-            output_concepts_df = master_mapping_df[master_mapping_df['ConceptGroup'] == 'OutputParameter']
+            output_concepts_df = master_mapping_df[master_mapping_df['ConceptGroup'].isin([
+                'OutputParameter',
+                'InputOutputParameter'
+            ])]
             
             climate_options = sorted(climate_concepts_df['prefLabel'].unique().tolist())
             scenario_options = sorted(scenario_concepts_df['prefLabel'].unique().tolist())
@@ -1787,10 +1925,25 @@ If you map parameters consistently (meaning, unit, temporal semantics), the dash
                         else:
                             st.warning(f"NetCDF vocabulary not found at {netcdf_vocab_path}. Cannot perform automatic wiring.")
 
-                        # Remove all existing input mappings to avoid duplicates
+                        # Remove all existing input mappings to avoid duplicates.
+                        # Also remove linked transformation-rule nodes to prevent
+                        # orphaned TransformationRule blank nodes across re-runs.
                         for s, p, o in list(g.triples((model_uri, AMBLINK.hasInputMapping, None))):
+                            linked_rules = list(g.objects(o, AMBLINK.requiresTransformation))
+                            for rule in linked_rules:
+                                g.remove((o, AMBLINK.requiresTransformation, rule))
+                                g.remove((rule, None, None))
+                                g.remove((None, None, rule))
+
                             g.remove((s, p, o))
                             g.remove((o, None, None))
+
+                        # Defensive cleanup: remove any remaining TransformationRule
+                        # node that is no longer referenced by an input mapping.
+                        for rule in list(g.subjects(RDF.type, AMBLINK.TransformationRule)):
+                            if not any(g.subjects(AMBLINK.requiresTransformation, rule)):
+                                g.remove((rule, None, None))
+                                g.remove((None, None, rule))
 
                         # Iterate through all parameters again to create wiring
                         for param in all_params:
@@ -1806,33 +1959,82 @@ If you map parameters consistently (meaning, unit, temporal semantics), the dash
                                 continue
                             param_row = param_rows.iloc[0]
 
-                            # 1. Gather Candidates via URI
-                            raw_uris = param_row[['URI1', 'URI2', 'URI3']].values.flatten().tolist()
-                            target_uris = [str(u).strip() for u in raw_uris if u and pd.notna(u) and str(u).lower() != 'nan' and str(u).strip() != '']
+                            # 1. Gather candidates and determine if this is a derived concept
+                            target_uris = get_target_uris(param_row)
+                            primary_target_uri = get_primary_target_uri(param_row)
+                            derived_mapping = bool(primary_target_uri and is_derived_climate_concept(primary_target_uri))
+                            transformation_meta = get_transformation_metadata(primary_target_uri) if derived_mapping else None
+
                             candidates = []
-                            
-                            for uri in target_uris:
-                                # SPARQL: Find NetCDF vars matching this URI
-                                q = prepareQuery("""SELECT ?ds ?varName ?pref ?alt WHERE { 
-                                    ?ds skos:exactMatch ?uri . 
-                                    OPTIONAL { ?ds amblink:sourceVariableName ?varName }
-                                    OPTIONAL { ?ds skos:prefLabel ?pref } 
-                                    OPTIONAL { ?ds skos:altLabel ?alt } 
-                                }""", initNs={"skos": SKOS, "amblink": AMBLINK})
-                                
-                                results = list(knowledge_graph.query(q, initBindings={'uri': URIRef(uri)}))
-                                for res in results:
-                                    if any(c['ds'] == res.ds for c in candidates):
-                                        continue
-                                        
-                                    cand = {
-                                        'ds': res.ds,
-                                        'varName': str(res.varName) if res.varName else str(res.ds).split('/')[-1],
-                                        'pref': str(res.pref) if res.pref else "",
-                                        'alt': str(res.alt) if res.alt else "",
-                                        'id': str(res.ds).split('/')[-1]
-                                    }
-                                    candidates.append(cand)
+
+                            # For known derived concepts, prefer explicit source-variable URI
+                            # and token from the transformation registry
+                            # (e.g. PrecipitationAmount -> source netcdf/pr, var token "pr").
+                            if derived_mapping and transformation_meta:
+                                source_var_uri = _clean_uri_value(transformation_meta.get("source_variable_uri"))
+                                source_var_token = transformation_meta.get("source_variable_local_id")
+                                source_var_name_hint = (
+                                    transformation_meta.get("source_variable_name")
+                                    or source_var_token
+                                )
+
+                                if source_var_uri:
+                                    source_var_ref = URIRef(source_var_uri)
+                                    if (source_var_ref, None, None) in knowledge_graph:
+                                        pref_labels = [str(v) for v in knowledge_graph.objects(source_var_ref, SKOS.prefLabel)]
+                                        alt_labels = [str(v) for v in knowledge_graph.objects(source_var_ref, SKOS.altLabel)]
+                                        local_id = str(source_var_ref).split('/')[-1].split('#')[-1]
+                                        candidates = [{
+                                            'ds': source_var_ref,
+                                            'varName': str(source_var_name_hint or local_id),
+                                            'pref': pref_labels[0] if pref_labels else "",
+                                            'alt': alt_labels[0] if alt_labels else "",
+                                            'id': local_id,
+                                        }]
+                                    else:
+                                        st.warning(
+                                            f"Derived concept '{mapped_concept}' expects source URI '{source_var_uri}', "
+                                            f"but it was not found in the NetCDF vocabulary. Falling back to token lookup."
+                                        )
+
+                                if not candidates and source_var_token:
+                                    candidates = find_netcdf_source_by_varname(knowledge_graph, source_var_token)
+
+                                if not candidates:
+                                    st.warning(
+                                        f"Derived concept '{mapped_concept}' expects source variable '{source_var_token}', "
+                                        f"but no NetCDF concept was found by variable token. Falling back to URI-based lookup."
+                                    )
+                            elif derived_mapping and not transformation_meta:
+                                st.warning(
+                                    f"Derived concept '{mapped_concept}' detected ({primary_target_uri}), "
+                                    f"but no transformation metadata is registered. Falling back to direct URI wiring logic."
+                                )
+
+                            # Default/direct path (and fallback for derived if source lookup failed)
+                            if not candidates:
+                                for uri in target_uris:
+                                    # SPARQL: Find NetCDF vars matching this URI
+                                    q = prepareQuery("""SELECT ?ds ?varName ?pref ?alt WHERE {
+                                        ?ds skos:exactMatch ?uri .
+                                        OPTIONAL { ?ds amblink:sourceVariableName ?varName }
+                                        OPTIONAL { ?ds skos:prefLabel ?pref }
+                                        OPTIONAL { ?ds skos:altLabel ?alt }
+                                    }""", initNs={"skos": SKOS, "amblink": AMBLINK})
+
+                                    results = list(knowledge_graph.query(q, initBindings={'uri': URIRef(uri)}))
+                                    for res in results:
+                                        if any(c['ds'] == res.ds for c in candidates):
+                                            continue
+
+                                        cand = {
+                                            'ds': res.ds,
+                                            'varName': str(res.varName) if res.varName else str(res.ds).split('/')[-1],
+                                            'pref': str(res.pref) if res.pref else "",
+                                            'alt': str(res.alt) if res.alt else "",
+                                            'id': str(res.ds).split('/')[-1]
+                                        }
+                                        candidates.append(cand)
 
                             # 2. Resolve Ambiguity
                             final_match = None
@@ -1845,7 +2047,15 @@ If you map parameters consistently (meaning, unit, temporal semantics), the dash
                                 # Disambiguation (Fuzzy String Scoring)
                                 # Gather search terms from Excel
                                 provider_term = param_row['ProviderTerm1'] if 'ProviderTerm1' in param_row else ''
-                                search_terms = [str(val).lower() for i, val in enumerate([param_row['Term'], param_row['altLabels'], provider_term]) if pd.notna(val) and val]
+                                search_terms = [
+                                    str(val).lower() for val in [
+                                        param_row.get('Term', ''),
+                                        param_row.get('altLabels', ''),
+                                        provider_term,
+                                        (transformation_meta.get("source_variable_local_id") if transformation_meta else "")
+                                    ]
+                                    if pd.notna(val) and str(val).strip()
+                                ]
                                 
                                 best_cand, best_score = None, -1
                                 
@@ -1873,8 +2083,84 @@ If you map parameters consistently (meaning, unit, temporal semantics), the dash
                                 g.add((model_uri, AMBLINK.hasInputMapping, input_mapping_node))
                                 g.add((input_mapping_node, RDF.type, AMBLINK.InputMapping))
                                 g.add((input_mapping_node, AMBLINK.mapsParameter, URIRef(param['uri'])))
-                                g.add((input_mapping_node, AMBLINK.isFulfilledBy, final_match['ds']))
-                                g.add((input_mapping_node, AMBLINK.sourceVariableName, Literal(final_match['varName'])))
+
+                                source_binding_uri = final_match['ds']
+                                source_binding_name = final_match['varName']
+                                if derived_mapping and transformation_meta:
+                                    explicit_source_uri = _clean_uri_value(transformation_meta.get("source_variable_uri"))
+                                    explicit_source_name = transformation_meta.get("source_variable_name") or transformation_meta.get("source_variable_local_id")
+                                    if explicit_source_uri:
+                                        source_binding_uri = URIRef(explicit_source_uri)
+                                    if explicit_source_name:
+                                        source_binding_name = str(explicit_source_name)
+
+                                g.add((input_mapping_node, AMBLINK.isFulfilledBy, source_binding_uri))
+                                g.add((input_mapping_node, AMBLINK.sourceVariableName, Literal(source_binding_name)))
+
+                                # For derived climate concepts, attach explicit transformation metadata.
+                                if derived_mapping and transformation_meta and primary_target_uri:
+                                    transformation_node = BNode()
+                                    g.add((input_mapping_node, AMBLINK.requiresTransformation, transformation_node))
+                                    g.add((transformation_node, RDF.type, AMBLINK.TransformationRule))
+
+                                    source_concept_uri = _clean_uri_value(transformation_meta.get("source_concept_uri"))
+                                    if source_concept_uri:
+                                        g.add((
+                                            transformation_node,
+                                            AMBLINK.hasSourceConcept,
+                                            URIRef(source_concept_uri)
+                                        ))
+
+                                    target_concept_uri = (
+                                        _clean_uri_value(transformation_meta.get("target_concept_uri"))
+                                        or primary_target_uri
+                                    )
+
+                                    g.add((transformation_node, AMBLINK.hasSourceVariable, source_binding_uri))
+                                    if target_concept_uri:
+                                        g.add((transformation_node, AMBLINK.hasTargetConcept, URIRef(target_concept_uri)))
+
+                                    source_unit_uri = _clean_uri_value(transformation_meta.get("source_unit"))
+                                    target_unit_uri = _clean_uri_value(transformation_meta.get("target_unit"))
+                                    formula = transformation_meta.get("formula")
+                                    implementation_hint = transformation_meta.get("implementation_hint")
+                                    aggregation_description = transformation_meta.get("aggregation_description")
+                                    depends_on_time_aggregation = bool(
+                                        transformation_meta.get("depends_on_time_aggregation", False)
+                                    )
+
+                                    if source_unit_uri:
+                                        g.add((transformation_node, AMBLINK.hasSourceUnit, URIRef(source_unit_uri)))
+                                    if target_unit_uri:
+                                        g.add((transformation_node, AMBLINK.hasTargetUnit, URIRef(target_unit_uri)))
+                                    if formula:
+                                        g.add((transformation_node, AMBLINK.hasFormula, Literal(str(formula))))
+                                    if implementation_hint:
+                                        g.add((transformation_node, AMBLINK.hasImplementationHint, Literal(str(implementation_hint))))
+
+                                    g.add((
+                                        transformation_node,
+                                        AMBLINK.dependsOnTimeAggregation,
+                                        Literal(depends_on_time_aggregation, datatype=XSD.boolean)
+                                    ))
+
+                                    if aggregation_description:
+                                        g.add((
+                                            transformation_node,
+                                            AMBLINK.hasAggregationDescription,
+                                            Literal(str(aggregation_description))
+                                        ))
+
+                                    for t_uri in transformation_meta.get("transformation_types", []):
+                                        t_uri_clean = _clean_uri_value(t_uri)
+                                        if t_uri_clean:
+                                            g.add((transformation_node, AMBLINK.hasTransformationType, URIRef(t_uri_clean)))
+
+                                    st.info(
+                                        f"Added transformation rule for derived input '{mapped_concept}': "
+                                        f"{final_match['varName']} -> {primary_target_uri}"
+                                    )
+
                                 st.success(f"Successfully wired parameter '{param['name']}' to data source '{final_match['varName']}'.")
 
                     except Exception as e:
