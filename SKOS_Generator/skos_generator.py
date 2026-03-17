@@ -297,6 +297,81 @@ def extend_vocabulary(graph, df, base_namespace_uri, language_pref_label=None, l
 
     return graph, conflicts, report
 
+def build_predicate_language_map(
+    pref_label_lang=None,
+    alt_label_lang=None,
+    definition_lang=None,
+    title_lang=None,
+    description_lang=None,
+):
+    """
+    Maps predicates to selected language tags.
+    """
+    return {
+        SKOS.prefLabel: pref_label_lang,
+        SKOS.altLabel: alt_label_lang,
+        SKOS.definition: definition_lang,
+        DCTERMS.title: title_lang,
+        DCTERMS.description: description_lang,
+    }
+
+def apply_language_tags_to_existing_literals(graph, predicate_to_lang, overwrite_existing_tags=False):
+    """
+    Applies language tags to existing literals in the graph.
+
+    - If overwrite_existing_tags is False: only untagged literals are tagged.
+    - If overwrite_existing_tags is True: existing tagged literals are retagged to selected language.
+    - Datatyped literals are skipped.
+    """
+    summary = {
+        "updated_count": 0,
+        "skipped_tagged_count": 0,
+        "untagged_tagged_count": 0,
+        "overwritten_count": 0,
+        "by_predicate": {}
+    }
+
+    for predicate, target_lang in predicate_to_lang.items():
+        if not target_lang:
+            continue
+
+        pkey = str(predicate)
+        summary["by_predicate"][pkey] = {
+            "updated": 0,
+            "skipped_tagged": 0,
+            "untagged_tagged": 0,
+            "overwritten": 0,
+        }
+
+        replacements = []
+        for s, o in list(graph.subject_objects(predicate)):
+            if not isinstance(o, Literal):
+                continue
+            if o.datatype is not None:
+                continue
+
+            if o.language is None:
+                replacements.append((s, predicate, o, Literal(str(o), lang=target_lang), "untagged_tagged"))
+            elif overwrite_existing_tags and o.language != target_lang:
+                replacements.append((s, predicate, o, Literal(str(o), lang=target_lang), "overwritten"))
+            else:
+                summary["skipped_tagged_count"] += 1
+                summary["by_predicate"][pkey]["skipped_tagged"] += 1
+
+        for s, p, old_lit, new_lit, kind in replacements:
+            graph.remove((s, p, old_lit))
+            graph.add((s, p, new_lit))
+            summary["updated_count"] += 1
+            summary["by_predicate"][pkey]["updated"] += 1
+            if kind == "untagged_tagged":
+                summary["untagged_tagged_count"] += 1
+                summary["by_predicate"][pkey]["untagged_tagged"] += 1
+            elif kind == "overwritten":
+                summary["overwritten_count"] += 1
+                summary["by_predicate"][pkey]["overwritten"] += 1
+
+    return graph, summary
+
 
 def display_conflict_resolution(conflicts):
     """
@@ -823,6 +898,11 @@ Your Excel file should be structured with the following columns:
 
                     with st.spinner("Generating SKOS vocabulary..."):
                         try:
+                            if existing_vocab_file and st.session_state.graph is None:
+                                temp_g_for_generate = Graph()
+                                temp_g_for_generate.parse(existing_vocab_file, format=rdflib.util.guess_format(existing_vocab_file.name))
+                                st.session_state.graph = temp_g_for_generate
+
                             g = st.session_state.graph if st.session_state.graph else Graph()
 
                             if existing_vocab_file:
@@ -909,6 +989,206 @@ Your Excel file should be structured with the following columns:
             st.error(f"Error reading Excel file: {e}")
             st.exception(e)
 
+    # Existing vocabulary only flow (no Excel upload)
+    if existing_vocab_file and not uploaded_file:
+        try:
+            if existing_vocab_file.file_id != st.session_state.get('last_processed_existing_vocab_file_id'):
+                temp_g = Graph()
+                temp_g.parse(existing_vocab_file, format=rdflib.util.guess_format(existing_vocab_file.name))
+                st.session_state.graph = temp_g
+
+                found_vocab_type = None
+                for _, ns_uri in temp_g.namespace_manager.namespaces():
+                    vocab_type = determine_vocabulary_type(str(ns_uri))
+                    if vocab_type:
+                        found_vocab_type = vocab_type
+                        break
+
+                if found_vocab_type:
+                    st.session_state.current_vocab_type = found_vocab_type
+                    st.session_state.base_namespace = VOCAB_MAPPINGS[found_vocab_type]["base_uri"]
+                    st.info(f"{found_vocab_type.capitalize()} vocabulary successfully loaded (from existing file).")
+                else:
+                    st.info("Existing vocabulary loaded, but its type (plant/pathogen) could not be automatically determined. Using generic base URI.")
+                    st.session_state.current_vocab_type = None
+                    st.session_state.base_namespace = "https://w3id.org/ambrosia/"
+
+                st.session_state.last_processed_existing_vocab_file_id = existing_vocab_file.file_id
+
+            st.subheader("Configuration")
+            base_namespace_input = st.text_input(
+                "Base Namespace URI",
+                value=st.session_state.base_namespace,
+                help="This URI will be the base for all generated SKOS concepts and collections.",
+                key="base_namespace_existing_only"
+            )
+            if base_namespace_input != st.session_state.base_namespace:
+                st.session_state.base_namespace = base_namespace_input
+            base_namespace = st.session_state.base_namespace
+
+            st.markdown("---")
+            st.subheader("Optional Language Tags")
+
+            pref_label_lang = None
+            alt_label_lang = None
+            definition_lang = None
+            title_lang = None
+            description_lang = None
+
+            COMMON_LANGUAGES = {
+                "en": "English", "de": "German", "fr": "French", "es": "Spanish", "it": "Italian",
+                "pt": "Portuguese", "nl": "Dutch", "zh": "Chinese (Simplified)", "ja": "Japanese",
+                "ar": "Arabic", "ru": "Russian", "ko": "Korean", "hi": "Hindi", "sv": "Swedish",
+                "da": "Danish", "no": "Norwegian", "fi": "Finnish", "pl": "Polish", "tr": "Turkish",
+                "el": "Greek", "cs": "Czech", "hu": "Hungarian", "id": "Indonesian",
+                "th": "Thai", "vi": "Vietnamese", "uk": "Ukrainian", "ro": "Romanian",
+                "bg": "Bulgarian", "hr": "Croatian", "sk": "Slovak", "sl": "Slovenian", "lt": "Lithuanian",
+                "lv": "Latvian", "et": "Estonian", "is": "Icelandic"
+            }
+            lang_options = [f"{code} ({name})" for code, name in COMMON_LANGUAGES.items()]
+            default_lang_index = list(COMMON_LANGUAGES.keys()).index('en') if 'en' in COMMON_LANGUAGES else 0
+
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                enable_pref_label_lang = st.checkbox("Enable Language for prefLabel", value=False, key="pref_existing_only")
+                if enable_pref_label_lang:
+                    pref_label_selection = st.selectbox("Language for prefLabel", options=lang_options, index=default_lang_index, key="pref_label_lang_existing_only")
+                    pref_label_lang = pref_label_selection.split(' ')[0]
+            with col2:
+                enable_alt_label_lang = st.checkbox("Enable Language for altLabel", value=False, key="alt_existing_only")
+                if enable_alt_label_lang:
+                    alt_label_selection = st.selectbox("Language for altLabel", options=lang_options, index=default_lang_index, key="alt_label_lang_existing_only")
+                    alt_label_lang = alt_label_selection.split(' ')[0]
+            with col3:
+                enable_definition_lang = st.checkbox("Enable Language for Definition", value=False, key="def_existing_only")
+                if enable_definition_lang:
+                    definition_selection = st.selectbox("Language for Definition", options=lang_options, index=default_lang_index, key="definition_lang_existing_only")
+                    definition_lang = definition_selection.split(' ')[0]
+
+            col4, col5 = st.columns(2)
+            with col4:
+                enable_title_lang = st.checkbox("Enable Language for Scheme Title", value=False, key="title_existing_only")
+                if enable_title_lang:
+                    title_selection = st.selectbox("Language for Scheme Title", options=lang_options, index=default_lang_index, key="title_lang_existing_only")
+                    title_lang = title_selection.split(' ')[0]
+            with col5:
+                enable_description_lang = st.checkbox("Enable Language for Scheme Description", value=False, key="desc_existing_only")
+                if enable_description_lang:
+                    description_selection = st.selectbox("Language for Scheme Description", options=lang_options, index=default_lang_index, key="description_lang_existing_only")
+                    description_lang = description_selection.split(' ')[0]
+
+            overwrite_existing_tags = st.checkbox(
+                "Overwrite existing language tags",
+                value=False,
+                key="overwrite_existing_tags_only",
+                help="If disabled, only untagged literals will receive the selected language tag."
+            )
+
+            st.markdown("---")
+            st.subheader("Output Format")
+            serialization_format = st.radio(
+                "Select output serialization format:",
+                ('Turtle (.ttl)', 'RDF/XML (.rdf)', 'JSON-LD (.jsonld)'),
+                index=0,
+                key="serialization_existing_only"
+            )
+
+            if st.button("Generate SKOS Vocabulary", key="generate_existing_only"):
+                if not base_namespace.strip():
+                    st.error("Base Namespace URI cannot be empty.")
+                else:
+                    final_version = version_in
+                    if auto_bump:
+                        final_version = bump_semver(default_version, bump_kind)
+
+                    final_modified = datetime.date.today().isoformat()
+                    final_issued = issued_in
+
+                    with st.spinner("Generating SKOS vocabulary..."):
+                        if existing_vocab_file and st.session_state.graph is None:
+                            temp_g_for_generate = Graph()
+                            temp_g_for_generate.parse(existing_vocab_file, format=rdflib.util.guess_format(existing_vocab_file.name))
+                            st.session_state.graph = temp_g_for_generate
+
+                        g = st.session_state.graph if st.session_state.graph else Graph()
+
+                        predicate_to_lang = build_predicate_language_map(
+                            pref_label_lang=pref_label_lang,
+                            alt_label_lang=alt_label_lang,
+                            definition_lang=definition_lang,
+                            title_lang=title_lang,
+                            description_lang=description_lang,
+                        )
+                        g, lang_summary = apply_language_tags_to_existing_literals(
+                            g,
+                            predicate_to_lang,
+                            overwrite_existing_tags=overwrite_existing_tags
+                        )
+
+                        apply_scheme_provenance(
+                            g,
+                            version=final_version,
+                            issued_date=final_issued,
+                            modified_date=final_modified,
+                            creators_raw=creators_in if creators_in.strip() else None,
+                            contributor_raw=contributor_in
+                        )
+
+                        st.session_state.report = {
+                            "new": [],
+                            "updated": [],
+                            "conflicts": [],
+                            "language_tag_update": lang_summary
+                        }
+
+                        format_map = {
+                            'Turtle (.ttl)': ('turtle', 'ttl'),
+                            'RDF/XML (.rdf)': ('xml', 'rdf'),
+                            'JSON-LD (.jsonld)': ('json-ld', 'jsonld')
+                        }
+                        serialization_format_key, file_extension = format_map[serialization_format]
+
+                        if serialization_format_key == 'turtle':
+                            output_str, explicit_output_prefixes = serialize_graph_to_custom_turtle(g)
+                        else:
+                            output_str = g.serialize(format=serialization_format_key)
+                            explicit_output_prefixes = {}
+
+                        output_data = output_str.encode('utf-8')
+                        mime_type = f"application/{serialization_format_key}" if serialization_format_key != 'turtle' else 'text/turtle'
+
+                        st.success("SKOS vocabulary generated successfully!")
+
+                        log_data = {
+                            "timestamp": datetime.datetime.now().isoformat(),
+                            "excel_file_name": None,
+                            "existing_vocab_file_name": existing_vocab_file.name,
+                            "generation_report": st.session_state.report,
+                            "explicitly_included_prefixes": explicit_output_prefixes
+                        }
+                        log_json = json.dumps(log_data, indent=2)
+                        st.download_button(
+                            label="Download Generation Log (.json)",
+                            data=log_json.encode('utf-8'),
+                            file_name="skos_generation_log.json",
+                            mime="application/json",
+                            key="log_existing_only"
+                        )
+
+                        st.download_button(
+                            label=f"Download Generated SKOS Vocabulary as .{file_extension}",
+                            data=output_data,
+                            file_name=f"skos_vocabulary.{file_extension}",
+                            mime=mime_type,
+                            key="download_existing_only"
+                        )
+
+                        with st.expander("Preview of Generated SKOS Vocabulary"):
+                            st.code(output_str, language=serialization_format_key)
+        except Exception as e:
+            st.error(f"Error processing existing vocabulary file: {e}")
+            st.exception(e)
+
     # Add logic to reset state when new files are uploaded
     if 'last_uploaded_file_id' not in st.session_state:
         st.session_state.last_uploaded_file_id = None
@@ -927,6 +1207,7 @@ Your Excel file should be structured with the following columns:
         st.session_state.resolutions = {}
         st.session_state.graph = None
         st.session_state.conflicts_resolved = False
+        st.session_state.last_processed_existing_vocab_file_id = None
         
         # Explicitly reset vocab type and base namespace if no files are uploaded
         if uploaded_file is None and existing_vocab_file is None:

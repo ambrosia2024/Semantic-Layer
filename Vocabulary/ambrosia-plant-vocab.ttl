@@ -1,1547 +1,1543 @@
-@prefix dct: <http://purl.org/dc/terms/> .
-@prefix foodex2: <http://data.food.gov.uk/codes/foodtype/id/> .
-@prefix fskxo: <http://semanticlookup.zbmed.de/km/fskxo/> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix wikidata: <http://www.wikidata.org/entity/> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix ambplant: <https://w3id.org/ambrosia/plant-vocab#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 
 <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> a skos:ConceptScheme ;
-    dct:hasVersion "1.0.0" ;
-    dct:issued "2026-01-01"^^xsd:date ;
-    dct:modified "2026-01-01"^^xsd:date ;
+    dct:hasVersion "1.0.1" ;
+    dct:issued "2026-01-01" ;
+    dct:modified "2026-03-17" ;
     dct:creator <https://orcid.org/0000-0003-4691-0483> ;
-    dct:title "Cereal Vocabulary" ;
-    dct:description "A controlled vocabulary of Cereal concepts from the Ambrosia project." .
+    dct:title "Cereal Vocabulary"@en ;
+    dct:description "A controlled vocabulary of Cereal concepts from the Ambrosia project."@en .
 
 <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> a skos:ConceptScheme ;
-    dct:hasVersion "1.0.0" ;
-    dct:issued "2026-01-01"^^xsd:date ;
-    dct:modified "2026-01-01"^^xsd:date ;
+    dct:hasVersion "1.0.1" ;
+    dct:issued "2026-01-01" ;
+    dct:modified "2026-03-17" ;
     dct:creator <https://orcid.org/0000-0003-4691-0483> ;
-    dct:title "Fruit Vocabulary" ;
-    dct:description "A controlled vocabulary of Fruit concepts from the Ambrosia project." .
+    dct:title "Fruit Vocabulary"@en ;
+    dct:description "A controlled vocabulary of Fruit concepts from the Ambrosia project."@en .
 
 <https://w3id.org/ambrosia/plant-vocab#scheme/nut> a skos:ConceptScheme ;
-    dct:hasVersion "1.0.0" ;
-    dct:issued "2026-01-01"^^xsd:date ;
-    dct:modified "2026-01-01"^^xsd:date ;
+    dct:hasVersion "1.0.1" ;
+    dct:issued "2026-01-01" ;
+    dct:modified "2026-03-17" ;
     dct:creator <https://orcid.org/0000-0003-4691-0483> ;
-    dct:title "Nut Vocabulary" ;
-    dct:description "A controlled vocabulary of Nut concepts from the Ambrosia project." .
+    dct:title "Nut Vocabulary"@en ;
+    dct:description "A controlled vocabulary of Nut concepts from the Ambrosia project."@en .
 
 <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> a skos:ConceptScheme ;
-    dct:hasVersion "1.0.0" ;
-    dct:issued "2026-01-01"^^xsd:date ;
-    dct:modified "2026-01-01"^^xsd:date ;
+    dct:hasVersion "1.0.1" ;
+    dct:issued "2026-01-01" ;
+    dct:modified "2026-03-17" ;
     dct:creator <https://orcid.org/0000-0003-4691-0483> ;
-    dct:title "Vegetable Vocabulary" ;
-    dct:description "A controlled vocabulary of Vegetable concepts from the Ambrosia project." .
+    dct:title "Vegetable Vocabulary"@en ;
+    dct:description "A controlled vocabulary of Vegetable concepts from the Ambrosia project."@en .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/barley> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
-    skos:prefLabel "Barley" ;
-    skos:definition "Cereals classified under the species Hordeum vulgare L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "cereal grain" ;
+    skos:prefLabel "Barley"@en ;
+    skos:definition "Cereals classified under the species Hordeum vulgare L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "cereal grain"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A000P ,
-        fskxo:FSKXO_0000000353 ,
-        wikidata:Q61665121 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A000P> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000353> ,
+        <http://www.wikidata.org/entity/Q61665121> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/buckwheat> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
-    skos:prefLabel "Buckwheat" ;
-    skos:definition "Cereals classified under the species Fagopyrum esculentum Moensch. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "grain, staple food" ;
+    skos:prefLabel "Buckwheat"@en ;
+    skos:definition "Cereals classified under the species Fagopyrum esculentum Moensch. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "grain, staple food"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A000N ,
-        fskxo:FSKXO_0000000379 ,
-        wikidata:Q4536337 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A000N> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000379> ,
+        <http://www.wikidata.org/entity/Q4536337> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/durum-wheat> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
-    skos:prefLabel "Durum Wheat" ;
-    skos:altLabel "durum" ,
-        "hard wheat" ;
-    skos:definition "Cereal grains from the plant classified under the species Triticum turgidum subsp. durum or Triticum durum. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "seed from Triticum durum" ;
+    skos:prefLabel "Durum Wheat"@en ;
+    skos:altLabel "durum"@en ,
+        "hard wheat"@en ;
+    skos:definition "Cereal grains from the plant classified under the species Triticum turgidum subsp. durum or Triticum durum. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "seed from Triticum durum"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A001P ,
-        wikidata:Q102330562 ;
-    skos:closeMatch fskxo:FSKXO_0000017374 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001P> ,
+        <http://www.wikidata.org/entity/Q102330562> ;
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017374> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/einkorn-wheat> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
-    skos:prefLabel "Einkorn Wheat" ;
-    skos:altLabel "einkorn" ;
-    skos:definition "Cereal grains from the plant classified under the species Triticum monococcum L. subsp. monococcum. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "grain of Triticum monococcum" ;
+    skos:prefLabel "Einkorn Wheat"@en ;
+    skos:altLabel "einkorn"@en ;
+    skos:definition "Cereal grains from the plant classified under the species Triticum monococcum L. subsp. monococcum. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "grain of Triticum monococcum"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A001S ,
-        wikidata:Q134124685 ;
-    skos:closeMatch fskxo:FSKXO_0000015555 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001S> ,
+        <http://www.wikidata.org/entity/Q134124685> ;
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015555> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/emmer-wheat> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
-    skos:prefLabel "Emmer Wheat" ;
-    skos:altLabel "emmer" ;
-    skos:definition "Cereal grains from the plant classified under the species Triticum turgidum subsp. dicoccon or Triticum dicoccum . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "species of plant, emmer" ;
+    skos:prefLabel "Emmer Wheat"@en ;
+    skos:altLabel "emmer"@en ;
+    skos:definition "Cereal grains from the plant classified under the species Triticum turgidum subsp. dicoccon or Triticum dicoccum . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "species of plant, emmer"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A001Q ;
-    skos:closeMatch fskxo:FSKXO_0000015558  ,
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001Q> ;
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015558> ,
         <https://www.wikidata.org/wiki/Q167339> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/maize> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
-    skos:prefLabel "Maize" ;
-    skos:altLabel "corn" ,
-        "sweetcorn" ;
-    skos:definition "Cereal grains from the plant classified under the species Zea mays L. subsp. mays. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "seed of Zea mays, used as a vegetable, ingredient, etc" ;
+    skos:prefLabel "Maize"@en ;
+    skos:altLabel "corn"@en ,
+        "sweetcorn"@en ;
+    skos:definition "Cereal grains from the plant classified under the species Zea mays L. subsp. mays. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "seed of Zea mays, used as a vegetable, ingredient, etc"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A000T ,
-        fskxo:FSKXO_0000000518 ,
-        wikidata:Q25618328 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A000T> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000518> ,
+        <http://www.wikidata.org/entity/Q25618328> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/oats> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
-    skos:prefLabel "Oats" ;
-    skos:definition "Cereal grains from the plant classified under the species Avena sativa L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "cereal grain" ;
+    skos:prefLabel "Oats"@en ;
+    skos:definition "Cereal grains from the plant classified under the species Avena sativa L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "cereal grain"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A000G ,
-        fskxo:FSKXO_0000000534 ,
-        wikidata:Q24265484 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A000G> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000534> ,
+        <http://www.wikidata.org/entity/Q24265484> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/rice> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
-    skos:prefLabel "Rice" ;
-    skos:definition "Cereal grains from the plant classified under the species Oryza sativa L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "staple food grain of Oryza and Zizania species, for the plant see Q161426" ;
+    skos:prefLabel "Rice"@en ;
+    skos:definition "Cereal grains from the plant classified under the species Oryza sativa L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "staple food grain of Oryza and Zizania species, for the plant see Q161426"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A001D ,
-        fskxo:FSKXO_0000000638 ,
-        wikidata:Q5090 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001D> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000638> ,
+        <http://www.wikidata.org/entity/Q5090> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/rye> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
-    skos:prefLabel "Rye" ;
-    skos:definition "Cereal grains from the plant classified under the species Secale cereale L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "species of plant" ;
+    skos:prefLabel "Rye"@en ;
+    skos:definition "Cereal grains from the plant classified under the species Secale cereale L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "species of plant"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A001K ,
-        fskxo:FSKXO_0000000645 ;
-    skos:closeMatch wikidata:Q12099 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001K> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000645> ;
+    skos:closeMatch <http://www.wikidata.org/entity/Q12099> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/soft-wheat> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
-    skos:prefLabel "Soft Wheat" ;
-    skos:altLabel "common wheat" ;
-    skos:definition "Cereal grains from the plant classified under the species Triticum aestivum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "species of plant" ;
+    skos:prefLabel "Soft Wheat"@en ;
+    skos:altLabel "common wheat"@en ;
+    skos:definition "Cereal grains from the plant classified under the species Triticum aestivum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "species of plant"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A001N ;
-    skos:closeMatch fskxo:FSKXO_0000017391 ,
-        wikidata:Q161098 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001N> ;
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017391> ,
+        <http://www.wikidata.org/entity/Q161098> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/sorghum> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
-    skos:prefLabel "Sorghum" ;
-    skos:definition "Cereal grains from the plant classified under the species Sorghum bicolor L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "grain from plants in the genus Sorghum, especially Sorhgum bicolor" ;
+    skos:prefLabel "Sorghum"@en ;
+    skos:definition "Cereal grains from the plant classified under the species Sorghum bicolor L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "grain from plants in the genus Sorghum, especially Sorhgum bicolor"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A001L ,
-        fskxo:FSKXO_0000000663 ,
-        wikidata:Q105549747 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001L> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000663> ,
+        <http://www.wikidata.org/entity/Q105549747> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/spelt> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
-    skos:prefLabel "Spelt" ;
-    skos:altLabel "dinkel" ;
-    skos:definition "Cereal grains from the plant classified under the species Triticum aestivum subsp. Spelta (L.) Thell or Triticum spelta L. . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "species of wheat" ;
+    skos:prefLabel "Spelt"@en ;
+    skos:altLabel "dinkel"@en ;
+    skos:definition "Cereal grains from the plant classified under the species Triticum aestivum subsp. Spelta (L.) Thell or Triticum spelta L. . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "species of wheat"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A001R ;
-    skos:closeMatch fskxo:FSKXO_0000017115 ,
-        wikidata:Q158767 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001R> ;
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017115> ,
+        <http://www.wikidata.org/entity/Q158767> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/triticale> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
-    skos:prefLabel "Triticale" ;
-    skos:definition "Cereal grains from the plant classified under the species ×Triticosecale Wittm. ex A. Camus. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "genus representing a hybrid of wheat and rye" ;
+    skos:prefLabel "Triticale"@en ;
+    skos:definition "Cereal grains from the plant classified under the species ×Triticosecale Wittm. ex A. Camus. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "genus representing a hybrid of wheat and rye"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A001V ;
-    skos:closeMatch fskxo:FSKXO_0000017260 ,
-        wikidata:Q380329 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001V> ;
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017260> ,
+        <http://www.wikidata.org/entity/Q380329> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/apple> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Apple" ;
-    skos:definition "Pome Fruits from the plant classified under the species Malus domestica Borkhausen. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit of the apple tree" ;
+    skos:prefLabel "Apple"@en ;
+    skos:definition "Pome Fruits from the plant classified under the species Malus domestica Borkhausen. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit of the apple tree"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01DJ ,
-        fskxo:FSKXO_0000000343 ,
-        wikidata:Q89 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01DJ> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000343> ,
+        <http://www.wikidata.org/entity/Q89> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/apricot> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Apricot" ;
-    skos:definition "Stone fruits from the plant classified under the species Armeniaca vulgaris Lam. or Prunus armeniaca L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "cultivated fruit" ;
+    skos:prefLabel "Apricot"@en ;
+    skos:definition "Stone fruits from the plant classified under the species Armeniaca vulgaris Lam. or Prunus armeniaca L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "cultivated fruit"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01GF ,
-        fskxo:FSKXO_0000000344 ,
-        wikidata:Q3733836 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01GF> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000344> ,
+        <http://www.wikidata.org/entity/Q3733836> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/aronia> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Aronia" ;
-    skos:altLabel "chokeberry" ;
-    skos:definition "The group includes any type of Aronia berries as defined in the pesticide regulation. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit" ;
+    skos:prefLabel "Aronia"@en ;
+    skos:altLabel "chokeberry"@en ;
+    skos:definition "The group includes any type of Aronia berries as defined in the pesticide regulation. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A0DTQ ,
-        wikidata:Q57543544 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A0DTQ> ,
+        <http://www.wikidata.org/entity/Q57543544> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/banana> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Banana" ;
-    skos:definition "The group includes any type of Cavendishes as defined in the pesticide regulation. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "elongated, edible fruit produced by several kinds of large herbaceous flowering plants in the genus Musa" ;
+    skos:prefLabel "Banana"@en ;
+    skos:definition "The group includes any type of Cavendishes as defined in the pesticide regulation. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "elongated, edible fruit produced by several kinds of large herbaceous flowering plants in the genus Musa"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch fskxo:FSKXO_0000000352 ,
-        wikidata:Q503 ,
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000352> ,
+        <http://www.wikidata.org/entity/Q503> ,
         <https://data.food.gov.uk/codes/foodtype/id/A01LC> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/black-currant> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Black Currant" ;
-    skos:altLabel "blackcurrant" ,
-        "cassis" ;
-    skos:definition "Berries and small fruits from the plant classified under the species Ribes nigrum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit of the plant Ribes nigrum" ;
+    skos:prefLabel "Black Currant"@en ;
+    skos:altLabel "blackcurrant"@en ,
+        "cassis"@en ;
+    skos:definition "Berries and small fruits from the plant classified under the species Ribes nigrum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit of the plant Ribes nigrum"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01FN ,
-        wikidata:Q2941309 ;
-    skos:broadMatch fskxo:FSKXO_0000000423 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01FN> ,
+        <http://www.wikidata.org/entity/Q2941309> ;
+    skos:broadMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000423> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/blackberry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Blackberry" ;
-    skos:altLabel "bramble" ;
-    skos:definition "Berries and small fruits from the plant classified under the species Rubus fruticosus auct. aggr. several spp. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit of Rubus subg. Rubus" ;
+    skos:prefLabel "Blackberry"@en ;
+    skos:altLabel "bramble"@en ;
+    skos:definition "Berries and small fruits from the plant classified under the species Rubus fruticosus auct. aggr. several spp. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit of Rubus subg. Rubus"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01EE ,
-        wikidata:Q19842373 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01EE> ,
+        <http://www.wikidata.org/entity/Q19842373> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/blueberry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Blueberry" ;
-    skos:definition "The group includes any type of Blueberries as defined in the pesticide regulation. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit from Vaccinium corymbosum" ;
+    skos:prefLabel "Blueberry"@en ;
+    skos:definition "The group includes any type of Blueberries as defined in the pesticide regulation. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit from Vaccinium corymbosum"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01EY ;
-    skos:closeMatch wikidata:Q103813303 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01EY> ;
+    skos:closeMatch <http://www.wikidata.org/entity/Q103813303> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/cherry-sour> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Cherry (sour)" ;
-    skos:altLabel "sour cherry" ;
-    skos:definition "Cherries from Prunus cerasus, native to Europe and south-west Asia. It is a wild, sour cherry, with two major variants, the dark red one and the light red one." ,
-        "type of fruit, for species refer to Q131517" ;
+    skos:prefLabel "Cherry (sour)"@en ;
+    skos:altLabel "sour cherry"@en ;
+    skos:definition "Cherries from Prunus cerasus, native to Europe and south-west Asia. It is a wild, sour cherry, with two major variants, the dark red one and the light red one."@en ,
+        "type of fruit, for species refer to Q131517"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01GH ,
-        fskxo:FSKXO_0000017083 ,
-        wikidata:Q68438267 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01GH> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017083> ,
+        <http://www.wikidata.org/entity/Q68438267> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/cherry-sweet> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Cherry (sweet)" ;
-    skos:altLabel "sweet cherry" ;
-    skos:definition "Stone fruits from the plant classified under the species Cerasus avium (L.) Moench or Prunus avium L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "species of plant" ;
+    skos:prefLabel "Cherry (sweet)"@en ;
+    skos:altLabel "sweet cherry"@en ;
+    skos:definition "Stone fruits from the plant classified under the species Cerasus avium (L.) Moench or Prunus avium L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "species of plant"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01GK ,
-        fskxo:FSKXO_0000017202 ;
-    skos:closeMatch wikidata:Q165137 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01GK> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017202> ;
+    skos:closeMatch <http://www.wikidata.org/entity/Q165137> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/cornelian-cherry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Cornelian Cherry" ;
-    skos:definition "Stone fruits from the plant classified under the species Cornus mas L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit from Cornus mas" ;
+    skos:prefLabel "Cornelian Cherry"@en ;
+    skos:definition "Stone fruits from the plant classified under the species Cornus mas L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit from Cornus mas"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A0DVP ,
-        wikidata:Q104245577 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A0DVP> ,
+        <http://www.wikidata.org/entity/Q104245577> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/cranberry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Cranberry" ;
-    skos:definition "Berries and small fruits from the plant classified under the species Vaccinium macrocarpon Aiton. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit" ;
+    skos:prefLabel "Cranberry"@en ;
+    skos:definition "Berries and small fruits from the plant classified under the species Vaccinium macrocarpon Aiton. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01FH ,
-        fskxo:FSKXO_0000015402 ,
-        wikidata:Q21546387 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01FH> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015402> ,
+        <http://www.wikidata.org/entity/Q21546387> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/elderberry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Elderberry" ;
-    skos:definition "Berries and small fruits from the plant classified under the species Sambucus nigra L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit of elder (Sambucus nigra L.)" ;
+    skos:prefLabel "Elderberry"@en ;
+    skos:definition "Berries and small fruits from the plant classified under the species Sambucus nigra L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit of elder (Sambucus nigra L.)"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01FX ,
-        wikidata:Q96333359 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01FX> ,
+        <http://www.wikidata.org/entity/Q96333359> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/fig> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Fig" ;
-    skos:definition "Fruits from the plant classified under the species Ficus carica L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "edible fruit of Ficus (typically F. carica)" ;
+    skos:prefLabel "Fig"@en ;
+    skos:definition "Fruits from the plant classified under the species Ficus carica L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "edible fruit of Ficus (typically F. carica)"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01HG ,
-        fskxo:FSKXO_0000000442 ,
-        wikidata:Q2746643 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01HG> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000442> ,
+        <http://www.wikidata.org/entity/Q2746643> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/gooseberry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Gooseberry" ;
-    skos:definition "Berries and small fruits from the plant classified under the species Ribes uva crispa L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit" ;
+    skos:prefLabel "Gooseberry"@en ;
+    skos:definition "Berries and small fruits from the plant classified under the species Ribes uva crispa L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A0CFN ,
-        wikidata:Q17638951 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A0CFN> ,
+        <http://www.wikidata.org/entity/Q17638951> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/grape> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Grape" ;
-    skos:definition "Berries and small fruits from the plant classified under the species Vitis vinifera L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "edible berry of a flowering plant in the family Vitaceae" ;
+    skos:prefLabel "Grape"@en ;
+    skos:definition "Berries and small fruits from the plant classified under the species Vitis vinifera L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "edible berry of a flowering plant in the family Vitaceae"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01DX ,
-        wikidata:Q10978 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01DX> ,
+        <http://www.wikidata.org/entity/Q10978> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/grapefruit> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Grapefruit" ;
-    skos:definition "Citrus fruit from the plant classified under the species Citrus paradisi Macf. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit (use Q41350 for the nothospecies)" ;
+    skos:prefLabel "Grapefruit"@en ;
+    skos:definition "Citrus fruit from the plant classified under the species Citrus paradisi Macf. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit (use Q41350 for the nothospecies)"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01CY ,
-        fskxo:FSKXO_0000000464 ,
-        wikidata:Q21552830 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01CY> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000464> ,
+        <http://www.wikidata.org/entity/Q21552830> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/kiwi> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Kiwi" ;
-    skos:definition "Fruits from the plant classified under the species Actinidia Lindl. spp. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "edible berry of several species of woody vines in the genus Actinidia, native to China" ;
+    skos:prefLabel "Kiwi"@en ;
+    skos:definition "Fruits from the plant classified under the species Actinidia Lindl. spp. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "edible berry of several species of woody vines in the genus Actinidia, native to China"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01JT ,
-        fskxo:FSKXO_0000000494 ,
-        wikidata:Q13194 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01JT> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000494> ,
+        <http://www.wikidata.org/entity/Q13194> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/lemon> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Lemon" ;
-    skos:definition "Citrus fruit from the plant classified under the species Citrus limon Burm. F. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit (for Citrus ×limon use Q500)" ;
+    skos:prefLabel "Lemon"@en ;
+    skos:definition "Citrus fruit from the plant classified under the species Citrus limon Burm. F. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit (for Citrus ×limon use Q500)"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01BY ,
-        fskxo:FSKXO_0000000504 ,
-        wikidata:Q1093742 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01BY> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000504> ,
+        <http://www.wikidata.org/entity/Q1093742> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/lime> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Lime" ;
-    skos:definition "Citrus fruit from the plant classified under the species Citrus aurantifolia Swingle. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "citrus fruit" ;
+    skos:prefLabel "Lime"@en ;
+    skos:definition "Citrus fruit from the plant classified under the species Citrus aurantifolia Swingle. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "citrus fruit"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01CA ,
-        fskxo:FSKXO_0000000510 ,
-        wikidata:Q13195 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01CA> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000510> ,
+        <http://www.wikidata.org/entity/Q13195> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/loquat> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Loquat" ;
-    skos:definition "Pome fruits from the plant classified under the species Eriobotrya japonica (Thunberg ex J.A. murray) Lindley. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit from Eriobotrya japonica (for the species, use Q41505)" ;
+    skos:prefLabel "Loquat"@en ;
+    skos:definition "Pome fruits from the plant classified under the species Eriobotrya japonica (Thunberg ex J.A. murray) Lindley. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit from Eriobotrya japonica (for the species, use Q41505)"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01DL ,
-        fskxo:FSKXO_0000000513 ,
-        wikidata:Q3346786 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01DL> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000513> ,
+        <http://www.wikidata.org/entity/Q3346786> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/mandarin> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Mandarin" ;
-    skos:definition "Citrus fruit from the plant classified under the species Citrus reticulata Blanco or Citrus deliciosa Ten. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit" ;
+    skos:prefLabel "Mandarin"@en ;
+    skos:definition "Citrus fruit from the plant classified under the species Citrus reticulata Blanco or Citrus deliciosa Ten. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01CD ,
-        fskxo:FSKXO_0000000519 ,
-        wikidata:Q190024 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01CD> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000519> ,
+        <http://www.wikidata.org/entity/Q190024> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/melon> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Melon" ;
-    skos:definition "Fruiting vegetables classified under the species Cucumis melo L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "any of various plants of the family Cucurbitaceae with sweet, edible, and fleshy fruit" ;
+    skos:prefLabel "Melon"@en ;
+    skos:definition "Fruiting vegetables classified under the species Cucumis melo L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "any of various plants of the family Cucurbitaceae with sweet, edible, and fleshy fruit"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00KF ,
-        fskxo:FSKXO_0000000524 ,
-        wikidata:Q5881191 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00KF> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000524> ,
+        <http://www.wikidata.org/entity/Q5881191> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/mulberry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Mulberry" ;
-    skos:definition "Berries and small fruits from the plant classified under the species Morus spp. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit of the mulberry" ;
+    skos:prefLabel "Mulberry"@en ;
+    skos:definition "Berries and small fruits from the plant classified under the species Morus spp. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit of the mulberry"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01FS ,
-        wikidata:Q11113119 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01FS> ,
+        <http://www.wikidata.org/entity/Q11113119> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/nectarine> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Nectarine" ;
-    skos:definition "Stone fruits from the plant classified under the species Persica vulgaris Mill. var. nectarina (Alton) or Prunus persica (L.) Batsch. var. nectarina. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "a peach of a variety with smooth, thin, brightly colored skin and rich firm flesh" ;
+    skos:prefLabel "Nectarine"@en ;
+    skos:definition "Stone fruits from the plant classified under the species Persica vulgaris Mill. var. nectarina (Alton) or Prunus persica (L.) Batsch. var. nectarina. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "a peach of a variety with smooth, thin, brightly colored skin and rich firm flesh"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01GN ,
-        wikidata:Q841156 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01GN> ,
+        <http://www.wikidata.org/entity/Q841156> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/orange> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Orange" ;
-    skos:definition "Citrus fruit from the plant classified under the species Citrus sinensis (L.) Osbeck. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "citrus fruit of the orange tree" ;
+    skos:prefLabel "Orange"@en ;
+    skos:definition "Citrus fruit from the plant classified under the species Citrus sinensis (L.) Osbeck. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "citrus fruit of the orange tree"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A0DZB ,
-        fskxo:FSKXO_0000000541 ,
-        wikidata:Q13191 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A0DZB> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000541> ,
+        <http://www.wikidata.org/entity/Q13191> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/peach> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Peach" ;
-    skos:definition "Raw commodity obtained from organisms of the taxonomic group Prunus persica. The group includes the fruits from any type of Common peach. The part consumed/analysed is by default unspecified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors." ,
-        "fruit, use Q13189 for the species" ;
+    skos:prefLabel "Peach"@en ;
+    skos:definition "Raw commodity obtained from organisms of the taxonomic group Prunus persica. The group includes the fruits from any type of Common peach. The part consumed/analysed is by default unspecified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors."@en ,
+        "fruit, use Q13189 for the species"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01GM ,
-        fskxo:FSKXO_0000000601 ,
-        wikidata:Q13202263 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01GM> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000601> ,
+        <http://www.wikidata.org/entity/Q13202263> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/pear> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Pear" ;
-    skos:definition "Pome fruits from the plant classified under the species Pyrus communis L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit" ;
+    skos:prefLabel "Pear"@en ;
+    skos:definition "Pome fruits from the plant classified under the species Pyrus communis L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01DP ,
-        fskxo:FSKXO_0000000603 ,
-        wikidata:Q13099586 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01DP> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000603> ,
+        <http://www.wikidata.org/entity/Q13099586> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/plum> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Plum" ;
-    skos:definition "Stone fruits from the plant classified under the species Prunus domestica L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit; use Q6401215 for the taxon; Q13223298 for the species" ;
+    skos:prefLabel "Plum"@en ;
+    skos:definition "Stone fruits from the plant classified under the species Prunus domestica L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit; use Q6401215 for the taxon; Q13223298 for the species"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01GQ ,
-        fskxo:FSKXO_0000000614 ,
-        wikidata:Q12372598 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01GQ> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000614> ,
+        <http://www.wikidata.org/entity/Q12372598> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/pomegranate> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Pomegranate" ;
-    skos:altLabel "Granate apple" ;
-    skos:definition "Fruits from the plant classified under the species Punica granatum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit of Punica granatum" ;
+    skos:prefLabel "Pomegranate"@en ;
+    skos:altLabel "Granate apple"@en ;
+    skos:definition "Fruits from the plant classified under the species Punica granatum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit of Punica granatum"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01LH ,
-        fskxo:FSKXO_0000000616 ,
-        wikidata:Q13222088 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01LH> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000616> ,
+        <http://www.wikidata.org/entity/Q13222088> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/quince> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Quince" ;
-    skos:definition "Pome fruits from the plant classified under the species Cydonia oblonga P. Miller. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit of the quince plant (Cydonia, Pseudocydonia)" ;
+    skos:prefLabel "Quince"@en ;
+    skos:definition "Pome fruits from the plant classified under the species Cydonia oblonga P. Miller. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit of the quince plant (Cydonia, Pseudocydonia)"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01DR ,
-        fskxo:FSKXO_0000000632 ,
-        wikidata:Q2751465 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01DR> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000632> ,
+        <http://www.wikidata.org/entity/Q2751465> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/raspberry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Raspberry" ;
-    skos:definition "Berries and small fruits from the plant classified under the species Rubus idaeus L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "edible fruit" ;
+    skos:prefLabel "Raspberry"@en ;
+    skos:definition "Berries and small fruits from the plant classified under the species Rubus idaeus L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "edible fruit"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01EP ,
-        wikidata:Q13179 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01EP> ,
+        <http://www.wikidata.org/entity/Q13179> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/red-currant> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Red Currant" ;
-    skos:definition "Berries and small fruits from the plant classified under the species Ribes rubrum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit of Ribes rubrum" ;
+    skos:prefLabel "Red Currant"@en ;
+    skos:definition "Berries and small fruits from the plant classified under the species Ribes rubrum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit of Ribes rubrum"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch wikidata:Q14714085 ,
+    skos:exactMatch <http://www.wikidata.org/entity/Q14714085> ,
         <https://data.food.gov.uk/codes/foodtype/id/_A01FP> ;
-    skos:broadMatch fskxo:FSKXO_0000000423 .
+    skos:broadMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000423> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/sea-buckthorn> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Sea Buckthorn" ;
-    skos:definition "Berries and small fruits from the plant classified under the species Hippophaë rhamnoides L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit from Hippophae rhamnoides" ;
+    skos:prefLabel "Sea Buckthorn"@en ;
+    skos:definition "Berries and small fruits from the plant classified under the species Hippophaë rhamnoides L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit from Hippophae rhamnoides"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01FZ ,
-        wikidata:Q104187337 ;
-    skos:closeMatch fskxo:FSKXO_0000017000 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01FZ> ,
+        <http://www.wikidata.org/entity/Q104187337> ;
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017000> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/serviceberry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Serviceberry" ;
-    skos:altLabel "juneberry" ;
-    skos:definition "Berries and small fruits from the plant classified under the species Amelanchier ovalis Medik. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit of Amelanchier arborea" ;
+    skos:prefLabel "Serviceberry"@en ;
+    skos:altLabel "juneberry"@en ;
+    skos:definition "Berries and small fruits from the plant classified under the species Amelanchier ovalis Medik. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit of Amelanchier arborea"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A0CFY ,
-        wikidata:Q104055703 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A0CFY> ,
+        <http://www.wikidata.org/entity/Q104055703> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/strawberry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Strawberry" ;
-    skos:definition "Berries and small fruits from the plant classified under the species Fragaria x ananassa Duchene ex Rozier. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit" ;
+    skos:prefLabel "Strawberry"@en ;
+    skos:definition "Berries and small fruits from the plant classified under the species Fragaria x ananassa Duchene ex Rozier. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01EA ,
-        wikidata:Q14458220 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01EA> ,
+        <http://www.wikidata.org/entity/Q14458220> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/watermelon> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "Watermelon" ;
-    skos:definition "Fruiting vegetables classified under the species Citrullus vulgaris Schraders or Citrullus lanatus (Thunb.) Matsum. & Nakai. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "large watery fruit with a smooth hard rind" ;
+    skos:prefLabel "Watermelon"@en ;
+    skos:definition "Fruiting vegetables classified under the species Citrullus vulgaris Schraders or Citrullus lanatus (Thunb.) Matsum. & Nakai. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "large watery fruit with a smooth hard rind"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00KJ ,
-        fskxo:FSKXO_0000000716 ,
-        wikidata:Q38645 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00KJ> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000716> ,
+        <http://www.wikidata.org/entity/Q38645> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/white-currant> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
-    skos:prefLabel "White Currant" ;
-    skos:definition "The group includes any type of Currants (black, red and white) as defined in the pesticide regulation. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit" ;
+    skos:prefLabel "White Currant"@en ;
+    skos:definition "The group includes any type of Currants (black, red and white) as defined in the pesticide regulation. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch wikidata:Q104818518 ;
-    skos:broadMatch foodex2:A01FM ,
-        fskxo:FSKXO_0000000423 .
+    skos:exactMatch <http://www.wikidata.org/entity/Q104818518> ;
+    skos:broadMatch <http://data.food.gov.uk/codes/foodtype/id/A01FM> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000423> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/nut/almond> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/nut> ;
-    skos:prefLabel "Almond" ;
-    skos:definition "Tree nuts from the plant classified under the species Amygdalus communis L. or Prunus dulcis L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "edible seed of the almond tree" ;
+    skos:prefLabel "Almond"@en ;
+    skos:definition "Tree nuts from the plant classified under the species Amygdalus communis L. or Prunus dulcis L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "edible seed of the almond tree"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A014D ,
-        fskxo:FSKXO_0000000338 ,
-        wikidata:Q184357 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A014D> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000338> ,
+        <http://www.wikidata.org/entity/Q184357> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/nut/chestnut> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/nut> ;
-    skos:prefLabel "Chestnut" ;
-    skos:definition "Tree nuts from the plant classified under the species Castanea spp. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "nut, culinary" ;
+    skos:prefLabel "Chestnut"@en ;
+    skos:definition "Tree nuts from the plant classified under the species Castanea spp. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "nut, culinary"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A014J ,
-        fskxo:FSKXO_0000000402 ,
-        wikidata:Q773987 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A014J> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000402> ,
+        <http://www.wikidata.org/entity/Q773987> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/nut/hazelnut> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/nut> ;
-    skos:prefLabel "Hazelnut" ;
-    skos:definition "Tree nuts from the plant classified under the species Corylus avellana L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "nut of the hazel tree, Corylus avellana" ;
+    skos:prefLabel "Hazelnut"@en ;
+    skos:definition "Tree nuts from the plant classified under the species Corylus avellana L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "nut of the hazel tree, Corylus avellana"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A014L ,
-        fskxo:FSKXO_0000000466 ,
-        wikidata:Q578307 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A014L> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000466> ,
+        <http://www.wikidata.org/entity/Q578307> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/nut/pecan> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/nut> ;
-    skos:prefLabel "Pecan" ;
-    skos:definition "Tree nuts from the plant classified under the species Carya illinoinensis (Wangenh.) K. Koch. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "nut from Carya" ;
+    skos:prefLabel "Pecan"@en ;
+    skos:definition "Tree nuts from the plant classified under the species Carya illinoinensis (Wangenh.) K. Koch. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "nut from Carya"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A014N ,
-        fskxo:FSKXO_0000000607 ,
-        wikidata:Q1119911 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A014N> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000607> ,
+        <http://www.wikidata.org/entity/Q1119911> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/nut/pistachio> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/nut> ;
-    skos:prefLabel "Pistachio" ;
-    skos:definition "Tree nuts from the plant classified under the species Pistacia vera L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "nut, a consumable, also used culinary" ;
+    skos:prefLabel "Pistachio"@en ;
+    skos:definition "Tree nuts from the plant classified under the species Pistacia vera L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "nut, a consumable, also used culinary"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A014Q ,
-        fskxo:FSKXO_0000000613 ,
-        wikidata:Q14959225 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A014Q> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000613> ,
+        <http://www.wikidata.org/entity/Q14959225> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/nut/walnut> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/nut> ;
-    skos:prefLabel "Walnut" ;
-    skos:definition "Tree nuts from the plant classified under the species Juglans L. spp. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "edible seed" ;
+    skos:prefLabel "Walnut"@en ;
+    skos:definition "Tree nuts from the plant classified under the species Juglans L. spp. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "edible seed"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A014R ,
-        fskxo:FSKXO_0000000713 ,
-        wikidata:Q208021 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A014R> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000713> ,
+        <http://www.wikidata.org/entity/Q208021> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/artichoke> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Artichoke" ;
-    skos:definition "Stem vegetables classified under the species Cynara cardunculus L. Globe artichoke group . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "vegetable" ;
+    skos:prefLabel "Artichoke"@en ;
+    skos:definition "Stem vegetables classified under the species Cynara cardunculus L. Globe artichoke group . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "vegetable"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00RS ,
-        wikidata:Q23041430 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00RS> ,
+        <http://www.wikidata.org/entity/Q23041430> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/asparagus> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Asparagus" ;
-    skos:definition "Stem vegetables classified under the species Asparagus officinalis L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "vegetable from the plant of the same name" ;
+    skos:prefLabel "Asparagus"@en ;
+    skos:definition "Stem vegetables classified under the species Asparagus officinalis L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "vegetable from the plant of the same name"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00RT ,
-        fskxo:FSKXO_0000000346 ,
-        wikidata:Q23041045 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00RT> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000346> ,
+        <http://www.wikidata.org/entity/Q23041045> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/aubergine> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Aubergine" ;
-    skos:altLabel "eggplant" ;
-    skos:definition "Fruiting vegetables classified under the species Solanum melongena L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "edible botanical fruit of the species Solanum melongena, used as a vegetable" ;
+    skos:prefLabel "Aubergine"@en ;
+    skos:altLabel "eggplant"@en ;
+    skos:definition "Fruiting vegetables classified under the species Solanum melongena L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "edible botanical fruit of the species Solanum melongena, used as a vegetable"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00JD ,
-        wikidata:Q12533094 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00JD> ,
+        <http://www.wikidata.org/entity/Q12533094> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/avocado> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Avocado" ;
-    skos:definition "Fruits from the plant classified under the species Persea americana Mill. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit, use Q37153 for the species" ;
+    skos:prefLabel "Avocado"@en ;
+    skos:definition "Fruits from the plant classified under the species Persea americana Mill. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit, use Q37153 for the species"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01LB ,
-        fskxo:FSKXO_0000000348 ,
-        wikidata:Q961769 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01LB> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000348> ,
+        <http://www.wikidata.org/entity/Q961769> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/beetroot> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Beetroot" ;
-    skos:altLabel "beet" ,
-        "common beet" ;
-    skos:definition "Root and tuber vegetables classified under the species Beta vulgaris var. vulgaris L.  . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "taproot of the beet plant, used as a vegetable" ;
+    skos:prefLabel "Beetroot"@en ;
+    skos:altLabel "beet"@en ,
+        "common beet"@en ;
+    skos:definition "Root and tuber vegetables classified under the species Beta vulgaris var. vulgaris L.  . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "taproot of the beet plant, used as a vegetable"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00QG ,
-        fskxo:FSKXO_0000000360 ,
-        wikidata:Q99548274 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00QG> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000360> ,
+        <http://www.wikidata.org/entity/Q99548274> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/bell-pepper> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Bell Pepper" ;
-    skos:altLabel "paprika" ,
-        "sweet pepper" ;
-    skos:definition "Fruiting vegetables classified under the species Capsicum annuum var. grossum (L.) Sendtner or Capsicum annuum var. longum Bailey. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "group of fruits of Capsicum annuum" ;
+    skos:prefLabel "Bell Pepper"@en ;
+    skos:altLabel "paprika"@en ,
+        "sweet pepper"@en ;
+    skos:definition "Fruiting vegetables classified under the species Capsicum annuum var. grossum (L.) Sendtner or Capsicum annuum var. longum Bailey. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "group of fruits of Capsicum annuum"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00JA ,
-        wikidata:Q1548030 ;
-    skos:closeMatch fskxo:FSKXO_0000016638 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00JA> ,
+        <http://www.wikidata.org/entity/Q1548030> ;
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000016638> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/broad-bean> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Broad Bean" ;
-    skos:definition "Legumes classified under the species Vicia faba L. (any subspp. and var.). The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "type of bean" ;
+    skos:prefLabel "Broad Bean"@en ;
+    skos:definition "Legumes classified under the species Vicia faba L. (any subspp. and var.). The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "type of bean"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch wikidata:Q61672189 ;
-    skos:closeMatch fskxo:FSKXO_0000014846 ;
-    skos:narrowMatch foodex2:A012A .
+    skos:exactMatch <http://www.wikidata.org/entity/Q61672189> ;
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000014846> ;
+    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A012A> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/broccoli> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Broccoli" ;
-    skos:definition "Brassica vegetables classified under the species Brassica oleracea L. var. italica Plenck. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "edible green plant in the cabbage family" ;
+    skos:prefLabel "Broccoli"@en ;
+    skos:definition "Brassica vegetables classified under the species Brassica oleracea L. var. italica Plenck. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "edible green plant in the cabbage family"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00FN ,
-        fskxo:FSKXO_0000000377 ,
-        wikidata:Q47722 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00FN> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000377> ,
+        <http://www.wikidata.org/entity/Q47722> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/brussels-sprout> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Brussels Sprout" ;
-    skos:altLabel "brussel sprout" ;
-    skos:definition "Brassica vegetables classified under the species Brassica oleracea L. var. Gemnifera (DC.) Zenker. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "vegetable from Brassica oleracea var gemmifera" ;
+    skos:prefLabel "Brussels Sprout"@en ;
+    skos:altLabel "brussel sprout"@en ;
+    skos:definition "Brassica vegetables classified under the species Brassica oleracea L. var. Gemnifera (DC.) Zenker. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "vegetable from Brassica oleracea var gemmifera"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00FV ,
-        fskxo:FSKXO_0000000378 ,
-        wikidata:Q104664711 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00FV> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000378> ,
+        <http://www.wikidata.org/entity/Q104664711> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/cabbage> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Cabbage" ;
-    skos:definition "The group includes any type of (b) head brassica as defined in the pesticide regulation. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "several varieties of vegetable" ;
+    skos:prefLabel "Cabbage"@en ;
+    skos:definition "The group includes any type of (b) head brassica as defined in the pesticide regulation. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "several varieties of vegetable"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch wikidata:Q14328596 ;
-    skos:broadMatch foodex2:A00FT .
+    skos:exactMatch <http://www.wikidata.org/entity/Q14328596> ;
+    skos:broadMatch <http://data.food.gov.uk/codes/foodtype/id/A00FT> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/carrot> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Carrot" ;
-    skos:definition "Root and tuber vegetables classified under the species Daucus carota L. subsp. sativus . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "common vegetable and taproot of the species Daucus carota subsp. sativus and its associated cultivars." ;
+    skos:prefLabel "Carrot"@en ;
+    skos:definition "Root and tuber vegetables classified under the species Daucus carota L. subsp. sativus . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "common vegetable and taproot of the species Daucus carota subsp. sativus and its associated cultivars."@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00QH ,
-        fskxo:FSKXO_0000000389 ,
-        wikidata:Q81 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00QH> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000389> ,
+        <http://www.wikidata.org/entity/Q81> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/cauliflower> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Cauliflower" ;
-    skos:definition "Brassica vegetables classified under the species Brassica oleracea L. var. botrytis L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "vegetable, for the plant see Q7537 (Brassica oleracea var. botrytis)" ;
+    skos:prefLabel "Cauliflower"@en ;
+    skos:definition "Brassica vegetables classified under the species Brassica oleracea L. var. botrytis L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "vegetable, for the plant see Q7537 (Brassica oleracea var. botrytis)"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00FR ,
-        fskxo:FSKXO_0000000393 ,
-        wikidata:Q23900272 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00FR> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000393> ,
+        <http://www.wikidata.org/entity/Q23900272> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/celeriac> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Celeriac" ;
-    skos:altLabel "celery root" ,
-        "root celery" ;
-    skos:definition "Root and tuber vegetables classified under the species Apium graveolens L. var. rapaceum (Mill.) Gaudin. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "root vegetable" ;
+    skos:prefLabel "Celeriac"@en ;
+    skos:altLabel "celery root"@en ,
+        "root celery"@en ;
+    skos:definition "Root and tuber vegetables classified under the species Apium graveolens L. var. rapaceum (Mill.) Gaudin. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "root vegetable"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00QJ ,
-        fskxo:FSKXO_0000000394 ,
-        wikidata:Q103765549 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00QJ> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000394> ,
+        <http://www.wikidata.org/entity/Q103765549> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/celery> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Celery" ;
-    skos:definition "Stem vegetables classified under the species Apium graveolens L. var. dulce (Mill.) Pers. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "common edible part of the celery plant" ;
+    skos:prefLabel "Celery"@en ;
+    skos:definition "Stem vegetables classified under the species Apium graveolens L. var. dulce (Mill.) Pers. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "common edible part of the celery plant"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00RY ,
-        fskxo:FSKXO_0000000395 ,
-        wikidata:Q23012379 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00RY> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000395> ,
+        <http://www.wikidata.org/entity/Q23012379> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/chayote> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Chayote" ;
-    skos:definition "Fruiting vegetables classified under the species Sechium edule (Jacq.) Sw. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit from Sechium edule" ;
+    skos:prefLabel "Chayote"@en ;
+    skos:definition "Fruiting vegetables classified under the species Sechium edule (Jacq.) Sw. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit from Sechium edule"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00JZ ,
-        wikidata:Q104246111 ;
-    skos:closeMatch fskxo:FSKXO_0000015011 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00JZ> ,
+        <http://www.wikidata.org/entity/Q104246111> ;
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015011> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/chervil> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Chervil" ;
-    skos:definition "Vegetative plant part usually grouped as herbs classified under the species Anthriscus cerefolium (L.) Hoffmann. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "kitchen spice" ;
+    skos:prefLabel "Chervil"@en ;
+    skos:definition "Vegetative plant part usually grouped as herbs classified under the species Anthriscus cerefolium (L.) Hoffmann. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "kitchen spice"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00XB ,
-        fskxo:FSKXO_0000000401 ,
-        wikidata:Q21281535 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00XB> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000401> ,
+        <http://www.wikidata.org/entity/Q21281535> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/chickpea> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Chickpea" ;
-    skos:definition "Legumes classified under the species Cicer arietinum subsp. arietinum L. . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "type of bean" ;
+    skos:prefLabel "Chickpea"@en ;
+    skos:definition "Legumes classified under the species Cicer arietinum subsp. arietinum L. . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "type of bean"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch wikidata:Q21156930 ;
-    skos:closeMatch fskxo:FSKXO_0000015215 ;
-    skos:narrowMatch foodex2:A0BAV .
+    skos:exactMatch <http://www.wikidata.org/entity/Q21156930> ;
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015215> ;
+    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A0BAV> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/chicory> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Chicory" ;
-    skos:altLabel "witloof" ;
-    skos:definition "Leaves from vegetables classified under the species Cichorium intybus L. Foliosum group . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "species of plant" ;
+    skos:prefLabel "Chicory"@en ;
+    skos:altLabel "witloof"@en ;
+    skos:definition "Leaves from vegetables classified under the species Cichorium intybus L. Foliosum group . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "species of plant"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00NE ,
-        fskxo:FSKXO_0000000720 ;
-    skos:closeMatch wikidata:Q2544599 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00NE> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000720> ;
+    skos:closeMatch <http://www.wikidata.org/entity/Q2544599> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/chives> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Chives" ;
-    skos:definition "Vegetative plant part usually grouped as herbs classified under the species Allium schoenoprasum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "herb" ;
+    skos:prefLabel "Chives"@en ;
+    skos:definition "Vegetative plant part usually grouped as herbs classified under the species Allium schoenoprasum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "herb"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00XD ,
-        fskxo:FSKXO_0000000405 ,
-        wikidata:Q61046162 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00XD> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000405> ,
+        <http://www.wikidata.org/entity/Q61046162> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/common-bean> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Common Bean" ;
-    skos:definition "Legumes classified under the species Phaseolus vulgaris L. (any subspp. and var.). The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "bean from Phaseolus vulgaris" ;
+    skos:prefLabel "Common Bean"@en ;
+    skos:definition "Legumes classified under the species Phaseolus vulgaris L. (any subspp. and var.). The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "bean from Phaseolus vulgaris"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch wikidata:Q74662248 ;
-    skos:narrowMatch foodex2:A012B .
+    skos:exactMatch <http://www.wikidata.org/entity/Q74662248> ;
+    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A012B> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/cucumber> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Cucumber" ;
-    skos:definition "Fruiting vegetables classified under the species Cucumis sativus L. different cultivars. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit used as vegetable" ;
+    skos:prefLabel "Cucumber"@en ;
+    skos:definition "Fruiting vegetables classified under the species Cucumis sativus L. different cultivars. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit used as vegetable"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00JM ,
-        fskxo:FSKXO_0000000418 ,
-        wikidata:Q2735883 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00JM> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000418> ,
+        <http://www.wikidata.org/entity/Q2735883> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/endive> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Endive" ;
-    skos:altLabel "escarole" ;
-    skos:definition "Leaves from vegetables classified under the species Cichorium endivia L. var. latifolium Lamarck. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "leafy vegetable plant" ;
+    skos:prefLabel "Endive"@en ;
+    skos:altLabel "escarole"@en ;
+    skos:definition "Leaves from vegetables classified under the species Cichorium endivia L. var. latifolium Lamarck. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "leafy vegetable plant"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00LE ,
-        fskxo:FSKXO_0000000650 ,
-        wikidata:Q28604477 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00LE> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000650> ,
+        <http://www.wikidata.org/entity/Q28604477> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/fennel-seed> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Fennel Seed" ;
-    skos:definition "Spices from the seeds of the plant classified under the species Foeniculum vulgare P. Mill. or Foeniculum officinale All. or Anethum foeniculum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        """fruit ("seed") of the fennel plant used as herb, spice, or medicine""" ;
+    skos:prefLabel "Fennel Seed"@en ;
+    skos:definition "Spices from the seeds of the plant classified under the species Foeniculum vulgare P. Mill. or Foeniculum officinale All. or Anethum foeniculum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        """fruit ("seed") of the fennel plant used as herb, spice, or medicine"""@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A018G ,
-        fskxo:FSKXO_0000000439 ,
-        wikidata:Q27658833 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A018G> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000439> ,
+        <http://www.wikidata.org/entity/Q27658833> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/garden-cress> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Garden Cress" ;
-    skos:definition "The group includes any type of Garden cress sprouts. The part consumed/analysed is by default unspecified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors." ,
-        "herb" ;
+    skos:prefLabel "Garden Cress"@en ;
+    skos:definition "The group includes any type of Garden cress sprouts. The part consumed/analysed is by default unspecified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors."@en ,
+        "herb"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00SM ,
-        wikidata:Q65547658 ;
-    skos:closeMatch fskxo:FSKXO_0000015800 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00SM> ,
+        <http://www.wikidata.org/entity/Q65547658> ;
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015800> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/garlic> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Garlic" ;
-    skos:definition "Bulb vegetables classified under the species Allium sativum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "culinary ingredient (for the species use Q23400)" ;
+    skos:prefLabel "Garlic"@en ;
+    skos:definition "Bulb vegetables classified under the species Allium sativum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "culinary ingredient (for the species use Q23400)"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00GZ ,
-        fskxo:FSKXO_0000000450 ,
-        wikidata:Q21546392 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00GZ> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000450> ,
+        <http://www.wikidata.org/entity/Q21546392> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/green-bean> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Green Bean" ;
-    skos:altLabel "French beans" ;
-    skos:definition "Legume vegetables classified under the species Phaseolus vulgaris L. (any subspp. and var.). The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "vegetable" ;
+    skos:prefLabel "Green Bean"@en ;
+    skos:altLabel "French beans"@en ;
+    skos:definition "Legume vegetables classified under the species Phaseolus vulgaris L. (any subspp. and var.). The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "vegetable"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch wikidata:Q2987371 ;
-    skos:narrowMatch foodex2:A00PG .
+    skos:exactMatch <http://www.wikidata.org/entity/Q2987371> ;
+    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A00PG> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/hemp> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Hemp" ;
-    skos:altLabel "cannabis" ;
-    skos:definition "The group includes any type of Hemp seeds as defined in the pesticide regulation. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "seed from the hemp plant" ;
+    skos:prefLabel "Hemp"@en ;
+    skos:altLabel "cannabis"@en ;
+    skos:definition "The group includes any type of Hemp seeds as defined in the pesticide regulation. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "seed from the hemp plant"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A016B ,
-        wikidata:Q117231920 ;
-    skos:closeMatch fskxo:FSKXO_0000015913 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A016B> ,
+        <http://www.wikidata.org/entity/Q117231920> ;
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015913> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/iceberg-lettuce> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Iceberg Lettuce" ;
-    skos:altLabel "Crisp lettuce" ;
-    skos:definition "Leaves from vegetables classified under the species Lactuca sativa L. var. capitata L. Crisphead group  . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "variety of lettuce" ;
+    skos:prefLabel "Iceberg Lettuce"@en ;
+    skos:altLabel "Crisp lettuce"@en ;
+    skos:definition "Leaves from vegetables classified under the species Lactuca sativa L. var. capitata L. Crisphead group  . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "variety of lettuce"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch fskxo:FSKXO_0000015953 ,
-        wikidata:Q1310886 ,
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015953> ,
+        <http://www.wikidata.org/entity/Q1310886> ,
         <https://data.food.gov.uk/codes/foodtype/id/A00KZ> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/kohlrabi> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Kohlrabi" ;
-    skos:altLabel "turnip cabbage" ;
-    skos:definition "Brassica vegetables classified under the species Brassica oleracea var. gongylodes L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "biennial cultivar of wild cabbage" ;
+    skos:prefLabel "Kohlrabi"@en ;
+    skos:altLabel "turnip cabbage"@en ;
+    skos:definition "Brassica vegetables classified under the species Brassica oleracea var. gongylodes L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "biennial cultivar of wild cabbage"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00GV ,
-        fskxo:FSKXO_0000000495 ;
-    skos:closeMatch wikidata:Q147202 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00GV> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000495> ;
+    skos:closeMatch <http://www.wikidata.org/entity/Q147202> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/lambs-lettuce> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Lambs Lettuce" ;
-    skos:definition "Leaves from vegetables classified under the species Valeriana locusta (L.) Laterrade. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ;
+    skos:prefLabel "Lambs Lettuce"@en ;
+    skos:definition "Leaves from vegetables classified under the species Valeriana locusta (L.) Laterrade. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ;
-    skos:exactMatch foodex2:A00KT ,
-        fskxo:FSKXO_0000000497 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00KT> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000497> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/leafy-green> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Leafy Green" ;
-    skos:definition "Plants classified in different genus, whose leaves are used as food. These are normally used as side dishes or in composite dishes." ,
-        "plant leaves eaten as a vegetable" ;
+    skos:prefLabel "Leafy Green"@en ;
+    skos:definition "Plants classified in different genus, whose leaves are used as food. These are normally used as side dishes or in composite dishes."@en ,
+        "plant leaves eaten as a vegetable"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00KR ,
-        wikidata:Q20134 ;
-    skos:closeMatch fskxo:FSKXO_0000016107 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00KR> ,
+        <http://www.wikidata.org/entity/Q20134> ;
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000016107> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/leek> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Leek" ;
-    skos:definition "Stem vegetables classified under the species Allium ampeloprasum ampeloprasum Leek Group or Allium porrum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "vegetable in the onion family" ;
+    skos:prefLabel "Leek"@en ;
+    skos:definition "Stem vegetables classified under the species Allium ampeloprasum ampeloprasum Leek Group or Allium porrum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "vegetable in the onion family"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00SB ,
-        fskxo:FSKXO_0000000502 ,
-        wikidata:Q1807269 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00SB> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000502> ,
+        <http://www.wikidata.org/entity/Q1807269> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/lentil> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Lentil" ;
-    skos:definition "Raw commodity obtained from organisms of the taxonomic group Lens culinaris Medik. The group includes the immature pods and eventual immature seeds of any type of Lentils, green. The part consumed/analysed is by default unspecified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors." ,
-        "edible seed, grown for food" ;
+    skos:prefLabel "Lentil"@en ;
+    skos:definition "Raw commodity obtained from organisms of the taxonomic group Lens culinaris Medik. The group includes the immature pods and eventual immature seeds of any type of Lentils, green. The part consumed/analysed is by default unspecified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors."@en ,
+        "edible seed, grown for food"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch wikidata:Q61505177 ;
-    skos:narrowMatch foodex2:A00QD .
+    skos:exactMatch <http://www.wikidata.org/entity/Q61505177> ;
+    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A00QD> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/lettuce> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Lettuce" ;
-    skos:definition "Leaves from vegetables classified under the species Lactuca sativa L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "leaf vegetable from Lactuca sativa" ;
+    skos:prefLabel "Lettuce"@en ;
+    skos:definition "Leaves from vegetables classified under the species Lactuca sativa L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "leaf vegetable from Lactuca sativa"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00KX ,
-        fskxo:FSKXO_0000000507 ,
-        wikidata:Q104666136 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00KX> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000507> ,
+        <http://www.wikidata.org/entity/Q104666136> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/linseed> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Linseed" ;
-    skos:altLabel "flaxseed" ;
-    skos:definition "Oilseeds classified under the species Linum usitatissimum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "seed of the flax plant" ;
+    skos:prefLabel "Linseed"@en ;
+    skos:altLabel "flaxseed"@en ;
+    skos:definition "Oilseeds classified under the species Linum usitatissimum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "seed of the flax plant"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A015G ,
-        fskxo:FSKXO_0000000511 ,
-        wikidata:Q911332 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A015G> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000511> ,
+        <http://www.wikidata.org/entity/Q911332> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/lollo-rosso> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Lollo Rosso" ;
-    skos:definition "Leaves obtained from organisms of the taxonomic group Lactuca sativa L. var. crispa L.. The group includes the leaves of any type of Lollo rosso. The part consumed/analysed is by default unspecified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors." ,
-        "species of plant" ;
+    skos:prefLabel "Lollo Rosso"@en ;
+    skos:definition "Leaves obtained from organisms of the taxonomic group Lactuca sativa L. var. crispa L.. The group includes the leaves of any type of Lollo rosso. The part consumed/analysed is by default unspecified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors."@en ,
+        "species of plant"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00LB ;
-    skos:closeMatch wikidata:Q2248133 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00LB> ;
+    skos:closeMatch <http://www.wikidata.org/entity/Q2248133> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/millet> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Millet" ;
-    skos:definition "Cereal grains from the plant classified under the species Panicum miliaceum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "food grain" ;
+    skos:prefLabel "Millet"@en ;
+    skos:definition "Cereal grains from the plant classified under the species Panicum miliaceum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "food grain"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A001B ,
-        fskxo:FSKXO_0000000526 ,
-        wikidata:Q259438 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001B> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000526> ,
+        <http://www.wikidata.org/entity/Q259438> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/mung-bean> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Mung Bean" ;
-    skos:definition "Legume vegetables classified under the species Vigna radiata (L.) Wilczek. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "bean from Vigna radiata" ;
+    skos:prefLabel "Mung Bean"@en ;
+    skos:definition "Legume vegetables classified under the species Vigna radiata (L.) Wilczek. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "bean from Vigna radiata"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch wikidata:Q104664662 ;
-    skos:closeMatch fskxo:FSKXO_0000016420 ;
-    skos:narrowMatch foodex2:A00PR .
+    skos:exactMatch <http://www.wikidata.org/entity/Q104664662> ;
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000016420> ;
+    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A00PR> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/mustard-seed> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Mustard Seed" ;
-    skos:definition "Oilseeds classified under the species Brassica spp or Sinapis spp. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "small round seeds of various mustard plants" ;
+    skos:prefLabel "Mustard Seed"@en ;
+    skos:definition "Oilseeds classified under the species Brassica spp or Sinapis spp. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "small round seeds of various mustard plants"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A015S ,
-        fskxo:FSKXO_0000000532 ,
-        wikidata:Q1937700 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A015S> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000532> ,
+        <http://www.wikidata.org/entity/Q1937700> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/oilseed> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Oilseed" ;
-    skos:definition "The group includes any type of Oilseeds as defined in the pesticide regulation. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "seed that is used for obtaining plant oil" ;
+    skos:prefLabel "Oilseed"@en ;
+    skos:definition "The group includes any type of Oilseeds as defined in the pesticide regulation. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "seed that is used for obtaining plant oil"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A015F ,
-        fskxo:FSKXO_0000000536 ,
-        wikidata:Q297292 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A015F> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000536> ,
+        <http://www.wikidata.org/entity/Q297292> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/okra> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Okra" ;
-    skos:definition "Fruit of the plant classified under the species Abelmoschus esculentus (L.) Moensch. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "vegetable, use Q80531 for the species" ;
+    skos:prefLabel "Okra"@en ;
+    skos:definition "Fruit of the plant classified under the species Abelmoschus esculentus (L.) Moensch. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "vegetable, use Q80531 for the species"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00JF ,
-        fskxo:FSKXO_0000000538 ,
-        wikidata:Q12047207 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00JF> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000538> ,
+        <http://www.wikidata.org/entity/Q12047207> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/olive> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Olive" ;
-    skos:definition "Fruits from the plant classified under the species Olea europaea L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit of the olive tree" ;
+    skos:prefLabel "Olive"@en ;
+    skos:definition "Fruits from the plant classified under the species Olea europaea L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit of the olive tree"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01BP ,
-        wikidata:Q1621080 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01BP> ,
+        <http://www.wikidata.org/entity/Q1621080> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/onion> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Onion" ;
-    skos:definition "Bulb vegetables classified under the species Allium cepa L. Common Onion Group . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "culinary ingredient, type of vegetable" ;
+    skos:prefLabel "Onion"@en ;
+    skos:definition "Bulb vegetables classified under the species Allium cepa L. Common Onion Group . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "culinary ingredient, type of vegetable"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00HC ,
-        fskxo:FSKXO_0000000540 ,
-        wikidata:Q3406628 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00HC> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000540> ,
+        <http://www.wikidata.org/entity/Q3406628> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/parsley> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Parsley" ;
-    skos:definition "Vegetative plant part usually grouped as herbs classified under the species Petroselinum crispum (P.Mill.) Nyman ex A.W. Hill. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "green leafy herb; for the taxon use Q25284" ;
+    skos:prefLabel "Parsley"@en ;
+    skos:definition "Vegetative plant part usually grouped as herbs classified under the species Petroselinum crispum (P.Mill.) Nyman ex A.W. Hill. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "green leafy herb; for the taxon use Q25284"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00YE ,
-        fskxo:FSKXO_0000000597 ,
-        wikidata:Q65522500 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00YE> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000597> ,
+        <http://www.wikidata.org/entity/Q65522500> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/parsnip> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Parsnip" ;
-    skos:definition "Root and tuber vegetables classified under the species Pastinaca sativa L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "root vegetable" ;
+    skos:prefLabel "Parsnip"@en ;
+    skos:definition "Root and tuber vegetables classified under the species Pastinaca sativa L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "root vegetable"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00QR ,
-        fskxo:FSKXO_0000000599 ,
-        wikidata:Q104413481 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00QR> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000599> ,
+        <http://www.wikidata.org/entity/Q104413481> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/pea> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Pea" ;
-    skos:definition "Legumes classified under the species Pisum sativum L. (any subspp. and var.). The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation. " ,
-        "species of plant" ;
+    skos:prefLabel "Pea"@en ;
+    skos:definition "Legumes classified under the species Pisum sativum L. (any subspp. and var.). The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation. "@en ,
+        "species of plant"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch fskxo:FSKXO_0000000606 ;
-    skos:closeMatch wikidata:Q25237 ;
-    skos:narrowMatch foodex2:A012J .
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000606> ;
+    skos:closeMatch <http://www.wikidata.org/entity/Q25237> ;
+    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A012J> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/persimmon> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Persimmon" ;
-    skos:definition "Fruits from the plant classified under the species Diospyros kaki Thunb. or Diospyros chinensis Blume. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "edible fruit of a number of species of trees in the genus Diospyros" ;
+    skos:prefLabel "Persimmon"@en ;
+    skos:definition "Fruits from the plant classified under the species Diospyros kaki Thunb. or Diospyros chinensis Blume. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "edible fruit of a number of species of trees in the genus Diospyros"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A01HQ ,
-        fskxo:FSKXO_0000000610 ,
-        wikidata:Q29526 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01HQ> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000610> ,
+        <http://www.wikidata.org/entity/Q29526> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/potato> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Potato" ;
-    skos:definition "Root and tuber vegetables classified under the species Solanum tuberosum L. subsp. tuberosum. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "staple food" ;
+    skos:prefLabel "Potato"@en ;
+    skos:definition "Root and tuber vegetables classified under the species Solanum tuberosum L. subsp. tuberosum. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "staple food"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00ZT ,
-        fskxo:FSKXO_0000000618 ,
-        wikidata:Q16587531 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00ZT> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000618> ,
+        <http://www.wikidata.org/entity/Q16587531> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/pumpkin> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Pumpkin" ;
-    skos:definition "Fruiting vegetables classified under the species Cucurbita maxima Duchesne. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "orange (yellow, green) winter squash native to North America" ;
+    skos:prefLabel "Pumpkin"@en ;
+    skos:definition "Fruiting vegetables classified under the species Cucurbita maxima Duchesne. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "orange (yellow, green) winter squash native to North America"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00KH ,
-        fskxo:FSKXO_0000000630 ,
-        wikidata:Q165308 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00KH> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000630> ,
+        <http://www.wikidata.org/entity/Q165308> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/purslane> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Purslane" ;
-    skos:definition "Leaves from vegetables classified under the species Portulaca oleracea L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "herb from Portulaca oleracea" ;
+    skos:prefLabel "Purslane"@en ;
+    skos:definition "Leaves from vegetables classified under the species Portulaca oleracea L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "herb from Portulaca oleracea"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00MP ,
-        fskxo:FSKXO_0000000631 ,
-        wikidata:Q103996185 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00MP> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000631> ,
+        <http://www.wikidata.org/entity/Q103996185> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/radicchio> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Radicchio" ;
-    skos:definition "Leaves from vegetables classified under the species Cichorium intybus L. var. foliosum Hegi. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "variety of chicory (Cichorium intybus), a leaf vegetable" ;
+    skos:prefLabel "Radicchio"@en ;
+    skos:definition "Leaves from vegetables classified under the species Cichorium intybus L. var. foliosum Hegi. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "variety of chicory (Cichorium intybus), a leaf vegetable"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00LG ,
-        wikidata:Q767765 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00LG> ,
+        <http://www.wikidata.org/entity/Q767765> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/radish> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Radish" ;
-    skos:definition "Root and tuber vegetables classified under the species Raphanus sativus L. Radish Group. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "root of Raphanus sativus used as a vegetable" ;
+    skos:prefLabel "Radish"@en ;
+    skos:definition "Root and tuber vegetables classified under the species Raphanus sativus L. Radish Group. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "root of Raphanus sativus used as a vegetable"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00QV ,
-        fskxo:FSKXO_0000000633 ,
-        wikidata:Q33669098 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00QV> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000633> ,
+        <http://www.wikidata.org/entity/Q33669098> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/rapeseed> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Rapeseed" ;
-    skos:definition "Oilseeds classified under the species Brassica napus subsp. napus L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "seed of Brassica napus" ;
+    skos:prefLabel "Rapeseed"@en ;
+    skos:definition "Oilseeds classified under the species Brassica napus subsp. napus L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "seed of Brassica napus"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A015M ,
-        fskxo:FSKXO_0000000634 ,
-        wikidata:Q110022244 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A015M> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000634> ,
+        <http://www.wikidata.org/entity/Q110022244> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/rhubarb> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Rhubarb" ;
-    skos:definition "Stem vegetables classified under the species Rheum rhabarbarum L. or Rheum x hybridum Murray. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "herbaceous perennial plant in the family Polygonaceae" ;
+    skos:prefLabel "Rhubarb"@en ;
+    skos:definition "Stem vegetables classified under the species Rheum rhabarbarum L. or Rheum x hybridum Murray. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "herbaceous perennial plant in the family Polygonaceae"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00SD ,
-        fskxo:FSKXO_0000000637 ;
-    skos:closeMatch wikidata:Q20767168 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00SD> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000637> ;
+    skos:closeMatch <http://www.wikidata.org/entity/Q20767168> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/romaine-lettuce> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Romaine Lettuce" ;
-    skos:definition "Leaves from vegetables classified under the species Lactuca sativa L. Cos group  . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "variety of lettuce" ;
+    skos:prefLabel "Romaine Lettuce"@en ;
+    skos:definition "Leaves from vegetables classified under the species Lactuca sativa L. Cos group  . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "variety of lettuce"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00LC ,
-        wikidata:Q1762893 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00LC> ,
+        <http://www.wikidata.org/entity/Q1762893> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/rucola> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Rucola" ;
-    skos:altLabel "arugula" ;
-    skos:definition "Live plant organism of the taxonomical group Eruca vesicaria (L.) Cav./Eruca sativa Mill. The group is relevant for the list of Botanicals. The plant is a member of the family Apiaceae" ,
-        "vegetable" ;
+    skos:prefLabel "Rucola"@en ;
+    skos:altLabel "arugula"@en ;
+    skos:definition "Live plant organism of the taxonomical group Eruca vesicaria (L.) Cav./Eruca sativa Mill. The group is relevant for the list of Botanicals. The plant is a member of the family Apiaceae"@en ,
+        "vegetable"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch fskxo:FSKXO_0000000639 ,
-        wikidata:Q2171841 ;
-    skos:closeMatch foodex2:A05ET .
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000639> ,
+        <http://www.wikidata.org/entity/Q2171841> ;
+    skos:closeMatch <http://data.food.gov.uk/codes/foodtype/id/A05ET> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/rutabaga> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Rutabaga" ;
-    skos:altLabel "swede" ;
-    skos:definition "Root and tuber vegetables classified under the species Brassica napus subsp. napobrassica Rchb. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "root vegetable from Brassica napus subsp. rapifera" ;
+    skos:prefLabel "Rutabaga"@en ;
+    skos:altLabel "swede"@en ;
+    skos:definition "Root and tuber vegetables classified under the species Brassica napus subsp. napobrassica Rchb. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "root vegetable from Brassica napus subsp. rapifera"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00RD ,
-        wikidata:Q104733765 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00RD> ,
+        <http://www.wikidata.org/entity/Q104733765> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/savoy-cabbage> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Savoy Cabbage" ;
-    skos:altLabel "wirsing" ;
-    skos:definition "Leaves from Brassica vegetables classified under the species Brassica oleracea L. var. sabauda L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "vegetable" ;
+    skos:prefLabel "Savoy Cabbage"@en ;
+    skos:altLabel "wirsing"@en ;
+    skos:definition "Leaves from Brassica vegetables classified under the species Brassica oleracea L. var. sabauda L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "vegetable"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00GB ,
-        wikidata:Q104188999 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00GB> ,
+        <http://www.wikidata.org/entity/Q104188999> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/shallot> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Shallot" ;
-    skos:definition "Bulb vegetables classified under the species Allium cepa Aggregatum Group or Allium ascalonicum . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "edible bulb of the shallot plant (Allium cepa var. aggregatum); for the plant use Q193498" ;
+    skos:prefLabel "Shallot"@en ;
+    skos:definition "Bulb vegetables classified under the species Allium cepa Aggregatum Group or Allium ascalonicum . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "edible bulb of the shallot plant (Allium cepa var. aggregatum); for the plant use Q193498"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00HF ,
-        fskxo:FSKXO_0000000653 ,
-        wikidata:Q67206407 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00HF> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000653> ,
+        <http://www.wikidata.org/entity/Q67206407> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/soybean> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Soybean" ;
-    skos:altLabel "soy" ,
-        "soya bean" ;
-    skos:definition "Legumes classified under the species Glycine max (L.) Merr. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "important food or feed" ;
+    skos:prefLabel "Soybean"@en ;
+    skos:altLabel "soy"@en ,
+        "soya bean"@en ;
+    skos:definition "Legumes classified under the species Glycine max (L.) Merr. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "important food or feed"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch fskxo:FSKXO_0000000665 ,
-        wikidata:Q61503220 ;
-    skos:narrowMatch foodex2:A012F .
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000665> ,
+        <http://www.wikidata.org/entity/Q61503220> ;
+    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A012F> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/spinach> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Spinach" ;
-    skos:definition "Leaves from vegetables classified under the species Spinacia oleracea L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "vegetable" ;
+    skos:prefLabel "Spinach"@en ;
+    skos:definition "Leaves from vegetables classified under the species Spinacia oleracea L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "vegetable"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00MJ ,
-        fskxo:FSKXO_0000000674 ,
-        wikidata:Q36814998 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00MJ> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000674> ,
+        <http://www.wikidata.org/entity/Q36814998> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/sugar-beet> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Sugar Beet" ;
-    skos:definition "Sugar containing part of the plant classified under the species Beta vulgaris L. ssp. vulgaris var. altissima [Doell]. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "root of Beta vulgaris Altissima Group" ;
+    skos:prefLabel "Sugar Beet"@en ;
+    skos:definition "Sugar containing part of the plant classified under the species Beta vulgaris L. ssp. vulgaris var. altissima [Doell]. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "root of Beta vulgaris Altissima Group"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A010T ,
-        fskxo:FSKXO_0000000682 ,
-        wikidata:Q103813367 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A010T> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000682> ,
+        <http://www.wikidata.org/entity/Q103813367> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/sunflower> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Sunflower" ;
-    skos:definition "Oilseeds classified under the species Helianthus annuus L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit of the sunflower (Helianthus annuus)" ;
+    skos:prefLabel "Sunflower"@en ;
+    skos:definition "Oilseeds classified under the species Helianthus annuus L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit of the sunflower (Helianthus annuus)"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A015L ,
-        fskxo:FSKXO_0000000685 ,
-        wikidata:Q1076906 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A015L> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000685> ,
+        <http://www.wikidata.org/entity/Q1076906> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/sweet-potato> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Sweet Potato" ;
-    skos:definition "Root and tuber vegetables classified under the species Ipomoea batatas (L.) Lam. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "tuber from Ipomoea batatas" ;
+    skos:prefLabel "Sweet Potato"@en ;
+    skos:definition "Root and tuber vegetables classified under the species Ipomoea batatas (L.) Lam. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "tuber from Ipomoea batatas"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A010C ,
-        fskxo:FSKXO_0000000688 ,
-        wikidata:Q12762973 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A010C> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000688> ,
+        <http://www.wikidata.org/entity/Q12762973> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/swiss-chard> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Swiss Chard" ;
-    skos:altLabel "chard" ;
-    skos:definition "Leaves from vegetables classified under the species Beta vulgaris var. cycla L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ;
+    skos:prefLabel "Swiss Chard"@en ;
+    skos:altLabel "chard"@en ;
+    skos:definition "Leaves from vegetables classified under the species Beta vulgaris var. cycla L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A0DJR ;
-    skos:closeMatch wikidata:Q99730767 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A0DJR> ;
+    skos:closeMatch <http://www.wikidata.org/entity/Q99730767> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/tarragon> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Tarragon" ;
-    skos:altLabel "estragon" ;
-    skos:definition "Vegetative plant part usually grouped as herbs classified under the species Artemisia dracunculus L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "perennial herb with an aniseed scent" ;
+    skos:prefLabel "Tarragon"@en ;
+    skos:altLabel "estragon"@en ;
+    skos:definition "Vegetative plant part usually grouped as herbs classified under the species Artemisia dracunculus L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "perennial herb with an aniseed scent"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00YP ,
-        fskxo:FSKXO_0000000700 ,
-        wikidata:Q155814 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00YP> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000700> ,
+        <http://www.wikidata.org/entity/Q155814> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/tomato> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Tomato" ;
-    skos:definition "Fruiting vegetables classified under the species Lycopersicon esculentum Mill. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "fruit, used as a vegetable" ;
+    skos:prefLabel "Tomato"@en ;
+    skos:definition "Fruiting vegetables classified under the species Lycopersicon esculentum Mill. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit, used as a vegetable"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A0DMX ,
-        fskxo:FSKXO_0000000704 ,
-        wikidata:Q20638126 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A0DMX> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000704> ,
+        <http://www.wikidata.org/entity/Q20638126> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/turnip> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Turnip" ;
-    skos:definition "Root and tuber vegetables classified under the species Brassica rapa subsp. rapa L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "root vegetable" ;
+    skos:prefLabel "Turnip"@en ;
+    skos:definition "Root and tuber vegetables classified under the species Brassica rapa subsp. rapa L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "root vegetable"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00RE ,
-        fskxo:FSKXO_0000000708 ,
-        wikidata:Q3916957 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00RE> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000708> ,
+        <http://www.wikidata.org/entity/Q3916957> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/vegetable> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Vegetable" ;
-    skos:altLabel "greens" ,
-        "veggie" ;
-    skos:definition "The category covers all raw vegetables and their derivatives, with the exclusion of starchy roots/tubers, legumes (as seeds), nuts, oilseeds and spices. Fruit, though of vegetable origin, is not considered as vegetable. Same for Cocoa, coffee, tea and vegetable. materials for infusions." ,
-        "edible plant or part of a plant, involved in cooking" ;
+    skos:prefLabel "Vegetable"@en ;
+    skos:altLabel "greens"@en ,
+        "veggie"@en ;
+    skos:definition "The category covers all raw vegetables and their derivatives, with the exclusion of starchy roots/tubers, legumes (as seeds), nuts, oilseeds and spices. Fruit, though of vegetable origin, is not considered as vegetable. Same for Cocoa, coffee, tea and vegetable. materials for infusions."@en ,
+        "edible plant or part of a plant, involved in cooking"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A04JC ,
-        wikidata:Q11004 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A04JC> ,
+        <http://www.wikidata.org/entity/Q11004> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/watercress> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Watercress" ;
-    skos:definition "Leaves from vegetables classified under the species Nasturtium officinale W.T. Aiton. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ,
-        "edible leafy portion of Nasturtium officinale" ;
+    skos:prefLabel "Watercress"@en ;
+    skos:definition "Leaves from vegetables classified under the species Nasturtium officinale W.T. Aiton. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "edible leafy portion of Nasturtium officinale"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00ND ,
-        fskxo:FSKXO_0000000715 ,
-        wikidata:Q104223904 .
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00ND> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000715> ,
+        <http://www.wikidata.org/entity/Q104223904> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/zucchini> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Zucchini" ;
-    skos:definition "Edible summer squash, typically green in colour, vegetable" ,
-        "Fruiting vegetables classified under the species Cucurbita pepo L. Zucchini Group . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation." ;
+    skos:prefLabel "Zucchini"@en ;
+    skos:definition "Edible summer squash, typically green in colour, vegetable"@en ,
+        "Fruiting vegetables classified under the species Cucurbita pepo L. Zucchini Group . The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
-    skos:exactMatch foodex2:A00JR ,
-        wikidata:Q7533 ;
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00JR> ,
+        <http://www.wikidata.org/entity/Q7533> ;
     skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015393> .
