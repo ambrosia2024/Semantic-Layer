@@ -1,38 +1,32 @@
+@prefix amb: <https://w3id.org/ambrosia/ontology#> .
 @prefix ambplant: <https://w3id.org/ambrosia/plant-vocab#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://w3id.org/ambrosia/plant-vocab>
+    dct:hasVersion "1.1.0" ;
+    dct:issued "2026-01-01"^^xsd:date ;
+    dct:modified "2026-04-14"^^xsd:date ;
+    dct:creator <https://orcid.org/0000-0003-4691-0483> ;
+    dct:contributor <https://orcid.org/0000-0003-4691-0483> ;
+    dct:title "cereal Vocabulary"@en ;
+    dct:description "A controlled vocabulary of cereal concepts from the Ambrosia project."@en .
 
 <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> a skos:ConceptScheme ;
-    dct:hasVersion "1.0.1" ;
-    dct:issued "2026-01-01" ;
-    dct:modified "2026-03-17" ;
-    dct:creator <https://orcid.org/0000-0003-4691-0483> ;
-    dct:title "Cereal Vocabulary"@en ;
-    dct:description "A controlled vocabulary of Cereal concepts from the Ambrosia project."@en .
+    skos:hasTopConcept <https://w3id.org/ambrosia/plant-vocab#concept/cereal/cereal> .
 
 <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> a skos:ConceptScheme ;
-    dct:hasVersion "1.0.1" ;
-    dct:issued "2026-01-01" ;
-    dct:modified "2026-03-17" ;
-    dct:creator <https://orcid.org/0000-0003-4691-0483> ;
-    dct:title "Fruit Vocabulary"@en ;
-    dct:description "A controlled vocabulary of Fruit concepts from the Ambrosia project."@en .
+    skos:hasTopConcept <https://w3id.org/ambrosia/plant-vocab#concept/fruit/fruit> .
 
-<https://w3id.org/ambrosia/plant-vocab#scheme/nut> a skos:ConceptScheme ;
-    dct:hasVersion "1.0.1" ;
-    dct:issued "2026-01-01" ;
-    dct:modified "2026-03-17" ;
-    dct:creator <https://orcid.org/0000-0003-4691-0483> ;
-    dct:title "Nut Vocabulary"@en ;
-    dct:description "A controlled vocabulary of Nut concepts from the Ambrosia project."@en .
+<https://w3id.org/ambrosia/plant-vocab#scheme/nuts> a skos:ConceptScheme ;
+    skos:hasTopConcept <https://w3id.org/ambrosia/plant-vocab#concept/nuts/nuts> .
+
+<https://w3id.org/ambrosia/plant-vocab#scheme/seed-crops> a skos:ConceptScheme ;
+    skos:hasTopConcept <https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/seed-crops> .
 
 <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> a skos:ConceptScheme ;
-    dct:hasVersion "1.0.1" ;
-    dct:issued "2026-01-01" ;
-    dct:modified "2026-03-17" ;
-    dct:creator <https://orcid.org/0000-0003-4691-0483> ;
-    dct:title "Vegetable Vocabulary"@en ;
-    dct:description "A controlled vocabulary of Vegetable concepts from the Ambrosia project."@en .
+    skos:hasTopConcept <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/vegetable> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/barley> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
@@ -42,9 +36,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A000P> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000353> ,
-        <http://www.wikidata.org/entity/Q61665121> .
+        <http://www.wikidata.org/entity/Q61665121> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/cereal/cereal> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/buckwheat> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
@@ -54,9 +50,27 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A000N> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000379> ,
-        <http://www.wikidata.org/entity/Q4536337> .
+        <http://www.wikidata.org/entity/Q4536337> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/cereal/cereal> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/cereal/cereal> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
+    skos:prefLabel "Cereal"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/cereal/barley> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/cereal/buckwheat> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/cereal/maize> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/cereal/millet> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/cereal/oats> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/cereal/rice> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/cereal/rye> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/cereal/sorghum> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/cereal/triticale> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/cereal/wheat> ;
+    skos:topConceptOf <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/durum-wheat> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
@@ -68,9 +82,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001P> ,
         <http://www.wikidata.org/entity/Q102330562> ;
-    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017374> .
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017374> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/cereal/wheat> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/einkorn-wheat> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
@@ -81,9 +97,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001S> ,
         <http://www.wikidata.org/entity/Q134124685> ;
-    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015555> .
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015555> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/cereal/wheat> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/emmer-wheat> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
@@ -94,9 +112,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001Q> ;
     skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015558> ,
-        <https://www.wikidata.org/wiki/Q167339> .
+        <https://www.wikidata.org/wiki/Q167339> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/cereal/wheat> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/maize> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
@@ -108,9 +128,25 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A000T> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000518> ,
-        <http://www.wikidata.org/entity/Q25618328> .
+        <http://www.wikidata.org/entity/Q25618328> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/cereal/cereal> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/cereal/millet> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
+    skos:prefLabel "Millet"@en ;
+    skos:definition "Cereal grains from the plant classified under the species Panicum miliaceum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "food grain"@en ;
+    dct:source "FOODEX2" ,
+        "FSKXO" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001B> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000526> ,
+        <http://www.wikidata.org/entity/Q259438> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/cereal/cereal> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/oats> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
@@ -120,9 +156,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A000G> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000534> ,
-        <http://www.wikidata.org/entity/Q24265484> .
+        <http://www.wikidata.org/entity/Q24265484> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/cereal/cereal> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/rice> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
@@ -132,9 +170,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001D> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000638> ,
-        <http://www.wikidata.org/entity/Q5090> .
+        <http://www.wikidata.org/entity/Q5090> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/cereal/cereal> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/rye> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
@@ -144,9 +184,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001K> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000645> ;
-    skos:closeMatch <http://www.wikidata.org/entity/Q12099> .
+    skos:closeMatch <http://www.wikidata.org/entity/Q12099> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/cereal/cereal> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/soft-wheat> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
@@ -157,9 +199,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001N> ;
     skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017391> ,
-        <http://www.wikidata.org/entity/Q161098> .
+        <http://www.wikidata.org/entity/Q161098> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/cereal/wheat> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/sorghum> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
@@ -169,9 +213,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001L> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000663> ,
-        <http://www.wikidata.org/entity/Q105549747> .
+        <http://www.wikidata.org/entity/Q105549747> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/cereal/cereal> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/spelt> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
@@ -182,9 +228,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001R> ;
     skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017115> ,
-        <http://www.wikidata.org/entity/Q158767> .
+        <http://www.wikidata.org/entity/Q158767> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/cereal/wheat> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/cereal/triticale> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
@@ -194,9 +242,22 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001V> ;
     skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017260> ,
-        <http://www.wikidata.org/entity/Q380329> .
+        <http://www.wikidata.org/entity/Q380329> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/cereal/cereal> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/cereal/wheat> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/cereal> ;
+    skos:prefLabel "Wheat"@en ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/cereal/cereal> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/cereal/durum-wheat> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/cereal/einkorn-wheat> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/cereal/emmer-wheat> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/cereal/soft-wheat> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/cereal/spelt> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/apple> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -206,9 +267,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01DJ> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000343> ,
-        <http://www.wikidata.org/entity/Q89> .
+        <http://www.wikidata.org/entity/Q89> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/pome-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/apricot> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -218,9 +281,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01GF> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000344> ,
-        <http://www.wikidata.org/entity/Q3733836> .
+        <http://www.wikidata.org/entity/Q3733836> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/stone-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/aronia> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -230,8 +295,24 @@
         "fruit"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A0DTQ> ,
-        <http://www.wikidata.org/entity/Q57543544> .
+        <http://www.wikidata.org/entity/Q57543544> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/berry-and-small-fruits> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/fruit/avocado> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
+    skos:prefLabel "Avocado"@en ;
+    skos:definition "Fruits from the plant classified under the species Persea americana Mill. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit, use Q37153 for the species"@en ;
+    dct:source "FOODEX2" ,
+        "FSKXO" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01LB> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000348> ,
+        <http://www.wikidata.org/entity/Q961769> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/tropical-and-subtropical-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/banana> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -241,9 +322,28 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000352> ,
         <http://www.wikidata.org/entity/Q503> ,
-        <https://data.food.gov.uk/codes/foodtype/id/A01LC> .
+        <https://data.food.gov.uk/codes/foodtype/id/A01LC> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/tropical-and-subtropical-fruits> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/fruit/berry-and-small-fruits> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
+    skos:prefLabel "Berry and Small Fruits"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/fruit> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/fruit/aronia> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/blackberry> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/blueberry> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/cranberry> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/currants> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/elderberry> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/gooseberry> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/mulberry> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/raspberry> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/sea-buckthorn> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/strawberry> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/black-currant> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -255,9 +355,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01FN> ,
         <http://www.wikidata.org/entity/Q2941309> ;
-    skos:broadMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000423> .
+    skos:broadMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000423> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/currants> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/blackberry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -267,8 +369,10 @@
         "fruit of Rubus subg. Rubus"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01EE> ,
-        <http://www.wikidata.org/entity/Q19842373> .
+        <http://www.wikidata.org/entity/Q19842373> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/berry-and-small-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/blueberry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -277,8 +381,19 @@
         "fruit from Vaccinium corymbosum"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01EY> ;
-    skos:closeMatch <http://www.wikidata.org/entity/Q103813303> .
+    skos:closeMatch <http://www.wikidata.org/entity/Q103813303> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/berry-and-small-fruits> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/fruit/cherries> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
+    skos:prefLabel "Cherries"@en ;
+    skos:altLabel "Cherry"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/stone-fruits> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/fruit/cherry-sour> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/cherry-sweet> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/cherry-sour> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -289,9 +404,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01GH> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017083> ,
-        <http://www.wikidata.org/entity/Q68438267> .
+        <http://www.wikidata.org/entity/Q68438267> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/cherries> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/cherry-sweet> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -302,9 +419,22 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01GK> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017202> ;
-    skos:closeMatch <http://www.wikidata.org/entity/Q165137> .
+    skos:closeMatch <http://www.wikidata.org/entity/Q165137> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/cherries> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/fruit/citrus-fruits> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
+    skos:prefLabel "Citrus Fruits"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/fruit> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/fruit/grapefruit> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/lemon> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/lime> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/mandarin> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/orange> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/cornelian-cherry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -313,8 +443,10 @@
         "fruit from Cornus mas"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A0DVP> ,
-        <http://www.wikidata.org/entity/Q104245577> .
+        <http://www.wikidata.org/entity/Q104245577> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/other-tree-shrub-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/cranberry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -324,9 +456,20 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01FH> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015402> ,
-        <http://www.wikidata.org/entity/Q21546387> .
+        <http://www.wikidata.org/entity/Q21546387> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/berry-and-small-fruits> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/fruit/currants> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
+    skos:prefLabel "Currants"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/berry-and-small-fruits> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/fruit/black-currant> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/red-currant> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/white-currant> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/elderberry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -335,8 +478,10 @@
         "fruit of elder (Sambucus nigra L.)"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01FX> ,
-        <http://www.wikidata.org/entity/Q96333359> .
+        <http://www.wikidata.org/entity/Q96333359> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/berry-and-small-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/fig> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -346,9 +491,25 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01HG> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000442> ,
-        <http://www.wikidata.org/entity/Q2746643> .
+        <http://www.wikidata.org/entity/Q2746643> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/tropical-and-subtropical-fruits> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/fruit/fruit> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
+    skos:prefLabel "Fruit"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/fruit/berry-and-small-fruits> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/citrus-fruits> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/melons> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/other-tree-shrub-fruits> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/pome-fruits> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/stone-fruits> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/tropical-and-subtropical-fruits> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/vine-and-climbing-fruits> ;
+    skos:topConceptOf <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/gooseberry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -357,8 +518,10 @@
         "fruit"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A0CFN> ,
-        <http://www.wikidata.org/entity/Q17638951> .
+        <http://www.wikidata.org/entity/Q17638951> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/berry-and-small-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/grape> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -367,8 +530,10 @@
         "edible berry of a flowering plant in the family Vitaceae"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01DX> ,
-        <http://www.wikidata.org/entity/Q10978> .
+        <http://www.wikidata.org/entity/Q10978> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/vine-and-climbing-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/grapefruit> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -378,9 +543,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01CY> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000464> ,
-        <http://www.wikidata.org/entity/Q21552830> .
+        <http://www.wikidata.org/entity/Q21552830> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/citrus-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/kiwi> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -390,9 +557,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01JT> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000494> ,
-        <http://www.wikidata.org/entity/Q13194> .
+        <http://www.wikidata.org/entity/Q13194> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/vine-and-climbing-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/lemon> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -402,9 +571,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01BY> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000504> ,
-        <http://www.wikidata.org/entity/Q1093742> .
+        <http://www.wikidata.org/entity/Q1093742> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/citrus-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/lime> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -414,9 +585,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01CA> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000510> ,
-        <http://www.wikidata.org/entity/Q13195> .
+        <http://www.wikidata.org/entity/Q13195> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/citrus-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/loquat> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -426,9 +599,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01DL> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000513> ,
-        <http://www.wikidata.org/entity/Q3346786> .
+        <http://www.wikidata.org/entity/Q3346786> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/pome-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/mandarin> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -438,9 +613,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01CD> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000519> ,
-        <http://www.wikidata.org/entity/Q190024> .
+        <http://www.wikidata.org/entity/Q190024> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/citrus-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/melon> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -450,9 +627,19 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00KF> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000524> ,
-        <http://www.wikidata.org/entity/Q5881191> .
+        <http://www.wikidata.org/entity/Q5881191> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/melons> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/fruit/melons> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
+    skos:prefLabel "Melons"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/fruit> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/fruit/melon> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/watermelon> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/mulberry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -461,8 +648,10 @@
         "fruit of the mulberry"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01FS> ,
-        <http://www.wikidata.org/entity/Q11113119> .
+        <http://www.wikidata.org/entity/Q11113119> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/berry-and-small-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/nectarine> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -471,8 +660,22 @@
         "a peach of a variety with smooth, thin, brightly colored skin and rich firm flesh"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01GN> ,
-        <http://www.wikidata.org/entity/Q841156> .
+        <http://www.wikidata.org/entity/Q841156> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/stone-fruits> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/fruit/olive> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
+    skos:prefLabel "Olive"@en ;
+    skos:definition "Fruits from the plant classified under the species Olea europaea L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit of the olive tree"@en ;
+    dct:source "FOODEX2" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01BP> ,
+        <http://www.wikidata.org/entity/Q1621080> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/tropical-and-subtropical-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/orange> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -482,9 +685,18 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A0DZB> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000541> ,
-        <http://www.wikidata.org/entity/Q13191> .
+        <http://www.wikidata.org/entity/Q13191> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/citrus-fruits> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/fruit/other-tree-shrub-fruits> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
+    skos:prefLabel "Other Tree/Shrub Fruits"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/fruit> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/fruit/cornelian-cherry> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/peach> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -494,9 +706,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01GM> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000601> ,
-        <http://www.wikidata.org/entity/Q13202263> .
+        <http://www.wikidata.org/entity/Q13202263> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/stone-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/pear> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -506,9 +720,25 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01DP> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000603> ,
-        <http://www.wikidata.org/entity/Q13099586> .
+        <http://www.wikidata.org/entity/Q13099586> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/pome-fruits> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/fruit/persimmon> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
+    skos:prefLabel "Persimmon"@en ;
+    skos:definition "Fruits from the plant classified under the species Diospyros kaki Thunb. or Diospyros chinensis Blume. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "edible fruit of a number of species of trees in the genus Diospyros"@en ;
+    dct:source "FOODEX2" ,
+        "FSKXO" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01HQ> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000610> ,
+        <http://www.wikidata.org/entity/Q29526> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/tropical-and-subtropical-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/plum> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -518,9 +748,22 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01GQ> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000614> ,
-        <http://www.wikidata.org/entity/Q12372598> .
+        <http://www.wikidata.org/entity/Q12372598> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/stone-fruits> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/fruit/pome-fruits> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
+    skos:prefLabel "Pome Fruits"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/fruit> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/fruit/apple> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/loquat> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/pear> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/quince> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/serviceberry> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/pomegranate> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -531,9 +774,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01LH> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000616> ,
-        <http://www.wikidata.org/entity/Q13222088> .
+        <http://www.wikidata.org/entity/Q13222088> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/tropical-and-subtropical-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/quince> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -543,9 +788,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01DR> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000632> ,
-        <http://www.wikidata.org/entity/Q2751465> .
+        <http://www.wikidata.org/entity/Q2751465> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/pome-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/raspberry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -554,8 +801,10 @@
         "edible fruit"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01EP> ,
-        <http://www.wikidata.org/entity/Q13179> .
+        <http://www.wikidata.org/entity/Q13179> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/berry-and-small-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/red-currant> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -565,9 +814,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://www.wikidata.org/entity/Q14714085> ,
         <https://data.food.gov.uk/codes/foodtype/id/_A01FP> ;
-    skos:broadMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000423> .
+    skos:broadMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000423> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/currants> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/sea-buckthorn> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -577,9 +828,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01FZ> ,
         <http://www.wikidata.org/entity/Q104187337> ;
-    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017000> .
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017000> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/berry-and-small-fruits> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/serviceberry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -589,8 +842,21 @@
         "fruit of Amelanchier arborea"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A0CFY> ,
-        <http://www.wikidata.org/entity/Q104055703> .
+        <http://www.wikidata.org/entity/Q104055703> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/pome-fruits> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/fruit/stone-fruits> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
+    skos:prefLabel "Stone Fruits"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/fruit> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/fruit/apricot> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/cherries> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/nectarine> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/peach> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/plum> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/strawberry> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -599,8 +865,30 @@
         "fruit"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01EA> ,
-        <http://www.wikidata.org/entity/Q14458220> .
+        <http://www.wikidata.org/entity/Q14458220> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/berry-and-small-fruits> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/fruit/tropical-and-subtropical-fruits> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
+    skos:prefLabel "Tropical and Subtropical Fruits"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/fruit> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/fruit/avocado> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/banana> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/fig> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/olive> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/persimmon> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/pomegranate> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/fruit/vine-and-climbing-fruits> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
+    skos:prefLabel "Vine and Climbing Fruits"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/fruit> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/fruit/grape> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/fruit/kiwi> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/watermelon> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -610,9 +898,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00KJ> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000716> ,
-        <http://www.wikidata.org/entity/Q38645> .
+        <http://www.wikidata.org/entity/Q38645> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/melons> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/fruit/white-currant> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/fruit> ;
@@ -622,81 +912,238 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://www.wikidata.org/entity/Q104818518> ;
     skos:broadMatch <http://data.food.gov.uk/codes/foodtype/id/A01FM> ,
-        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000423> .
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000423> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/fruit/currants> .
 
-<https://w3id.org/ambrosia/plant-vocab#concept/nut/almond> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/nut> ;
+<https://w3id.org/ambrosia/plant-vocab#concept/nuts/almond> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/nuts> ;
     skos:prefLabel "Almond"@en ;
     skos:definition "Tree nuts from the plant classified under the species Amygdalus communis L. or Prunus dulcis L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
         "edible seed of the almond tree"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A014D> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000338> ,
-        <http://www.wikidata.org/entity/Q184357> .
+        <http://www.wikidata.org/entity/Q184357> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/nuts/nuts> .
 
-<https://w3id.org/ambrosia/plant-vocab#concept/nut/chestnut> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/nut> ;
+<https://w3id.org/ambrosia/plant-vocab#concept/nuts/chestnut> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/nuts> ;
     skos:prefLabel "Chestnut"@en ;
     skos:definition "Tree nuts from the plant classified under the species Castanea spp. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
         "nut, culinary"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A014J> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000402> ,
-        <http://www.wikidata.org/entity/Q773987> .
+        <http://www.wikidata.org/entity/Q773987> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/nuts/nuts> .
 
-<https://w3id.org/ambrosia/plant-vocab#concept/nut/hazelnut> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/nut> ;
+<https://w3id.org/ambrosia/plant-vocab#concept/nuts/hazelnut> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/nuts> ;
     skos:prefLabel "Hazelnut"@en ;
     skos:definition "Tree nuts from the plant classified under the species Corylus avellana L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
         "nut of the hazel tree, Corylus avellana"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A014L> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000466> ,
-        <http://www.wikidata.org/entity/Q578307> .
+        <http://www.wikidata.org/entity/Q578307> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/nuts/nuts> .
 
-<https://w3id.org/ambrosia/plant-vocab#concept/nut/pecan> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/nut> ;
+<https://w3id.org/ambrosia/plant-vocab#concept/nuts/nuts> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/nuts> ;
+    skos:prefLabel "Nuts"@en ;
+    skos:altLabel "Nut"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/nuts/almond> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/nuts/chestnut> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/nuts/hazelnut> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/nuts/pecan> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/nuts/pistachio> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/nuts/walnut> ;
+    skos:topConceptOf <https://w3id.org/ambrosia/plant-vocab#scheme/nuts> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/nuts/pecan> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/nuts> ;
     skos:prefLabel "Pecan"@en ;
     skos:definition "Tree nuts from the plant classified under the species Carya illinoinensis (Wangenh.) K. Koch. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
         "nut from Carya"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A014N> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000607> ,
-        <http://www.wikidata.org/entity/Q1119911> .
+        <http://www.wikidata.org/entity/Q1119911> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/nuts/nuts> .
 
-<https://w3id.org/ambrosia/plant-vocab#concept/nut/pistachio> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/nut> ;
+<https://w3id.org/ambrosia/plant-vocab#concept/nuts/pistachio> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/nuts> ;
     skos:prefLabel "Pistachio"@en ;
     skos:definition "Tree nuts from the plant classified under the species Pistacia vera L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
         "nut, a consumable, also used culinary"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A014Q> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000613> ,
-        <http://www.wikidata.org/entity/Q14959225> .
+        <http://www.wikidata.org/entity/Q14959225> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/nuts/nuts> .
 
-<https://w3id.org/ambrosia/plant-vocab#concept/nut/walnut> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/nut> ;
+<https://w3id.org/ambrosia/plant-vocab#concept/nuts/walnut> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/nuts> ;
     skos:prefLabel "Walnut"@en ;
     skos:definition "Tree nuts from the plant classified under the species Juglans L. spp. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
         "edible seed"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A014R> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000713> ,
-        <http://www.wikidata.org/entity/Q208021> .
+        <http://www.wikidata.org/entity/Q208021> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/nuts/nuts> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/fennel-seed> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/seed-crops> ;
+    skos:prefLabel "Fennel Seed"@en ;
+    skos:definition "Spices from the seeds of the plant classified under the species Foeniculum vulgare P. Mill. or Foeniculum officinale All. or Anethum foeniculum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        """fruit ("seed") of the fennel plant used as herb, spice, or medicine"""@en ;
+    dct:source "FOODEX2" ,
+        "FSKXO" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A018G> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000439> ,
+        <http://www.wikidata.org/entity/Q27658833> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/seed-spices> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/hemp> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/seed-crops> ;
+    skos:prefLabel "Hemp"@en ;
+    skos:altLabel "cannabis"@en ;
+    skos:definition "The group includes any type of Hemp seeds as defined in the pesticide regulation. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "seed from the hemp plant"@en ;
+    dct:source "FOODEX2" ,
+        "FSKXO" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A016B> ,
+        <http://www.wikidata.org/entity/Q117231920> ;
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015913> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/oilseed-crops> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/linseed> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/seed-crops> ;
+    skos:prefLabel "Linseed"@en ;
+    skos:altLabel "flaxseed"@en ;
+    skos:definition "Oilseeds classified under the species Linum usitatissimum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "seed of the flax plant"@en ;
+    dct:source "FOODEX2" ,
+        "FSKXO" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A015G> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000511> ,
+        <http://www.wikidata.org/entity/Q911332> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/oilseed-crops> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/mustard-seed> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/seed-crops> ;
+    skos:prefLabel "Mustard Seed"@en ;
+    skos:definition "Oilseeds classified under the species Brassica spp or Sinapis spp. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "small round seeds of various mustard plants"@en ;
+    dct:source "FOODEX2" ,
+        "FSKXO" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A015S> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000532> ,
+        <http://www.wikidata.org/entity/Q1937700> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/oilseed-crops> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/oilseed-crops> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/seed-crops> ;
+    skos:prefLabel "Oilseed Crops"@en ;
+    skos:altLabel "Oilseed"@en ;
+    skos:definition "The group includes any type of Oilseeds as defined in the pesticide regulation. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "seed that is used for obtaining plant oil"@en ;
+    dct:source "FOODEX2" ,
+        "FSKXO" ,
+        "Wikidata" ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A015F> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000536> ,
+        <http://www.wikidata.org/entity/Q297292> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/seed-crops> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/hemp> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/linseed> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/mustard-seed> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/rapeseed> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/sunflower> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/rapeseed> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/seed-crops> ;
+    skos:prefLabel "Rapeseed"@en ;
+    skos:definition "Oilseeds classified under the species Brassica napus subsp. napus L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "seed of Brassica napus"@en ;
+    dct:source "FOODEX2" ,
+        "FSKXO" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A015M> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000634> ,
+        <http://www.wikidata.org/entity/Q110022244> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/oilseed-crops> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/seed-crops> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/seed-crops> ;
+    skos:prefLabel "Seed Crops"@en ;
+    skos:altLabel "Herb and Spice Crops"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/oilseed-crops> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/seed-spices> ;
+    skos:topConceptOf <https://w3id.org/ambrosia/plant-vocab#scheme/seed-crops> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/seed-spices> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/seed-crops> ;
+    skos:prefLabel "Seed Spices"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/seed-crops> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/fennel-seed> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/sunflower> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/seed-crops> ;
+    skos:prefLabel "Sunflower"@en ;
+    skos:definition "Oilseeds classified under the species Helianthus annuus L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
+        "fruit of the sunflower (Helianthus annuus)"@en ;
+    dct:source "FOODEX2" ,
+        "FSKXO" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A015L> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000685> ,
+        <http://www.wikidata.org/entity/Q1076906> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/seed-crops/oilseed-crops> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/allium-greens> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
+    skos:prefLabel "Allium Greens"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/vegetable> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/chives> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/leek> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/artichoke> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -705,8 +1152,10 @@
         "vegetable"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00RS> ,
-        <http://www.wikidata.org/entity/Q23041430> .
+        <http://www.wikidata.org/entity/Q23041430> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/stem-petiole-shoot-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/asparagus> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -716,9 +1165,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00RT> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000346> ,
-        <http://www.wikidata.org/entity/Q23041045> .
+        <http://www.wikidata.org/entity/Q23041045> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/stem-petiole-shoot-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/aubergine> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -728,20 +1179,10 @@
         "edible botanical fruit of the species Solanum melongena, used as a vegetable"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00JD> ,
-        <http://www.wikidata.org/entity/Q12533094> .
-
-<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/avocado> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Avocado"@en ;
-    skos:definition "Fruits from the plant classified under the species Persea americana Mill. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
-        "fruit, use Q37153 for the species"@en ;
-    dct:source "FOODEX2" ,
-        "FSKXO" ,
-        "Wikidata" ;
-    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01LB> ,
-        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000348> ,
-        <http://www.wikidata.org/entity/Q961769> .
+        <http://www.wikidata.org/entity/Q12533094> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/fruiting-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/beetroot> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -753,9 +1194,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00QG> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000360> ,
-        <http://www.wikidata.org/entity/Q99548274> .
+        <http://www.wikidata.org/entity/Q99548274> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/root-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/bell-pepper> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -767,9 +1210,22 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00JA> ,
         <http://www.wikidata.org/entity/Q1548030> ;
-    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000016638> .
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000016638> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/fruiting-vegetables> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/brassica-head-stem-flower-vegetables> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
+    skos:prefLabel "Brassica Head/Stem/Flower Vegetables"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/vegetable> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/broccoli> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/brussels-sprout> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/cabbage> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/cauliflower> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/kohlrabi> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/broad-bean> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -779,9 +1235,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://www.wikidata.org/entity/Q61672189> ;
     skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000014846> ;
-    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A012A> .
+    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A012A> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/legume-vegetables-and-pulses> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/broccoli> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -791,9 +1249,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00FN> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000377> ,
-        <http://www.wikidata.org/entity/Q47722> .
+        <http://www.wikidata.org/entity/Q47722> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/brassica-head-stem-flower-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/brussels-sprout> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -804,9 +1264,20 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00FV> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000378> ,
-        <http://www.wikidata.org/entity/Q104664711> .
+        <http://www.wikidata.org/entity/Q104664711> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/brassica-head-stem-flower-vegetables> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/bulb-vegetables> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
+    skos:prefLabel "Bulb Vegetables"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/vegetable> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/garlic> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/onion> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/shallot> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/cabbage> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -815,8 +1286,11 @@
         "several varieties of vegetable"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://www.wikidata.org/entity/Q14328596> ;
-    skos:broadMatch <http://data.food.gov.uk/codes/foodtype/id/A00FT> .
+    skos:broadMatch <http://data.food.gov.uk/codes/foodtype/id/A00FT> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/brassica-head-stem-flower-vegetables> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/savoy-cabbage> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/carrot> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -826,9 +1300,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00QH> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000389> ,
-        <http://www.wikidata.org/entity/Q81> .
+        <http://www.wikidata.org/entity/Q81> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/root-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/cauliflower> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -838,9 +1314,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00FR> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000393> ,
-        <http://www.wikidata.org/entity/Q23900272> .
+        <http://www.wikidata.org/entity/Q23900272> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/brassica-head-stem-flower-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/celeriac> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -852,9 +1330,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00QJ> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000394> ,
-        <http://www.wikidata.org/entity/Q103765549> .
+        <http://www.wikidata.org/entity/Q103765549> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/root-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/celery> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -864,9 +1344,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00RY> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000395> ,
-        <http://www.wikidata.org/entity/Q23012379> .
+        <http://www.wikidata.org/entity/Q23012379> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/stem-petiole-shoot-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/chayote> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -876,9 +1358,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00JZ> ,
         <http://www.wikidata.org/entity/Q104246111> ;
-    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015011> .
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015011> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/cucurbit-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/chervil> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -888,9 +1372,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00XB> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000401> ,
-        <http://www.wikidata.org/entity/Q21281535> .
+        <http://www.wikidata.org/entity/Q21281535> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/herbs-and-aromatic-crops> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/chickpea> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -900,9 +1386,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://www.wikidata.org/entity/Q21156930> ;
     skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015215> ;
-    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A0BAV> .
+    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A0BAV> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/legume-vegetables-and-pulses> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/chicory> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -913,9 +1401,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00NE> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000720> ;
-    skos:closeMatch <http://www.wikidata.org/entity/Q2544599> .
+    skos:closeMatch <http://www.wikidata.org/entity/Q2544599> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/leafy-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/chives> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -925,9 +1415,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00XD> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000405> ,
-        <http://www.wikidata.org/entity/Q61046162> .
+        <http://www.wikidata.org/entity/Q61046162> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/allium-greens> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/common-bean> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -936,8 +1428,10 @@
         "bean from Phaseolus vulgaris"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://www.wikidata.org/entity/Q74662248> ;
-    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A012B> .
+    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A012B> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/legume-vegetables-and-pulses> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/cucumber> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -947,9 +1441,21 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00JM> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000418> ,
-        <http://www.wikidata.org/entity/Q2735883> .
+        <http://www.wikidata.org/entity/Q2735883> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/cucurbit-vegetables> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/cucurbit-vegetables> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
+    skos:prefLabel "Cucurbit Vegetables"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/vegetable> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/chayote> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/cucumber> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/pumpkin> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/zucchini> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/endive> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -960,21 +1466,21 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00LE> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000650> ,
-        <http://www.wikidata.org/entity/Q28604477> .
+        <http://www.wikidata.org/entity/Q28604477> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/leafy-vegetables> .
 
-<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/fennel-seed> a skos:Concept ;
+<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/fruiting-vegetables> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Fennel Seed"@en ;
-    skos:definition "Spices from the seeds of the plant classified under the species Foeniculum vulgare P. Mill. or Foeniculum officinale All. or Anethum foeniculum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
-        """fruit ("seed") of the fennel plant used as herb, spice, or medicine"""@en ;
-    dct:source "FOODEX2" ,
-        "FSKXO" ,
-        "Wikidata" ;
-    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A018G> ,
-        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000439> ,
-        <http://www.wikidata.org/entity/Q27658833> .
+    skos:prefLabel "Fruiting Vegetables"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/vegetable> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/aubergine> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/bell-pepper> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/okra> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/tomato> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/garden-cress> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -984,9 +1490,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00SM> ,
         <http://www.wikidata.org/entity/Q65547658> ;
-    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015800> .
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015800> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/leafy-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/garlic> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -996,9 +1504,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00GZ> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000450> ,
-        <http://www.wikidata.org/entity/Q21546392> .
+        <http://www.wikidata.org/entity/Q21546392> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/bulb-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/green-bean> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1008,21 +1518,19 @@
         "vegetable"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://www.wikidata.org/entity/Q2987371> ;
-    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A00PG> .
+    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A00PG> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/legume-vegetables-and-pulses> .
 
-<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/hemp> a skos:Concept ;
+<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/herbs-and-aromatic-crops> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Hemp"@en ;
-    skos:altLabel "cannabis"@en ;
-    skos:definition "The group includes any type of Hemp seeds as defined in the pesticide regulation. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
-        "seed from the hemp plant"@en ;
-    dct:source "FOODEX2" ,
-        "FSKXO" ,
-        "Wikidata" ;
-    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A016B> ,
-        <http://www.wikidata.org/entity/Q117231920> ;
-    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015913> .
+    skos:prefLabel "Herbs and Aromatic Crops"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/vegetable> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/chervil> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/parsley> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/tarragon> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/iceberg-lettuce> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1033,9 +1541,18 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015953> ,
         <http://www.wikidata.org/entity/Q1310886> ,
-        <https://data.food.gov.uk/codes/foodtype/id/A00KZ> .
+        <https://data.food.gov.uk/codes/foodtype/id/A00KZ> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/lettuce> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/industrial-root-crops> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
+    skos:prefLabel "Industrial Root Crops"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/vegetable> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/sugar-beet> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/kohlrabi> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1046,9 +1563,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00GV> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000495> ;
-    skos:closeMatch <http://www.wikidata.org/entity/Q147202> .
+    skos:closeMatch <http://www.wikidata.org/entity/Q147202> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/brassica-head-stem-flower-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/lambs-lettuce> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1056,20 +1575,36 @@
     skos:definition "Leaves from vegetables classified under the species Valeriana locusta (L.) Laterrade. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00KT> ,
-        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000497> .
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000497> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/leafy-vegetables> .
 
-<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/leafy-green> a skos:Concept ;
+<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/leafy-vegetables> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Leafy Green"@en ;
+    skos:prefLabel "Leafy Vegetables"@en ;
+    skos:altLabel "Leafy Green"@en ;
     skos:definition "Plants classified in different genus, whose leaves are used as food. These are normally used as side dishes or in composite dishes."@en ,
         "plant leaves eaten as a vegetable"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "false"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00KR> ,
         <http://www.wikidata.org/entity/Q20134> ;
-    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000016107> .
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000016107> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/vegetable> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/chicory> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/endive> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/garden-cress> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/lambs-lettuce> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/lettuce> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/purslane> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/radicchio> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/rucola> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/spinach> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/swiss-chard> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/watercress> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/leek> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1079,9 +1614,25 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00SB> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000502> ,
-        <http://www.wikidata.org/entity/Q1807269> .
+        <http://www.wikidata.org/entity/Q1807269> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/allium-greens> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/legume-vegetables-and-pulses> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
+    skos:prefLabel "Legume Vegetables and Pulses"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/vegetable> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/broad-bean> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/chickpea> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/common-bean> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/green-bean> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/lentil> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/mung-bean> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/pea> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/soybean> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/lentil> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1090,8 +1641,10 @@
         "edible seed, grown for food"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://www.wikidata.org/entity/Q61505177> ;
-    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A00QD> .
+    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A00QD> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/legume-vegetables-and-pulses> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/lettuce> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1101,22 +1654,14 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00KX> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000507> ,
-        <http://www.wikidata.org/entity/Q104666136> .
-
-<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/linseed> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Linseed"@en ;
-    skos:altLabel "flaxseed"@en ;
-    skos:definition "Oilseeds classified under the species Linum usitatissimum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
-        "seed of the flax plant"@en ;
-    dct:source "FOODEX2" ,
-        "FSKXO" ,
-        "Wikidata" ;
-    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A015G> ,
-        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000511> ,
-        <http://www.wikidata.org/entity/Q911332> .
+        <http://www.wikidata.org/entity/Q104666136> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/leafy-vegetables> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/iceberg-lettuce> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/lollo-rosso> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/romaine-lettuce> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/lollo-rosso> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1125,20 +1670,10 @@
         "species of plant"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00LB> ;
-    skos:closeMatch <http://www.wikidata.org/entity/Q2248133> .
-
-<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/millet> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Millet"@en ;
-    skos:definition "Cereal grains from the plant classified under the species Panicum miliaceum L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
-        "food grain"@en ;
-    dct:source "FOODEX2" ,
-        "FSKXO" ,
-        "Wikidata" ;
-    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A001B> ,
-        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000526> ,
-        <http://www.wikidata.org/entity/Q259438> .
+    skos:closeMatch <http://www.wikidata.org/entity/Q2248133> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/lettuce> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/mung-bean> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1148,33 +1683,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://www.wikidata.org/entity/Q104664662> ;
     skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000016420> ;
-    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A00PR> .
-
-<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/mustard-seed> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Mustard Seed"@en ;
-    skos:definition "Oilseeds classified under the species Brassica spp or Sinapis spp. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
-        "small round seeds of various mustard plants"@en ;
-    dct:source "FOODEX2" ,
-        "FSKXO" ,
-        "Wikidata" ;
-    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A015S> ,
-        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000532> ,
-        <http://www.wikidata.org/entity/Q1937700> .
-
-<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/oilseed> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Oilseed"@en ;
-    skos:definition "The group includes any type of Oilseeds as defined in the pesticide regulation. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
-        "seed that is used for obtaining plant oil"@en ;
-    dct:source "FOODEX2" ,
-        "FSKXO" ,
-        "Wikidata" ;
-    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A015F> ,
-        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000536> ,
-        <http://www.wikidata.org/entity/Q297292> .
+    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A00PR> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/legume-vegetables-and-pulses> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/okra> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1184,19 +1697,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00JF> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000538> ,
-        <http://www.wikidata.org/entity/Q12047207> .
-
-<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/olive> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Olive"@en ;
-    skos:definition "Fruits from the plant classified under the species Olea europaea L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
-        "fruit of the olive tree"@en ;
-    dct:source "FOODEX2" ,
-        "Wikidata" ;
-    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01BP> ,
-        <http://www.wikidata.org/entity/Q1621080> .
+        <http://www.wikidata.org/entity/Q12047207> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/fruiting-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/onion> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1206,9 +1711,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00HC> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000540> ,
-        <http://www.wikidata.org/entity/Q3406628> .
+        <http://www.wikidata.org/entity/Q3406628> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/bulb-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/parsley> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1218,9 +1725,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00YE> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000597> ,
-        <http://www.wikidata.org/entity/Q65522500> .
+        <http://www.wikidata.org/entity/Q65522500> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/herbs-and-aromatic-crops> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/parsnip> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1230,33 +1739,25 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00QR> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000599> ,
-        <http://www.wikidata.org/entity/Q104413481> .
+        <http://www.wikidata.org/entity/Q104413481> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/root-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/pea> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
     skos:prefLabel "Pea"@en ;
-    skos:definition "Legumes classified under the species Pisum sativum L. (any subspp. and var.). The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation. "@en ,
+    skos:definition "Legumes classified under the species Pisum sativum L. (any subspp. and var.). The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
         "species of plant"@en ;
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000606> ;
     skos:closeMatch <http://www.wikidata.org/entity/Q25237> ;
-    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A012J> .
-
-<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/persimmon> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Persimmon"@en ;
-    skos:definition "Fruits from the plant classified under the species Diospyros kaki Thunb. or Diospyros chinensis Blume. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
-        "edible fruit of a number of species of trees in the genus Diospyros"@en ;
-    dct:source "FOODEX2" ,
-        "FSKXO" ,
-        "Wikidata" ;
-    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A01HQ> ,
-        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000610> ,
-        <http://www.wikidata.org/entity/Q29526> .
+    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A012J> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/legume-vegetables-and-pulses> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/potato> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1266,9 +1767,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00ZT> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000618> ,
-        <http://www.wikidata.org/entity/Q16587531> .
+        <http://www.wikidata.org/entity/Q16587531> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/tuber-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/pumpkin> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1278,9 +1781,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00KH> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000630> ,
-        <http://www.wikidata.org/entity/Q165308> .
+        <http://www.wikidata.org/entity/Q165308> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/cucurbit-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/purslane> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1290,9 +1795,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00MP> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000631> ,
-        <http://www.wikidata.org/entity/Q103996185> .
+        <http://www.wikidata.org/entity/Q103996185> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/leafy-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/radicchio> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1301,8 +1808,10 @@
         "variety of chicory (Cichorium intybus), a leaf vegetable"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
-    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00LG> ,
-        <http://www.wikidata.org/entity/Q767765> .
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00LG> ;
+    skos:closeMatch <http://www.wikidata.org/entity/Q767765> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/leafy-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/radish> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1312,21 +1821,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00QV> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000633> ,
-        <http://www.wikidata.org/entity/Q33669098> .
-
-<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/rapeseed> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Rapeseed"@en ;
-    skos:definition "Oilseeds classified under the species Brassica napus subsp. napus L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
-        "seed of Brassica napus"@en ;
-    dct:source "FOODEX2" ,
-        "FSKXO" ,
-        "Wikidata" ;
-    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A015M> ,
-        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000634> ,
-        <http://www.wikidata.org/entity/Q110022244> .
+        <http://www.wikidata.org/entity/Q33669098> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/root-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/rhubarb> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1336,9 +1835,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00SD> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000637> ;
-    skos:closeMatch <http://www.wikidata.org/entity/Q20767168> .
+    skos:closeMatch <http://www.wikidata.org/entity/Q20767168> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/stem-petiole-shoot-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/romaine-lettuce> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1347,8 +1848,23 @@
         "variety of lettuce"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00LC> ,
-        <http://www.wikidata.org/entity/Q1762893> .
+        <http://www.wikidata.org/entity/Q1762893> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/lettuce> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/root-vegetables> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
+    skos:prefLabel "Root Vegetables"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/vegetable> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/beetroot> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/carrot> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/celeriac> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/parsnip> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/radish> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/rutabaga> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/turnip> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/rucola> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1359,9 +1875,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000639> ,
         <http://www.wikidata.org/entity/Q2171841> ;
-    skos:closeMatch <http://data.food.gov.uk/codes/foodtype/id/A05ET> .
+    skos:closeMatch <http://data.food.gov.uk/codes/foodtype/id/A05ET> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/leafy-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/rutabaga> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1371,8 +1889,10 @@
         "root vegetable from Brassica napus subsp. rapifera"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00RD> ,
-        <http://www.wikidata.org/entity/Q104733765> .
+        <http://www.wikidata.org/entity/Q104733765> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/root-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/savoy-cabbage> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1382,8 +1902,10 @@
         "vegetable"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00GB> ,
-        <http://www.wikidata.org/entity/Q104188999> .
+        <http://www.wikidata.org/entity/Q104188999> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/cabbage> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/shallot> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1393,9 +1915,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00HF> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000653> ,
-        <http://www.wikidata.org/entity/Q67206407> .
+        <http://www.wikidata.org/entity/Q67206407> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/bulb-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/soybean> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1407,9 +1931,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000665> ,
         <http://www.wikidata.org/entity/Q61503220> ;
-    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A012F> .
+    skos:narrowMatch <http://data.food.gov.uk/codes/foodtype/id/A012F> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/legume-vegetables-and-pulses> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/spinach> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1419,9 +1945,21 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00MJ> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000674> ,
-        <http://www.wikidata.org/entity/Q36814998> .
+        <http://www.wikidata.org/entity/Q36814998> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/leafy-vegetables> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/stem-petiole-shoot-vegetables> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
+    skos:prefLabel "Stem/Petiole/Shoot Vegetables"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/vegetable> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/artichoke> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/asparagus> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/celery> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/rhubarb> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/sugar-beet> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1431,21 +1969,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A010T> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000682> ,
-        <http://www.wikidata.org/entity/Q103813367> .
-
-<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/sunflower> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
-    skos:prefLabel "Sunflower"@en ;
-    skos:definition "Oilseeds classified under the species Helianthus annuus L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ,
-        "fruit of the sunflower (Helianthus annuus)"@en ;
-    dct:source "FOODEX2" ,
-        "FSKXO" ,
-        "Wikidata" ;
-    skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A015L> ,
-        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000685> ,
-        <http://www.wikidata.org/entity/Q1076906> .
+        <http://www.wikidata.org/entity/Q103813367> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/industrial-root-crops> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/sweet-potato> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1455,9 +1983,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A010C> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000688> ,
-        <http://www.wikidata.org/entity/Q12762973> .
+        <http://www.wikidata.org/entity/Q12762973> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/tuber-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/swiss-chard> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1466,8 +1996,10 @@
     skos:definition "Leaves from vegetables classified under the species Beta vulgaris var. cycla L. The part consumed/analysed is not specified. When relevant, information on the part consumed/analysed has to be reported with additional facet descriptors. In case of data collections related to legislations, the default part consumed/analysed is the one defined in the applicable legislation."@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A0DJR> ;
-    skos:closeMatch <http://www.wikidata.org/entity/Q99730767> .
+    skos:closeMatch <http://www.wikidata.org/entity/Q99730767> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/leafy-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/tarragon> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1478,9 +2010,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00YP> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000700> ,
-        <http://www.wikidata.org/entity/Q155814> .
+        <http://www.wikidata.org/entity/Q155814> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/herbs-and-aromatic-crops> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/tomato> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1490,9 +2024,19 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A0DMX> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000704> ,
-        <http://www.wikidata.org/entity/Q20638126> .
+        <http://www.wikidata.org/entity/Q20638126> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/fruiting-vegetables> .
+
+<https://w3id.org/ambrosia/plant-vocab#concept/vegetable/tuber-vegetables> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
+    skos:prefLabel "Tuber Vegetables"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/vegetable> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/potato> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/sweet-potato> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/turnip> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1502,9 +2046,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00RE> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000708> ,
-        <http://www.wikidata.org/entity/Q3916957> .
+        <http://www.wikidata.org/entity/Q3916957> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/root-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/vegetable> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1515,8 +2061,22 @@
         "edible plant or part of a plant, involved in cooking"@en ;
     dct:source "FOODEX2" ,
         "Wikidata" ;
+    amb:isSelectable "false"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A04JC> ,
-        <http://www.wikidata.org/entity/Q11004> .
+        <http://www.wikidata.org/entity/Q11004> ;
+    skos:narrower <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/allium-greens> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/brassica-head-stem-flower-vegetables> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/bulb-vegetables> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/cucurbit-vegetables> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/fruiting-vegetables> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/herbs-and-aromatic-crops> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/industrial-root-crops> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/leafy-vegetables> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/legume-vegetables-and-pulses> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/root-vegetables> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/stem-petiole-shoot-vegetables> ,
+        <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/tuber-vegetables> ;
+    skos:topConceptOf <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/watercress> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1526,9 +2086,11 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00ND> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000715> ,
-        <http://www.wikidata.org/entity/Q104223904> .
+        <http://www.wikidata.org/entity/Q104223904> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/leafy-vegetables> .
 
 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/zucchini> a skos:Concept ;
     skos:inScheme <https://w3id.org/ambrosia/plant-vocab#scheme/vegetable> ;
@@ -1538,6 +2100,8 @@
     dct:source "FOODEX2" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00JR> ,
         <http://www.wikidata.org/entity/Q7533> ;
-    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015393> .
+    skos:closeMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000015393> ;
+    skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/cucurbit-vegetables> .

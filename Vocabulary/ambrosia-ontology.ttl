@@ -44,10 +44,10 @@
     a owl:Ontology ;
     dct:title "AMBROSIA Ontology"@en ;
     dct:description "Ontology for the AMBROSIA project: linking, agents, dashboard context, observation model and alert/incident patterns."@en ;
-    owl:versionInfo "1.1.0" ;
-    owl:versionIRI <https://w3id.org/ambrosia/ontology/1.1.0> ;
+    owl:versionInfo "1.1.1" ;
+    owl:versionIRI <https://w3id.org/ambrosia/ontology/1.1.1> ;
     dct:issued "2025-12-03"^^xsd:date ;
-    dct:modified "2026-03-11"^^xsd:date ;
+    dct:modified "2026-04-14"^^xsd:date ;
     dct:creator "https://orcid.org/0000-0003-4691-0483" ;
     owl:imports
         <http://www.w3.org/2004/02/skos/core> ,
@@ -298,6 +298,11 @@ amblink:transformationHint a owl:DatatypeProperty ;
   rdfs:domain amblink:InputMapping ;
   rdfs:range  xsd:string .
 
+amb:isSelectable a owl:DatatypeProperty ;
+  rdfs:label "is selectable"@en ;
+  rdfs:domain skos:Concept ;
+  rdfs:range xsd:boolean .
+
 # SKOS Schemes for controlled hints (enumerations)
 
 amblink:AggregationMethod a skos:ConceptScheme ;
@@ -324,6 +329,13 @@ amblink:dailyToMonthlyMean a skos:Concept ;
 amblink:Transformation a skos:ConceptScheme ;
   skos:prefLabel "Derived-input transformations"@en ;
   dct:description "Lightweight references to transformations from raw variables to model-ready inputs."@en .
+
+# Concept utility properties
+
+amb:isSelectable a owl:DatatypeProperty ;
+  rdfs:label "is selectable"@en ;
+  rdfs:domain skos:Concept ;
+  rdfs:range xsd:boolean .
 
 # Linking-specific Properties, Classes, and Concepts
 

@@ -1,756 +1,1179 @@
-@prefix ambpath: <https://w3id.org/ambrosia/pathogen-vocab#> .
+@prefix amb: <https://w3id.org/ambrosia/ontology#> .
+@prefix ambplant: <https://w3id.org/ambrosia/plant-vocab#> .
 @prefix dct: <http://purl.org/dc/terms/> .
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> a skos:ConceptScheme ;
-    dct:hasVersion "1.0.1" ;
-    dct:issued "2026-01-01" ;
-    dct:modified "2026-03-17" ;
+<https://w3id.org/ambrosia/pathogen-vocab>
+    dct:hasVersion "1.1.0" ;
+    dct:issued "2026-01-01"^^xsd:date ;
+    dct:modified "2026-04-14"^^xsd:date ;
     dct:creator <https://orcid.org/0000-0003-4691-0483> ;
-    dct:title "Mycotoxin Vocabulary"@en ;
-    dct:description "A controlled vocabulary of Mycotoxin concepts from the Ambrosia project."@en .
+    dct:contributor <https://orcid.org/0000-0003-4691-0483> ;
+    dct:title "biological-hazards Vocabulary"@en ;
+    dct:description "A controlled vocabulary of biological-hazards concepts from the Ambrosia project."@en .
 
-<https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> a skos:ConceptScheme ;
-    dct:hasVersion "1.0.1" ;
-    dct:issued "2026-01-01" ;
-    dct:modified "2026-03-17" ;
-    dct:creator <https://orcid.org/0000-0003-4691-0483> ;
-    dct:title "Pathogen Vocabulary"@en ;
-    dct:description "A controlled vocabulary of Pathogen concepts from the Ambrosia project."@en .
+<https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> a skos:ConceptScheme ;
+    skos:hasTopConcept <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/biological-hazards> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxin/aflatoxin-b1> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> ;
+<https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> a skos:ConceptScheme ;
+    skos:hasTopConcept <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/mycotoxins> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/aeromonas-hydrophila> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Aeromonas hydrophila"@en ;
+    skos:altLabel "A. hydrophila"@en ;
+    skos:definition "species"@en ,
+        "species of bacterium"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000003505> ,
+        <http://www.wikidata.org/entity/Q2697755> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=644> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/bacterial-hazards> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/alternaria> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Alternaria"@en ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/toxigenic-fungi> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/alternaria-alternata> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/alternaria-alternata> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Alternaria alternata"@en ;
+    skos:altLabel "A. alternata"@en ;
+    skos:definition "species"@en ,
+        "species of fungus"@en ;
+    dct:source "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://www.wikidata.org/entity/Q2704244> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=5599> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/alternaria> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/aspergillus> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Aspergillus"@en ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/toxigenic-fungi> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/aspergillus-flavus> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/aspergillus-nomius> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/aspergillus-ochraceus> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/aspergillus-parasiticus> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/aspergillus-flavus> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Aspergillus flavus"@en ;
+    skos:altLabel "A. flavus"@en ;
+    skos:definition "aspergillus flavus"@en ,
+        "species"@en ;
+    dct:source "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://www.wikidata.org/entity/Q137096> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=5059> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/aspergillus> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/aspergillus-nomius> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Aspergillus nomius"@en ;
+    skos:altLabel "A. nomius"@en ;
+    skos:definition "genus"@en ,
+        "species of fungus"@en ;
+    dct:source "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://www.wikidata.org/entity/Q10420032> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=177448> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/aspergillus> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/aspergillus-ochraceus> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Aspergillus ochraceus"@en ;
+    skos:altLabel "A. ochraceus"@en ;
+    skos:definition "species"@en ,
+        "species of fungus"@en ;
+    dct:source "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://www.wikidata.org/entity/Q4807897> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=40380> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/aspergillus> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/aspergillus-parasiticus> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Aspergillus parasiticus"@en ;
+    skos:altLabel "A. parasiticus"@en ;
+    skos:definition "species"@en ,
+        "species of fungus"@en ;
+    dct:source "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://www.wikidata.org/entity/Q432356> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=5067> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/aspergillus> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/bacillus-cereus> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Bacillus cereus"@en ;
+    skos:altLabel "B. cereus"@en ;
+    skos:definition "species"@en ,
+        "species of bacterium"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000003790> ,
+        <http://www.wikidata.org/entity/Q131307> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=1396> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/bacterial-hazards> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/bacterial-hazards> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Bacterial Hazards"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/biological-hazards> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/aeromonas-hydrophila> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/bacillus-cereus> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/campylobacter> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/clostridioides> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/clostridium> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/cronobacter-sakazakii> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/escherichia-coli> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/listeria> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/pseudomonas-aeruginosa> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/salmonella> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/shigella> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/staphylococcus> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/vibrio> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/biological-hazards> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Biological Hazards"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/bacterial-hazards> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/parasitic-hazards> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/toxigenic-fungi> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/viral-hazards> ;
+    skos:topConceptOf <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/campylobacter> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Campylobacter"@en ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/bacterial-hazards> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/campylobacter-coli> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/campylobacter-jejuni> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/campylobacter-coli> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Campylobacter coli"@en ;
+    skos:altLabel "C. coli"@en ;
+    skos:definition "species"@en ,
+        "species of bacterium"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000004166> ,
+        <http://www.wikidata.org/entity/Q1031711> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=195> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/campylobacter> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/campylobacter-jejuni> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Campylobacter jejuni"@en ;
+    skos:altLabel "C. jejuni"@en ;
+    skos:definition "species"@en ,
+        "species of bacterium"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000004177> ,
+        <http://www.wikidata.org/entity/Q265488> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=197> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/campylobacter> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/claviceps> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Claviceps"@en ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/toxigenic-fungi> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/claviceps-purpurea> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/claviceps-purpurea> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Claviceps purpurea"@en ;
+    skos:altLabel "C. purpurea"@en ;
+    skos:definition "species"@en ,
+        "species of fungus"@en ;
+    dct:source "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://www.wikidata.org/entity/Q217227> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=5111> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/claviceps> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/clostridioides> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Clostridioides"@en ;
+    skos:altLabel "Clostridioides spp."@en ;
+    skos:definition "genus"@en ,
+        "genus of bacteria"@en ;
+    dct:source "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://www.wikidata.org/entity/Q27438828> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=1870884> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/bacterial-hazards> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/clostridioides-difficile> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/clostridioides-difficile> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Clostridioides difficile"@en ;
+    skos:altLabel "C. difficile"@en ,
+        "Clostridium difficile"@en ;
+    skos:definition "species"@en ,
+        "species of bacterium"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000004480> ,
+        <http://www.wikidata.org/entity/Q56290719> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=1496> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/clostridioides> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/clostridium> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Clostridium"@en ;
+    skos:altLabel "Clostridium spp."@en ;
+    skos:definition "genus"@en ,
+        "genus of prokaryotes"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000004478> ,
+        <http://www.wikidata.org/entity/Q327663> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=1485> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/bacterial-hazards> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/clostridium-botulinum> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/clostridium-perfringens> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/clostridium-botulinum> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Clostridium botulinum"@en ;
+    skos:altLabel "C. botulinum"@en ;
+    skos:definition "species"@en ,
+        "species of bacterium"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000004479> ,
+        <http://www.wikidata.org/entity/Q131268> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=1491> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/clostridium> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/clostridium-perfringens> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Clostridium perfringens"@en ;
+    skos:altLabel "C. perfringens"@en ;
+    skos:definition "species"@en ,
+        "species of bacteria"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000004482> ,
+        <http://www.wikidata.org/entity/Q309465> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=1502> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/clostridium> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/cronobacter-sakazakii> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Cronobacter sakazakii"@en ;
+    skos:altLabel "C. sakazakii"@en ,
+        "Enterobacter sakazakii"@en ;
+    skos:definition "species"@en ,
+        "species of Gammaproteobacteria"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000004624> ,
+        <http://www.wikidata.org/entity/Q25841585> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=28141> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/bacterial-hazards> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/cryptosporidium> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Cryptosporidium"@en ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/parasitic-hazards> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/cryptosporidium-parvum> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/cryptosporidium-parvum> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Cryptosporidium parvum"@en ;
+    skos:altLabel "C. parvum"@en ;
+    skos:definition "species"@en ,
+        "species of apicomplexan parasitic alveolate"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000004634> ,
+        <http://www.wikidata.org/entity/Q134734> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=5807> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/cryptosporidium> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/cyclospora-cayetanensis> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Cyclospora cayetanensis"@en ;
+    skos:altLabel "C. cayetanensis"@en ;
+    skos:definition "protozoan that causes disease in humans"@en ,
+        "species"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000004795> ,
+        <http://www.wikidata.org/entity/Q3008600> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=88456> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/parasitic-hazards> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/escherichia-coli> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Escherichia coli"@en ;
+    skos:altLabel "E. coli"@en ;
+    skos:definition "enteric, rod shaped, gram-negative bacterium"@en ,
+        "species"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000005259> ,
+        <http://www.wikidata.org/entity/Q25419> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=562> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/bacterial-hazards> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Fusarium"@en ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/toxigenic-fungi> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium-culmorum> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium-graminearum> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium-poae> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium-proliferatum> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium-sporotrichioides> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium-verticillioides> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium-culmorum> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Fusarium culmorum"@en ;
+    skos:altLabel "F. culmorum"@en ;
+    skos:definition "species"@en ,
+        "species of fungus"@en ;
+    dct:source "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://www.wikidata.org/entity/Q2712591> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=5516> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium-graminearum> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Fusarium graminearum"@en ;
+    skos:altLabel "F. graminearum"@en ;
+    skos:definition "species"@en ,
+        "species of fungus"@en ;
+    dct:source "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://www.wikidata.org/entity/Q103806070> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=5518> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium-poae> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Fusarium poae"@en ;
+    skos:altLabel "F. poae"@en ;
+    skos:definition "species"@en ,
+        "species of fungus"@en ;
+    dct:source "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://www.wikidata.org/entity/Q1475268> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=36050> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium-proliferatum> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Fusarium proliferatum"@en ;
+    skos:altLabel "F. proliferatum"@en ;
+    skos:definition "species"@en ,
+        "species of fungus"@en ;
+    dct:source "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://www.wikidata.org/entity/Q5509912> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=948311> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium-sporotrichioides> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Fusarium sporotrichioides"@en ;
+    skos:altLabel "F. sporotrichioides"@en ;
+    skos:definition "species"@en ,
+        "species of fungus"@en ;
+    dct:source "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://www.wikidata.org/entity/Q5114748> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=5514> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium-verticillioides> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Fusarium verticillioides"@en ;
+    skos:altLabel "F. verticillioides"@en ;
+    skos:definition "species"@en ,
+        "species of Sordariomycetes fungus"@en ;
+    dct:source "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://www.wikidata.org/entity/Q26828071> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=117187> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/giardia-duodenalis> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Giardia duodenalis"@en ;
+    skos:altLabel "G. duodenalis"@en ,
+        "Giardia intestinalis"@en ,
+        "Giardia lamblia"@en ;
+    skos:definition "parasitic microorganism that causes giardiasis"@en ,
+        "species"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000006462> ,
+        <http://www.wikidata.org/entity/Q155630> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=5741> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/parasitic-hazards> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/hepatitis-a-virus> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Hepatitis A Virus"@en ;
+    skos:altLabel "HAV"@en ;
+    skos:definition "isolate"@en ,
+        "species of virus"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000006530> ,
+        <http://www.wikidata.org/entity/Q4112120> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=12092> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/viral-hazards> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/listeria> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Listeria"@en ;
+    skos:altLabel "Listeria spp."@en ;
+    skos:definition "genus"@en ,
+        "genus of bacteria"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000006899> ,
+        <http://www.wikidata.org/entity/Q746209> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=1637> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/bacterial-hazards> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/listeria-monocytogenes> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/listeria-monocytogenes> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Listeria monocytogenes"@en ;
+    skos:altLabel "L. monocytogenes"@en ;
+    skos:definition "species"@en ,
+        "species of bacterium"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000006903> ,
+        <http://www.wikidata.org/entity/Q292015> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=1639> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/listeria> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/norovirus> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Norovirus"@en ;
+    skos:altLabel "Norwalk virus"@en ;
+    skos:definition "genus"@en ,
+        "genus of viruses"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000007351> ,
+        <http://www.wikidata.org/entity/Q1142751> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=142786> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/viral-hazards> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/parasitic-hazards> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Parasitic Hazards"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/biological-hazards> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/cryptosporidium> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/cyclospora-cayetanensis> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/giardia-duodenalis> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/toxoplasma-gondii> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/trichinella> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/penicillium> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Penicillium"@en ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/toxigenic-fungi> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/penicillium-commune> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/penicillium-expansum> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/penicillium-verrucosum> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/penicillium-commune> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Penicillium commune"@en ;
+    skos:altLabel "P. commune"@en ;
+    skos:definition "species"@en ,
+        "species of fungus"@en ;
+    dct:source "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://www.wikidata.org/entity/Q10622907> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=36653> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/penicillium> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/penicillium-expansum> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Penicillium expansum"@en ;
+    skos:altLabel "P. expansum"@en ;
+    skos:definition "species"@en ,
+        "species of fungus"@en ;
+    dct:source "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://www.wikidata.org/entity/Q147358> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=27334> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/penicillium> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/penicillium-verrucosum> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Penicillium verrucosum"@en ;
+    skos:altLabel "P. verrucosum"@en ;
+    skos:definition "species"@en ,
+        "species of fungus"@en ;
+    dct:source "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://www.wikidata.org/entity/Q15020933> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=60171> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/penicillium> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/pseudomonas-aeruginosa> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Pseudomonas aeruginosa"@en ;
+    skos:altLabel "P. aeruginosa"@en ;
+    skos:definition "species"@en ,
+        "species of bacterium"@en ;
+    dct:source "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://www.wikidata.org/entity/Q31856> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=287> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/bacterial-hazards> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/salmonella> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Salmonella"@en ;
+    skos:altLabel "Salmonella spp."@en ;
+    skos:definition "genus"@en ,
+        "genus of bacteria"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000008421> ,
+        <http://www.wikidata.org/entity/Q150839> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=590> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/bacterial-hazards> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/salmonella-enterica> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/salmonella-enterica> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Salmonella enterica"@en ;
+    skos:altLabel "S. enterica"@en ;
+    skos:definition "species"@en ,
+        "species of bacterium etc of the platform"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://www.wikidata.org/entity/Q2264864> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=28901> ;
+    skos:narrowMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000008659> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/salmonella> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/salmonella-enteritidis> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/salmonella-typhimurium> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/salmonella-enteritidis> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Salmonella Enteritidis"@en ;
+    skos:altLabel "S. Enteritidis"@en ;
+    skos:definition "species of bacterium"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000009492> ,
+        <http://www.wikidata.org/entity/Q62897324> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=149539> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/salmonella-enterica> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/salmonella-typhimurium> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Salmonella Typhimurium"@en ;
+    skos:altLabel "S. Typhimurium"@en ;
+    skos:definition "species of bacterium"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000010744> ,
+        <http://www.wikidata.org/entity/Q166491> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=90371> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/salmonella-enterica> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/shigella> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Shigella"@en ;
+    skos:altLabel "Shigella spp."@en ;
+    skos:definition "genus"@en ,
+        "genus of bacteria"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000011141> ,
+        <http://www.wikidata.org/entity/Q131029> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=620> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/bacterial-hazards> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/staphylococcus> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Staphylococcus"@en ;
+    skos:altLabel "Staphylococcus spp."@en ;
+    skos:definition "genus"@en ,
+        "genus of Gram-positive bacteria"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000011421> ,
+        <http://www.wikidata.org/entity/Q199695> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=1279> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/bacterial-hazards> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/staphylococcus-aureus> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/staphylococcus-aureus> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Staphylococcus aureus"@en ;
+    skos:altLabel "S. aureus"@en ;
+    skos:definition "species"@en ,
+        "species of bacterium"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000011422> ,
+        <http://www.wikidata.org/entity/Q188121> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=1280> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/staphylococcus> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/toxigenic-fungi> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Toxigenic Fungi"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/biological-hazards> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/alternaria> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/aspergillus> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/claviceps> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/fusarium> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/penicillium> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/toxoplasma-gondii> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Toxoplasma gondii"@en ;
+    skos:altLabel "T. gondii"@en ;
+    skos:definition "obligate intracellular parasitic protozoan that causes toxoplasmosis"@en ,
+        "species"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000012100> ,
+        <http://www.wikidata.org/entity/Q131003> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=5811> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/parasitic-hazards> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/trichinella> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Trichinella"@en ;
+    skos:altLabel "Trichinella spp."@en ;
+    skos:definition "genus"@en ,
+        "genus of worms"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000012140> ,
+        <http://www.wikidata.org/entity/Q630285> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=6333> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/parasitic-hazards> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/vibrio> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Vibrio"@en ;
+    skos:altLabel "Vibrio spp."@en ;
+    skos:definition "genus"@en ,
+        "genus of gram-negative bacteria"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000012275> ,
+        <http://www.wikidata.org/entity/Q753490> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=662> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/bacterial-hazards> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/vibrio-cholerae> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/vibrio-parahaemolyticus> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/vibrio-vulnificus> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/vibrio-cholerae> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Vibrio cholerae"@en ;
+    skos:altLabel "V. cholerae"@en ;
+    skos:definition "species"@en ,
+        "species of bacterium"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000012276> ,
+        <http://www.wikidata.org/entity/Q160821> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=666> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/vibrio> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/vibrio-parahaemolyticus> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Vibrio parahaemolyticus"@en ;
+    skos:altLabel "V. parahaemolyticus"@en ;
+    skos:definition "species"@en ,
+        "species of bacterium"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000012277> ,
+        <http://www.wikidata.org/entity/Q134280> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=670> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/vibrio> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/vibrio-vulnificus> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Vibrio vulnificus"@en ;
+    skos:altLabel "V. vulnificus"@en ;
+    skos:definition "species"@en ,
+        "species of bacterium"@en ;
+    dct:source "FSKXO" ,
+        "NCBI taxonomy" ,
+        "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000012279> ,
+        <http://www.wikidata.org/entity/Q135183> ,
+        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=672> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/vibrio> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/viral-hazards> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/biological-hazards> ;
+    skos:prefLabel "Viral Hazards"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/biological-hazards> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/hepatitis-a-virus> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/norovirus> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/aflatoxin-b1> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
     skos:prefLabel "Aflatoxin B1"@en ;
+    skos:altLabel "AFB1"@en ;
     skos:definition "An aflatoxin having a tetrahydrocyclopenta[c]furo[3',2':4,5]furo[2,3-h]chromene skeleton with oxygen functionality at positions 1, 4 and 11."@en ,
         "chemical compound"@en ;
     dct:source "CHEBI" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://purl.obolibrary.org/obo/CHEBI_2504> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000003511> ,
-        <http://www.wikidata.org/entity/Q4689278> .
+        <http://www.wikidata.org/entity/Q4689278> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/aflatoxins> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxin/aflatoxin-b2> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> ;
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/aflatoxin-b2> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
     skos:prefLabel "Aflatoxin B2"@en ;
+    skos:altLabel "AFB2"@en ;
     skos:definition "An aflatoxin having a hexahydrocyclopenta[c]furo[3',2':4,5]furo[2,3-h]chromene skeleton with oxygen functionality at positions 1, 4 and 11."@en ,
         "chemical compound"@en ;
     dct:source "CHEBI" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://purl.obolibrary.org/obo/CHEBI_48209> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000003512> ,
-        <http://www.wikidata.org/entity/Q26840819> .
+        <http://www.wikidata.org/entity/Q26840819> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/aflatoxins> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxin/aflatoxin-g1> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> ;
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/aflatoxin-g1> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
     skos:prefLabel "Aflatoxin G1"@en ;
+    skos:altLabel "AFG1"@en ;
     skos:definition "chemical compound"@en ;
     dct:source "CHEBI" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://purl.obolibrary.org/obo/CHEBI_80706> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000003513> ,
-        <http://www.wikidata.org/entity/Q27094976> .
+        <http://www.wikidata.org/entity/Q27094976> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/aflatoxins> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxin/aflatoxin-g2> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> ;
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/aflatoxin-g2> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
     skos:prefLabel "Aflatoxin G2"@en ;
+    skos:altLabel "AFG2"@en ;
     skos:definition "chemical compound"@en ;
     dct:source "CHEBI" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://purl.obolibrary.org/obo/CHEBI_80705> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000003514> ,
-        <http://www.wikidata.org/entity/Q26841280> .
+        <http://www.wikidata.org/entity/Q26841280> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/aflatoxins> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxin/alternariol> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> ;
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/aflatoxins> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
+    skos:prefLabel "Aflatoxins"@en ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/mycotoxins> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/aflatoxin-b1> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/aflatoxin-b2> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/aflatoxin-g1> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/aflatoxin-g2> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/alternaria-toxins> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
+    skos:prefLabel "Alternaria Toxins"@en ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/mycotoxins> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/alternariol> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/tenuazonic-acid> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/alternariol> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
     skos:prefLabel "Alternariol"@en ;
+    skos:altLabel "AOH"@en ;
     skos:definition "A benzochromenone that is 6H-benzo[c]chromen-6-one which is substituted by a methyl group at position 1 and by hydroxy groups at positions 3, 7, and 9. It is the most important mycotoxin produced by the black mould Alternaria species, which are the most common mycoflora infecting small grain cereals worldwide."@en ,
         "chemical compound"@en ;
     dct:source "CHEBI" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://purl.obolibrary.org/obo/CHEBI_64983> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000003576> ,
-        <http://www.wikidata.org/entity/Q410677> .
+        <http://www.wikidata.org/entity/Q410677> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/alternaria-toxins> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxin/cyclopiazonic-acid> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> ;
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/cyclopiazonic-acid> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
     skos:prefLabel "Cyclopiazonic acid"@en ;
+    skos:altLabel "CPA"@en ;
     skos:definition "chemical compound"@en ;
     dct:source "CHEBI" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://purl.obolibrary.org/obo/CHEBI_38615> ,
-        <http://www.wikidata.org/entity/Q5198954> .
+        <http://www.wikidata.org/entity/Q5198954> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/other-mycotoxins> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxin/deoxynivalenol> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> ;
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/deoxynivalenol> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
     skos:prefLabel "Deoxynivalenol"@en ;
+    skos:altLabel "DON"@en ;
     skos:definition "A trichothecene mycotoxin produced by Fusarium to which wheat, barley, maize (corn) and their products are susceptible to contamination."@en ,
         "chemical compound"@en ;
     dct:source "CHEBI" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://purl.obolibrary.org/obo/CHEBI_10022> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000004896> ,
-        <http://www.wikidata.org/entity/Q420518> .
+        <http://www.wikidata.org/entity/Q420518> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/type-b-trichothecenes> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxin/ergot-alkaloid> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> ;
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/ergot-alkaloid> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
     skos:prefLabel "Ergot alkaloid"@en ;
+    skos:altLabel "Ergot toxins"@en ;
     skos:definition "alkaloids originally isolated from the ergot fungus Claviceps purpurea"@en ;
     dct:source "CHEBI" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://purl.obolibrary.org/obo/CHEBI_23943> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000005243> ,
-        <http://www.wikidata.org/entity/Q12748271> .
+        <http://www.wikidata.org/entity/Q12748271> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/ergot-alkaloids> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxin/fumonisin-b1> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> ;
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/ergot-alkaloids> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
+    skos:prefLabel "Ergot Alkaloids"@en ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/mycotoxins> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/ergot-alkaloid> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/fumonisin-b1> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
     skos:prefLabel "Fumonisin B1"@en ;
-    skos:definition "A diester that results from the formal condensation of the 1-carboxy groups of two molecules of propane-1,2,3-tricarboxylic acid with hydroxy groups at positions 14 and 15 of (2S,3S,5R,10R,12S,14S,15R,16R)-2-amino-12,16-dimethylicosane-3,5,10,14,15-pentol."@en ,
+    skos:altLabel "FB1"@en ;
+    skos:definition "A diester that results from the condensation of the 1-carboxy groups of two molecules of propane-1,2,3-tricarboxylic acid with hydroxy groups at positions 14 and 15 of (2S,3S,5R,10R,12S,14S,15R,16R)-2-amino-12,16-dimethylicosane-3,5,10,14,15-pentol."@en ,
         "chemical compound"@en ;
     dct:source "CHEBI" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://purl.obolibrary.org/obo/CHEBI_38221> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000006405> ,
-        <http://www.wikidata.org/entity/Q420762> .
+        <http://www.wikidata.org/entity/Q420762> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/fumonisins> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxin/fumonisin-b2> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> ;
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/fumonisin-b2> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
     skos:prefLabel "Fumonisin B2"@en ;
+    skos:altLabel "FB2"@en ;
     skos:definition "A fumonisin that is (2S,3S,12S,14S,15R,16R)-2-amino-12,16-dimethylicosane-3,14,15-triol in which the hydroxy groups at positions 14 and 15 have each been esterified by condensation with the 1-carboxy group of 3-carboxyglutaric acid (giving a 3-carboxyglutarate ester group with R configuration in each case)."@en ,
         "chemical compound"@en ;
     dct:source "CHEBI" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://purl.obolibrary.org/obo/CHEBI_38225> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000006406> ,
-        <http://www.wikidata.org/entity/Q5508613> .
+        <http://www.wikidata.org/entity/Q5508613> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/fumonisins> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxin/ht-2-toxin> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> ;
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/fumonisins> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
+    skos:prefLabel "Fumonisins"@en ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/mycotoxins> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/fumonisin-b1> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/fumonisin-b2> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/ht-2-toxin> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
     skos:prefLabel "HT-2 Toxin"@en ;
+    skos:altLabel "HT2 toxin"@en ;
     skos:definition "A trichothecene mycotoxin that is T-2 toxin in which the acetyloxy group at position 4S has been hydrolysed to the corresponding hydroxy group. It is the major metabolite of T-2 toxin."@en ,
         "chemical compound"@en ;
     dct:source "CHEBI" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://purl.obolibrary.org/obo/CHEBI_138861> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000006571> ,
-        <http://www.wikidata.org/entity/Q27896911> .
+        <http://www.wikidata.org/entity/Q27896911> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/type-a-trichothecenes> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxin/mycophenolic-acid> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> ;
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/mycophenolic-acid> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
     skos:prefLabel "Mycophenolic acid"@en ;
+    skos:altLabel "MPA"@en ;
     skos:definition "A member of the class of 2-benzofurans that is 2-benzofuran-1(3H)-one which is substituted at positions 4, 5, 6, and 7 by methyl, methoxy, (2E)-5-carboxy-3-methylpent-2-en-1-yl, and hydroxy groups, respectively. It is an antibiotic produced by Penicillium brevi-compactum, P. stoloniferum, P. echinulatum and related species. An immunosuppressant, it is widely used (partiularly as its sodium salt and as the 2-(morpholin-4-yl)ethyl ester prodrug, mycophenolate mofetil) to prevent tissue rejection following organ transplants and for the treatment of certain autoimmune diseases."@en ,
         "chemical compound"@en ;
     dct:source "CHEBI" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://purl.obolibrary.org/obo/CHEBI_168396> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000007211> ,
-        <http://www.wikidata.org/entity/Q420553> .
+        <http://www.wikidata.org/entity/Q420553> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/other-mycotoxins> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxin/nivalenol> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> ;
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/mycotoxins> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
+    skos:prefLabel "Mycotoxins"@en ;
+    amb:isSelectable "false"^^xsd:boolean ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/aflatoxins> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/alternaria-toxins> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/ergot-alkaloids> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/fumonisins> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/ochratoxins> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/other-mycotoxins> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/patulin> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/trichothecenes> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/zearalenones> ;
+    skos:topConceptOf <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/nivalenol> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
     skos:prefLabel "Nivalenol"@en ;
+    skos:altLabel "NIV"@en ;
     skos:definition "chemical compound"@en ;
     dct:source "CHEBI" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://purl.obolibrary.org/obo/CHEBI_7599> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000007327> ,
-        <http://www.wikidata.org/entity/Q63395242> .
+        <http://www.wikidata.org/entity/Q63395242> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/type-b-trichothecenes> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxin/ochratoxin-a> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> ;
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/ochratoxin-a> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
     skos:prefLabel "Ochratoxin A"@en ;
+    skos:altLabel "OTA"@en ;
     skos:definition "A phenylalanine derivative resulting from the formal condensation of the amino group of L-phenylalanine with the carboxy group of (3R)-5-chloro-8-hydroxy-3-methyl-1-oxo-3,4-dihydro-1H-2-benzopyran-7-carboxylic acid (ochratoxin alpha). It is among the most widely occurring food-contaminating mycotoxins, produced by Aspergillus ochraceus, Aspergillus carbonarius and Penicillium verrucosum."@en ,
         "chemical compound"@en ;
     dct:source "CHEBI" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://purl.obolibrary.org/obo/CHEBI_7719> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000007367> ,
-        <http://www.wikidata.org/entity/Q1885038> .
+        <http://www.wikidata.org/entity/Q1885038> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/ochratoxins> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxin/patulin> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> ;
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/ochratoxins> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
+    skos:prefLabel "Ochratoxins"@en ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/mycotoxins> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/ochratoxin-a> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/other-mycotoxins> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
+    skos:prefLabel "Other Mycotoxins"@en ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/mycotoxins> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/cyclopiazonic-acid> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/mycophenolic-acid> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/patulin> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
     skos:prefLabel "Patulin"@en ;
     skos:definition "A furopyran and lactone that is (2H-pyran-3(6H)-ylidene)acetic acid which is substituted by hydroxy groups at positions 2 and 4 and in which the hydroxy group at position 4 has condensed with the carboxy group to give the corresponding bicyclic lactone. A mycotoxin produced by several species of Aspergillus and Penicillium, it has antibiotic properties but has been shown to be carcinogenic and mutagenic."@en ,
         "chemical compound"@en ;
     dct:source "CHEBI" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://purl.obolibrary.org/obo/CHEBI_74926> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000007733> ,
-        <http://www.wikidata.org/entity/Q414526> .
+        <http://www.wikidata.org/entity/Q414526> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/mycotoxins> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxin/t-2-toxin> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> ;
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/t-2-toxin> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
     skos:prefLabel "T-2 Toxin"@en ;
+    skos:altLabel "T2 toxin"@en ;
     skos:definition "A trichothecene mycotoxin produced by fungi of the genus Fusarium. It is a common contaminant in food and feedstuffs of cereal origin and is known to cause a range of toxic effects in humans and animals."@en ,
         "chemical compound"@en ;
     dct:source "CHEBI" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://purl.obolibrary.org/obo/CHEBI_9381> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000011685> ,
-        <http://www.wikidata.org/entity/Q421570> .
+        <http://www.wikidata.org/entity/Q421570> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/type-a-trichothecenes> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxin/tenuazonic-acid> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> ;
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/tenuazonic-acid> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
     skos:prefLabel "Tenuazonic acid"@en ;
+    skos:altLabel "TeA"@en ;
     skos:definition "A member of the class of pyrrolidin-2-ones that is 5-(butan-2-yl)pyrrolidine-2,4-dione carrying an additional acetyl group at position 3. A mycotoxin produced by various plant pathogenic fungi."@en ,
-        "group of stereoisomers with the chemical formula C₁₀H₁₅NO₃"@en ;
+        "group of stereoisomers with the chemical formula C??H??NO?"@en ;
     dct:source "CHEBI" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://purl.obolibrary.org/obo/CHEBI_9440> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000011918> ,
-        <http://www.wikidata.org/entity/Q103817650> .
+        <http://www.wikidata.org/entity/Q103817650> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/alternaria-toxins> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxin/zearalenone> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxin> ;
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/trichothecenes> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
+    skos:prefLabel "Trichothecenes"@en ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/mycotoxins> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/type-a-trichothecenes> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/type-b-trichothecenes> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/type-a-trichothecenes> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
+    skos:prefLabel "Type A Trichothecenes"@en ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/trichothecenes> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/ht-2-toxin> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/t-2-toxin> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/type-b-trichothecenes> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
+    skos:prefLabel "Type B Trichothecenes"@en ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/trichothecenes> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/deoxynivalenol> ,
+        <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/nivalenol> .
+
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/zearalenone> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
     skos:prefLabel "Zearalenone"@en ;
+    skos:altLabel "ZEA"@en ;
     skos:definition "A macrolide comprising a fourteen-membered lactone fused to 1,3-dihydroxybenzene; a potent estrogenic metabolite produced by some Giberella species."@en ,
         "chemical compound"@en ;
     dct:source "CHEBI" ,
         "FSKXO" ,
         "Wikidata" ;
+    amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://purl.obolibrary.org/obo/CHEBI_10106> ,
         <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000012403> ,
-        <http://www.wikidata.org/entity/Q169326> .
+        <http://www.wikidata.org/entity/Q169326> ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/zearalenones> .
 
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/aeromonas-hydrophila> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Aeromonas hydrophila"@en ;
-    skos:definition "species"@en ,
-        "species of bacterium"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000003505> ,
-        <http://www.wikidata.org/entity/Q2697755> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/644> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/alternaria-alternata> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Alternaria alternata"@en ;
-    skos:definition "species"@en ,
-        "species of fungus"@en ;
-    dct:source "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://www.wikidata.org/entity/Q2704244> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/5599> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/aspergillus-flavus> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Aspergillus flavus"@en ;
-    skos:definition "aspergillus flavus"@en ,
-        "species"@en ;
-    dct:source "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://www.wikidata.org/entity/Q137096> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/5059> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/aspergillus-nomius> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Aspergillus nomius"@en ;
-    skos:definition "genus"@en ,
-        "species of fungus"@en ;
-    dct:source "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://www.wikidata.org/entity/Q10420032> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/177448> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/aspergillus-ochraceus> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Aspergillus ochraceus"@en ;
-    skos:definition "species"@en ,
-        "species of fungus"@en ;
-    dct:source "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://www.wikidata.org/entity/Q4807897> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/40380> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/aspergillus-parasiticus> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Aspergillus parasiticus"@en ;
-    skos:definition "species"@en ,
-        "species of fungus"@en ;
-    dct:source "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://www.wikidata.org/entity/Q432356> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/5067> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/bacillus-cereus> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Bacillus cereus"@en ;
-    skos:definition "species"@en ,
-        "species of bacterium"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000003790> ,
-        <http://www.wikidata.org/entity/Q131307> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/1396> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/campylobacter-coli> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Campylobacter coli"@en ;
-    skos:definition "species"@en ,
-        "species of bacterium"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000004166> ,
-        <http://www.wikidata.org/entity/Q1031711> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/195> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/campylobacter-jejuni> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Campylobacter jejuni"@en ;
-    skos:definition "species"@en ,
-        "species of bacterium"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000004177> ,
-        <http://www.wikidata.org/entity/Q265488> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/197> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/claviceps-purpurea> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Claviceps purpurea"@en ;
-    skos:definition "species"@en ,
-        "species of fungus"@en ;
-    dct:source "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://www.wikidata.org/entity/Q217227> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/5111> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/clostridioides> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Clostridioides"@en ;
-    skos:definition "genus"@en ,
-        "genus of bacteria"@en ;
-    dct:source "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://www.wikidata.org/entity/Q27438828> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/1870884> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/clostridioides-difficile> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Clostridioides difficile"@en ;
-    skos:definition "species"@en ,
-        "species of bacterium"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000004480> ,
-        <http://www.wikidata.org/entity/Q56290719> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/1496> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/clostridium> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Clostridium"@en ;
-    skos:definition "genus"@en ,
-        "genus of prokaryotes"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000004478> ,
-        <http://www.wikidata.org/entity/Q327663> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/1485> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/clostridium-botulinum> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Clostridium botulinum"@en ;
-    skos:definition "species"@en ,
-        "species of bacterium"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000004479> ,
-        <http://www.wikidata.org/entity/Q131268> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/1491> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/clostridium-perfringens> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Clostridium perfringens"@en ;
-    skos:definition "species"@en ,
-        "species of bacteria"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000004482> ,
-        <http://www.wikidata.org/entity/Q309465> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/1502> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/cronobacter-sakazakii> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Cronobacter sakazakii"@en ;
-    skos:definition "species"@en ,
-        "species of Gammaproteobacteria"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000004624> ,
-        <http://www.wikidata.org/entity/Q25841585> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/28141> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/cryptosporidium-parvum> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Cryptosporidium parvum"@en ;
-    skos:definition "species"@en ,
-        "species of apicomplexan parasitic alveolate"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000004634> ,
-        <http://www.wikidata.org/entity/Q134734> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/5807> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/cyclospora-cayetanensis> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Cyclospora cayetanensis"@en ;
-    skos:definition "protozoan that causes disease in humans"@en ,
-        "species"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000004795> ,
-        <http://www.wikidata.org/entity/Q3008600> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/88456> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/escherichia-coli> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Escherichia coli"@en ;
-    skos:definition "enteric, rod shaped, gram-negative bacterium"@en ,
-        "species"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000005259> ,
-        <http://www.wikidata.org/entity/Q25419> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/562> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/fusarium-culmorum> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Fusarium culmorum"@en ;
-    skos:definition "species"@en ,
-        "species of fungus"@en ;
-    dct:source "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://www.wikidata.org/entity/Q2712591> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/5516> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/fusarium-graminearum> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Fusarium graminearum"@en ;
-    skos:definition "species"@en ,
-        "species of fungus"@en ;
-    dct:source "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://www.wikidata.org/entity/Q103806070> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/5518> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/fusarium-poae> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Fusarium poae"@en ;
-    skos:definition "species"@en ,
-        "species of fungus"@en ;
-    dct:source "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://www.wikidata.org/entity/Q1475268> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/36050> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/fusarium-proliferatum> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Fusarium proliferatum"@en ;
-    skos:definition "species"@en ,
-        "species of fungus"@en ;
-    dct:source "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://www.wikidata.org/entity/Q5509912> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/948311> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/fusarium-sporotrichioides> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Fusarium sporotrichioides"@en ;
-    skos:definition "species"@en ,
-        "species of fungus"@en ;
-    dct:source "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://www.wikidata.org/entity/Q5114748> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/5514> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/fusarium-verticillioides> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Fusarium verticillioides"@en ;
-    skos:definition "species"@en ,
-        "species of Sordariomycetes fungus"@en ;
-    dct:source "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://www.wikidata.org/entity/Q26828071> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/117187> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/giardia-duodenalis> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Giardia duodenalis"@en ;
-    skos:definition "parasitic microorganism that causes giardiasis"@en ,
-        "species"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000006462> ,
-        <http://www.wikidata.org/entity/Q155630> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/5741> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/hepatitis-a-virus> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Hepatitis A Virus"@en ;
-    skos:definition "isolate"@en ,
-        "species of virus"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000006530> ,
-        <http://www.wikidata.org/entity/Q4112120> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/12092> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/listeria> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Listeria"@en ;
-    skos:definition "genus"@en ,
-        "genus of bacteria"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000006899> ,
-        <http://www.wikidata.org/entity/Q746209> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/1637> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/listeria-monocytogenes> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Listeria monocytogenes"@en ;
-    skos:definition "species"@en ,
-        "species of bacterium"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000006903> ,
-        <http://www.wikidata.org/entity/Q292015> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/1639> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/norovirus> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Norovirus"@en ;
-    skos:definition "genus"@en ,
-        "genus of viruses"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000007351> ,
-        <http://www.wikidata.org/entity/Q1142751> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/142786> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/penicillium-commune> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Penicillium commune"@en ;
-    skos:definition "species"@en ,
-        "species of fungus"@en ;
-    dct:source "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://www.wikidata.org/entity/Q10622907> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/36653> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/penicillium-expansum> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Penicillium expansum"@en ;
-    skos:definition "species"@en ,
-        "species of fungus"@en ;
-    dct:source "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://www.wikidata.org/entity/Q147358> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/27334> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/penicillium-verrucosum> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Penicillium verrucosum"@en ;
-    skos:definition "species"@en ,
-        "species of fungus"@en ;
-    dct:source "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://www.wikidata.org/entity/Q15020933> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/60171> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/pseudomonas-aeruginosa> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Pseudomonas aeruginosa"@en ;
-    skos:definition "species"@en ,
-        "species of bacterium"@en ;
-    dct:source "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://www.wikidata.org/entity/Q31856> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/287> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/salmonella> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Salmonella"@en ;
-    skos:definition "genus"@en ,
-        "genus of bacteria"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000008421> ,
-        <http://www.wikidata.org/entity/Q150839> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/590> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/salmonella-enterica> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Salmonella enterica"@en ;
-    skos:definition "species"@en ,
-        "species of bacterium etc of the platform"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://www.wikidata.org/entity/Q2264864> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/28901> ;
-    skos:narrowMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000008659> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/salmonella-enteritidis> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Salmonella Enteritidis"@en ;
-    skos:definition "species of bacterium"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000009492> ,
-        <http://www.wikidata.org/entity/Q62897324> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/149539> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/salmonella-typhimurium> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Salmonella Typhimurium"@en ;
-    skos:definition "species of bacterium"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000010744> ,
-        <http://www.wikidata.org/entity/Q166491> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/90371> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/shigella> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Shigella"@en ;
-    skos:definition "genus"@en ,
-        "genus of bacteria"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000011141> ,
-        <http://www.wikidata.org/entity/Q131029> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/620> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/staphylococcus> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Staphylococcus"@en ;
-    skos:definition "genus"@en ,
-        "genus of Gram-positive bacteria"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000011421> ,
-        <http://www.wikidata.org/entity/Q199695> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/1279> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/staphylococcus-aureus> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Staphylococcus aureus"@en ;
-    skos:definition "species"@en ,
-        "species of bacterium"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000011422> ,
-        <http://www.wikidata.org/entity/Q188121> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/1280> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/toxoplasma-gondii> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Toxoplasma gondii"@en ;
-    skos:definition "obligate intracellular parasitic protozoan that causes toxoplasmosis"@en ,
-        "species"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000012100> ,
-        <http://www.wikidata.org/entity/Q131003> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/5811> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/trichinella> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Trichinella"@en ;
-    skos:definition "genus"@en ,
-        "genus of worms"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000012140> ,
-        <http://www.wikidata.org/entity/Q630285> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/6333> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/vibrio> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Vibrio"@en ;
-    skos:definition "genus"@en ,
-        "genus of gram-negative bacteria"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000012275> ,
-        <http://www.wikidata.org/entity/Q753490> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/662> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/vibrio-cholerae> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Vibrio cholerae"@en ;
-    skos:definition "species"@en ,
-        "species of bacterium"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000012276> ,
-        <http://www.wikidata.org/entity/Q160821> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/666> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/vibrio-parahaemolyticus> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Vibrio parahaemolyticus"@en ;
-    skos:definition "species"@en ,
-        "species of bacterium"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000012277> ,
-        <http://www.wikidata.org/entity/Q134280> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/670> .
-
-<https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/vibrio-vulnificus> a skos:Concept ;
-    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/pathogen> ;
-    skos:prefLabel "Vibrio vulnificus"@en ;
-    skos:definition "species"@en ,
-        "species of bacterium"@en ;
-    dct:source "FSKXO" ,
-        "NCBI taxonomy" ,
-        "Wikidata" ;
-    skos:exactMatch <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000012279> ,
-        <http://www.wikidata.org/entity/Q135183> ,
-        <https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/672> .
+<https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/zearalenones> a skos:Concept ;
+    skos:inScheme <https://w3id.org/ambrosia/pathogen-vocab#scheme/mycotoxins> ;
+    skos:prefLabel "Zearalenones"@en ;
+    amb:isSelectable "true"^^xsd:boolean ;
+    skos:broader <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/mycotoxins> ;
+    skos:narrower <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/zearalenone> .

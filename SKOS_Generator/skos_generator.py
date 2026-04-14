@@ -2,12 +2,17 @@ import streamlit as st
 import pandas as pd
 import re
 import io
+import csv
 import rdflib
 import json # Import the json module
 import datetime
+from urllib.parse import quote
 from .prefix_manager import extract_prefixes, find_relevant_prefixes
 from rdflib import Graph, URIRef, Literal, BNode
 from rdflib.namespace import SKOS, DCTERMS, RDF, RDFS, XSD
+
+AMB_NAMESPACE_URI = "https://w3id.org/ambrosia/ontology#"
+AMB_IS_SELECTABLE = URIRef(f"{AMB_NAMESPACE_URI}isSelectable")
 
 # Define vocabulary mappings
 VOCAB_MAPPINGS = {
@@ -60,20 +65,35 @@ def bump_semver(version: str, bump: str = "patch") -> str:
         return f"{major}.{minor + 1}.0"
     return f"{major}.{minor}.{patch + 1}"
 
+ORCID_BASE = "https://orcid.org/"
+
+def _normalize_agent_token(token: str) -> str:
+    token = token.strip()
+    if not token:
+        return ""
+    if token.startswith("http://") or token.startswith("https://"):
+        return token
+    orcid_match = re.fullmatch(r"\d{4}-\d{4}-\d{4}-\d{4}", token)
+    if orcid_match:
+        return f"{ORCID_BASE}{token}"
+    return token
+
+
 def _parse_agents(raw: str):
     """
-    Comma-separated list. If token starts with http(s), return URIRef, else Literal.
+    Comma-separated list. If token looks like a URL or ORCID ID, return URIRef; else Literal.
     """
     agents = []
     if not raw:
         return agents
-    for token in [t.strip() for t in raw.split(",")]:
-        if not token:
+    for token in raw.split(","):
+        normalized = _normalize_agent_token(token)
+        if not normalized:
             continue
-        if token.startswith("http://") or token.startswith("https://"):
-            agents.append(URIRef(token))
+        if normalized.startswith("http://") or normalized.startswith("https://"):
+            agents.append(URIRef(normalized))
         else:
-            agents.append(Literal(token))
+            agents.append(Literal(normalized))
     return agents
 
 def extract_scheme_provenance(g: Graph) -> dict:
@@ -161,20 +181,230 @@ def slugify(value):
     value = re.sub(r'[-\s]+', '-', value)
     return value
 
+
+def _clean_cell_value(value):
+    """
+    Normalize a dataframe cell value into stripped text.
+    Returns None for NaN/empty values.
+    """
+    if pd.isna(value):
+        return None
+    text = str(value).strip()
+    return text if text else None
+
+
+def _looks_like_uri(value):
+    text = _clean_cell_value(value)
+    if not text:
+        return False
+    lowered = text.lower()
+    return lowered.startswith("http://") or lowered.startswith("https://")
+
+
+def _resolve_concept_group(row):
+    """
+    Resolve scheme/group in a backward-compatible order.
+    Prioritizes the new `scheme` column.
+    """
+    scheme = _clean_cell_value(row.get('scheme'))
+    if scheme and scheme.lower() not in {"not_in_source", "none", "null"}:
+        return scheme
+
+    proposed_scheme = _clean_cell_value(row.get('proposed_scheme'))
+    if proposed_scheme and proposed_scheme.lower() not in {"not_in_source", "none", "null"}:
+        return proposed_scheme
+
+    concept_group = _clean_cell_value(row.get('ConceptGroup'))
+    if concept_group:
+        return concept_group
+
+    top_concept = _clean_cell_value(row.get('top_concept'))
+    if top_concept:
+        return top_concept
+
+    current_scheme = _clean_cell_value(row.get('current_scheme'))
+    if current_scheme and current_scheme.lower() not in {"not_in_source", "none", "null"}:
+        return current_scheme
+
+    return None
+
+
+def _resolve_pref_label(row):
+    """
+    Prefer new `prefLabel`, fallback to legacy `Term`.
+    """
+    return _clean_cell_value(row.get('prefLabel')) or _clean_cell_value(row.get('Term'))
+
+
+def _resolve_concept_id(row):
+    """
+    Resolve the concept identifier from the new schema.
+    """
+    return _clean_cell_value(row.get('id'))
+
+
+def _parse_alt_labels_from_row(row):
+    """
+    Parse alt labels from new `altLabels` (pipe-separated) and legacy `altLabel`.
+    Supports both pipe and comma separators to remain backward-compatible.
+    """
+    seen = set()
+    labels = []
+    for column in ('altLabels', 'altLabel'):
+        raw = _clean_cell_value(row.get(column))
+        if not raw:
+            continue
+        for token in re.split(r"[|,]", raw):
+            cleaned = token.strip()
+            if not cleaned:
+                continue
+            key = cleaned.casefold()
+            if key in seen:
+                continue
+            seen.add(key)
+            labels.append(cleaned)
+    return labels
+
+
+def _normalize_boolean(value):
+    """
+    Normalize common truthy/falsey representations into bool.
+    Returns None when the value cannot be interpreted.
+    """
+    text = _clean_cell_value(value)
+    if text is None:
+        return None
+
+    normalized = text.lower()
+    truthy = {"true", "1", "yes", "y", "t"}
+    falsey = {"false", "0", "no", "n", "f"}
+
+    if normalized in truthy:
+        return True
+    if normalized in falsey:
+        return False
+    return None
+
+
+def _build_scheme_uri(base_namespace_uri, scheme_value):
+    if not scheme_value:
+        return None
+    if _looks_like_uri(scheme_value):
+        return URIRef(scheme_value)
+
+    scheme_slug = slugify(str(scheme_value))
+    if not scheme_slug:
+        return None
+    return URIRef(f"{base_namespace_uri}scheme/{scheme_slug}")
+
+
+def _build_concept_uri(base_namespace_uri, scheme_value, concept_id, pref_label):
+    """
+    Build concept URI using id as authoritative local identifier.
+    Falls back to slugified pref label only when id is missing.
+    """
+    if concept_id and _looks_like_uri(concept_id):
+        return URIRef(concept_id)
+
+    local_identifier = concept_id or slugify(pref_label or "")
+    local_identifier = _clean_cell_value(local_identifier)
+    if not local_identifier:
+        return None
+
+    safe_local_identifier = quote(local_identifier, safe="-._~")
+
+    group_slug = None
+    if scheme_value and not _looks_like_uri(scheme_value):
+        group_slug = slugify(str(scheme_value))
+
+    if group_slug:
+        return URIRef(f"{base_namespace_uri}concept/{group_slug}/{safe_local_identifier}")
+    return URIRef(f"{base_namespace_uri}concept/{safe_local_identifier}")
+
+
+def load_input_table(uploaded_file):
+    """
+    Load uploaded .xlsx or .csv files into a DataFrame.
+    CSV parsing is robust to semicolon/comma delimiters and common encodings.
+    """
+    file_name = (uploaded_file.name or "").lower()
+
+    if file_name.endswith(".csv"):
+        raw_bytes = uploaded_file.getvalue()
+        encodings_to_try = ["utf-8-sig", "utf-8", "cp1252", "latin-1"]
+        parsing_errors = []
+
+        for encoding in encodings_to_try:
+            try:
+                text = raw_bytes.decode(encoding)
+            except UnicodeDecodeError as err:
+                parsing_errors.append(f"{encoding}: decode error ({err})")
+                continue
+
+            sample = text[:8192]
+            delimiter = ';'
+            try:
+                sniffed = csv.Sniffer().sniff(sample, delimiters=';,\t|,')
+                delimiter = sniffed.delimiter
+            except Exception:
+                if sample.count(',') > sample.count(';'):
+                    delimiter = ','
+
+            try:
+                df = pd.read_csv(io.StringIO(text), sep=delimiter)
+                return df, f"CSV (encoding={encoding}, delimiter='{delimiter}')"
+            except Exception as err:
+                parsing_errors.append(f"{encoding}: parse error ({err})")
+
+        raise ValueError("Unable to parse CSV file. Tried multiple encodings and delimiters. " + " | ".join(parsing_errors))
+
+    # Default: Excel
+    df = pd.read_excel(uploaded_file)
+    return df, "Excel (.xlsx)"
+
 def extend_vocabulary(graph, df, base_namespace_uri, language_pref_label=None, language_alt_label=None, language_definition=None):
     conflicts = []
-    report = {"new": [], "updated": [], "conflicts": []}
+    report = {
+        "new": [],
+        "updated": [],
+        "conflicts": [],
+        "hierarchy": {
+            "broader_links": 0,
+            "top_links": 0,
+            "unresolved_parents": []
+        }
+    }
+
+    hierarchy_columns = {
+        "broader_id",
+        "broader_direct",
+        "parent_label",
+        "parent_id_or_uri",
+        "top_concept",
+        "hierarchy_role",
+        "concept_type",
+    }
+    has_hierarchy_data = any(col in df.columns for col in hierarchy_columns)
 
     # Ensure all concept schemes exist before processing terms
-    unique_concept_groups = df['ConceptGroup'].dropna().unique()
-    for group in unique_concept_groups:
-        group_slug = slugify(str(group))
-        # Use /scheme/ path for ConceptScheme URIs
-        scheme_uri = URIRef(f"{base_namespace_uri}scheme/{group_slug}")
+    unique_concept_groups = set()
+    for _, row in df.iterrows():
+        group = _resolve_concept_group(row)
+        if group:
+            unique_concept_groups.add(group)
+
+    for group in sorted(unique_concept_groups, key=lambda x: x.lower()):
+        scheme_uri = _build_scheme_uri(base_namespace_uri, group)
+        if not scheme_uri:
+            continue
+
         if (scheme_uri, RDF.type, SKOS.ConceptScheme) not in graph:
+            scheme_label = str(group)
+            if _looks_like_uri(group):
+                scheme_label = str(group).rstrip('/#').split('/')[-1].replace('_', ' ').replace('-', ' ') or str(group)
             graph.add((scheme_uri, RDF.type, SKOS.ConceptScheme))
-            graph.add((scheme_uri, DCTERMS.title, Literal(f"{group} Vocabulary", lang=language_pref_label)))
-            graph.add((scheme_uri, DCTERMS.description, Literal(f"A controlled vocabulary of {group} concepts from the Ambrosia project.", lang=language_definition)))
+            graph.add((scheme_uri, DCTERMS.title, Literal(f"{scheme_label} Vocabulary", lang=language_pref_label)))
+            graph.add((scheme_uri, DCTERMS.description, Literal(f"A controlled vocabulary of {scheme_label} concepts from the Ambrosia project.", lang=language_definition)))
     
     match_type_mapping = {
         "skos:exactmatch": SKOS.exactMatch,
@@ -184,15 +414,30 @@ def extend_vocabulary(graph, df, base_namespace_uri, language_pref_label=None, l
         "skos:relatedmatch": SKOS.relatedMatch
     }
 
+    row_context = []
+    concept_id_to_concept_uri = {}
+    label_to_concept_uri = {}
+
     for index, row in df.iterrows():
-        term = row.get('Term')
-        if pd.isna(term) or not term.strip():
+        term = _resolve_pref_label(row)
+        if not term:
+            continue
+
+        concept_id = _resolve_concept_id(row)
+        alt_labels = _parse_alt_labels_from_row(row)
+        concept_group = _resolve_concept_group(row)
+        scheme_uri = _build_scheme_uri(base_namespace_uri, concept_group)
+        generated_concept_uri = _build_concept_uri(base_namespace_uri, concept_group, concept_id, term)
+        if not generated_concept_uri:
             continue
 
         # Check if a concept with this term already exists.
         # This check is now more specific to prevent conflicts with ConceptSchemes.
         # It explicitly looks for a subject that is of type skos:Concept.
         existing_concept_uri = None
+        if (generated_concept_uri, RDF.type, SKOS.Concept) in graph:
+            existing_concept_uri = generated_concept_uri
+
         for s in graph.subjects(SKOS.prefLabel, Literal(term, lang=language_pref_label)):
             # Confirm that the found subject is actually a Concept.
             if (s, RDF.type, SKOS.Concept) in graph:
@@ -201,21 +446,13 @@ def extend_vocabulary(graph, df, base_namespace_uri, language_pref_label=None, l
         
         if not existing_concept_uri:
             # Also check altLabels, with the same explicit type check.
-            alt_labels_raw = row.get('altLabel')
-            if pd.notna(alt_labels_raw):
-                for alt_label_text in str(alt_labels_raw).split(','):
-                    stripped_alt_label = alt_label_text.strip()
-                    if stripped_alt_label:
-                        for s in graph.subjects(SKOS.altLabel, Literal(stripped_alt_label, lang=language_alt_label)):
-                            if (s, RDF.type, SKOS.Concept) in graph:
-                                existing_concept_uri = s
-                                break
-                    if existing_concept_uri:
+            for alt_label in alt_labels:
+                for s in graph.subjects(SKOS.altLabel, Literal(alt_label, lang=language_alt_label)):
+                    if (s, RDF.type, SKOS.Concept) in graph:
+                        existing_concept_uri = s
                         break
-        
-        slugified_term = slugify(term)
-        concept_group = row.get('ConceptGroup')
-        group_slug = slugify(str(concept_group)) if pd.notna(concept_group) and str(concept_group).strip() else None
+                if existing_concept_uri:
+                    break
         
         if existing_concept_uri:
             # Concept exists, merge properties
@@ -224,76 +461,172 @@ def extend_vocabulary(graph, df, base_namespace_uri, language_pref_label=None, l
         else:
             # Concept does not exist, create a new one
             report["new"].append(term)
-            # Use /concept/ path for Concept URIs, nested under group if available
-            if group_slug:
-                concept_uri = URIRef(f"{base_namespace_uri}concept/{group_slug}/{slugified_term}")
-            else:
-                concept_uri = URIRef(f"{base_namespace_uri}concept/{slugified_term}")
+            concept_uri = generated_concept_uri
             
             graph.add((concept_uri, RDF.type, SKOS.Concept))
             graph.add((concept_uri, SKOS.prefLabel, Literal(term, lang=language_pref_label)))
 
-            if group_slug:
-                # Link concept to its scheme using the new scheme URI structure
-                scheme_uri = URIRef(f"{base_namespace_uri}scheme/{group_slug}")
-                graph.add((concept_uri, SKOS.inScheme, scheme_uri))
+        if scheme_uri:
+            # Prefer a single inScheme when explicit scheme columns are available.
+            if _clean_cell_value(row.get('scheme')) or _clean_cell_value(row.get('proposed_scheme')):
+                graph.remove((concept_uri, SKOS.inScheme, None))
+            graph.add((concept_uri, SKOS.inScheme, scheme_uri))
+
+        # Ensure prefLabel exists even for already-existing concepts.
+        pref_label_literal = Literal(term, lang=language_pref_label)
+        if (concept_uri, SKOS.prefLabel, pref_label_literal) not in graph:
+            graph.add((concept_uri, SKOS.prefLabel, pref_label_literal))
 
         # --- Merge altLabels ---
-        alt_labels_raw = row.get('altLabel')
-        if pd.notna(alt_labels_raw):
-            for alt_label_text in str(alt_labels_raw).split(','):
-                stripped_alt_label = alt_label_text.strip()
-                if stripped_alt_label:
-                    graph.add((concept_uri, SKOS.altLabel, Literal(stripped_alt_label, lang=language_alt_label)))
+        for alt_label in alt_labels:
+            graph.add((concept_uri, SKOS.altLabel, Literal(alt_label, lang=language_alt_label)))
 
         # --- Merge definitions and sources ---
         for i in range(1, 4):
-            description = row.get(f'ProviderDescription{i}')
-            if pd.notna(description):
+            description = _clean_cell_value(row.get(f'ProviderDescription{i}'))
+            if description:
                 graph.add((concept_uri, SKOS.definition, Literal(description, lang=language_definition)))
             
-            source_provider = row.get(f'SourceProvider{i}')
-            if pd.notna(source_provider):
-                graph.add((concept_uri, DCTERMS.source, Literal(str(source_provider).strip())))
+            source_provider = _clean_cell_value(row.get(f'SourceProvider{i}'))
+            if source_provider:
+                graph.add((concept_uri, DCTERMS.source, Literal(source_provider)))
 
         # --- Merge mappings and detect conflicts ---
         for i in range(1, 4):
-            external_uri_str = row.get(f'URI{i}')
-            match_type_str = row.get(f'Match Type{i}')
-            if pd.notna(external_uri_str) and pd.notna(match_type_str):
-                skos_property = match_type_mapping.get(str(match_type_str).lower().strip())
-                if skos_property:
-                    new_mapping_uri = URIRef(external_uri_str)
-                    
-                    # Check for conflicts by namespace
-                    new_namespace = "/".join(new_mapping_uri.split("/")[:-1])
-                    
-                    conflict_found = False
-                    for existing_mapping in graph.objects(concept_uri, skos_property):
-                        existing_namespace = "/".join(existing_mapping.split("/")[:-1])
-                        if new_namespace == existing_namespace and new_mapping_uri != existing_mapping:
-                            conflict = {
-                                "term": term,
-                                "concept_uri": str(concept_uri),
-                                "property": str(skos_property),
-                                "existing_uri": str(existing_mapping),
-                                "new_uri": str(new_mapping_uri),
-                                "row_index": index
-                            }
-                            conflicts.append(conflict)
-                            report["conflicts"].append(term)
-                            conflict_found = True
-                            break
-                    
-                if not conflict_found:
-                    # Add the new mapping if it doesn't already exist
-                    if (concept_uri, skos_property, new_mapping_uri) not in graph:
-                        graph.add((concept_uri, skos_property, new_mapping_uri))
+            external_uri_str = _clean_cell_value(row.get(f'URI{i}'))
+            match_type_str = _clean_cell_value(row.get(f'Match Type{i}'))
+            if not external_uri_str or not match_type_str:
+                continue
+
+            skos_property = match_type_mapping.get(match_type_str.lower())
+            if not skos_property:
+                continue
+
+            new_mapping_uri = URIRef(external_uri_str)
+
+            # Check for conflicts by namespace
+            new_namespace = "/".join(str(new_mapping_uri).split("/")[:-1])
+
+            conflict_found = False
+            for existing_mapping in graph.objects(concept_uri, skos_property):
+                existing_namespace = "/".join(str(existing_mapping).split("/")[:-1])
+                if new_namespace == existing_namespace and new_mapping_uri != existing_mapping:
+                    conflict = {
+                        "term": term,
+                        "concept_uri": str(concept_uri),
+                        "property": str(skos_property),
+                        "existing_uri": str(existing_mapping),
+                        "new_uri": str(new_mapping_uri),
+                        "row_index": index
+                    }
+                    conflicts.append(conflict)
+                    report["conflicts"].append(term)
+                    conflict_found = True
+                    break
+
+            if not conflict_found:
+                # Add the new mapping if it doesn't already exist
+                if (concept_uri, skos_property, new_mapping_uri) not in graph:
+                    graph.add((concept_uri, skos_property, new_mapping_uri))
+
+        # --- Selectable flag ---
+        selectable_value = _normalize_boolean(row.get('is_selectable'))
+        if selectable_value is not None:
+            graph.remove((concept_uri, AMB_IS_SELECTABLE, None))
+            graph.add((concept_uri, AMB_IS_SELECTABLE, Literal(selectable_value, datatype=XSD.boolean)))
+
+        row_context.append({
+            "row": row,
+            "term": term,
+            "concept_uri": concept_uri,
+            "scheme_uri": scheme_uri,
+            "concept_id": concept_id,
+            "broader_id": _clean_cell_value(row.get("broader_id")),
+        })
+
+        if concept_id:
+            concept_id_to_concept_uri[concept_id.casefold()] = concept_uri
+        label_to_concept_uri[term.casefold()] = concept_uri
+        for alt_label in alt_labels:
+            label_to_concept_uri[alt_label.casefold()] = concept_uri
+
+    # --- Merge hierarchy relations when hierarchy columns are present ---
+    if has_hierarchy_data:
+        for entry in row_context:
+            row = entry["row"]
+            term = entry["term"]
+            concept_uri = entry["concept_uri"]
+            scheme_uri = entry["scheme_uri"]
+
+            parent_uri = None
+            broader_id = entry.get("broader_id")
+            parent_candidate_values = [
+                broader_id,
+                _clean_cell_value(row.get("parent_id_or_uri")),
+                _clean_cell_value(row.get("broader_direct")),
+                _clean_cell_value(row.get("parent_label")),
+            ]
+            parent_candidate_values = [p for p in parent_candidate_values if p]
+
+            for parent_candidate in parent_candidate_values:
+                if _looks_like_uri(parent_candidate):
+                    parent_uri = URIRef(parent_candidate)
+                    break
+
+                parent_uri = concept_id_to_concept_uri.get(parent_candidate.casefold())
+                if not parent_uri:
+                    parent_uri = label_to_concept_uri.get(parent_candidate.casefold())
+                if parent_uri:
+                    break
+
+            if parent_uri:
+                if parent_uri == concept_uri:
+                    report["hierarchy"]["unresolved_parents"].append(term)
+                else:
+                    # Replace old broader link to avoid stale hierarchy edges.
+                    old_parents = list(graph.objects(concept_uri, SKOS.broader))
+                    for old_parent in old_parents:
+                        graph.remove((old_parent, SKOS.narrower, concept_uri))
+                    graph.remove((concept_uri, SKOS.broader, None))
+
+                    graph.add((concept_uri, SKOS.broader, parent_uri))
+                    graph.add((parent_uri, SKOS.narrower, concept_uri))
+                    report["hierarchy"]["broader_links"] += 1
+            elif parent_candidate_values:
+                report["hierarchy"]["unresolved_parents"].append(term)
+
+            # Top concept links (scheme-level navigation roots)
+            hierarchy_role = (_clean_cell_value(row.get("hierarchy_role")) or "").lower()
+            top_concept_value = _clean_cell_value(row.get("top_concept"))
+            concept_type = (_clean_cell_value(row.get("concept_type")) or "").lower()
+
+            top_concept_uri = None
+
+            is_top_concept_type = concept_type in {"top", "top_concept", "top concept", "root", "scheme_top"}
+
+            if hierarchy_role == "top_concept" or is_top_concept_type:
+                top_concept_uri = concept_uri
+            elif top_concept_value:
+                if _looks_like_uri(top_concept_value):
+                    top_concept_uri = URIRef(top_concept_value)
+                else:
+                    top_concept_uri = concept_id_to_concept_uri.get(top_concept_value.casefold())
+                    if not top_concept_uri:
+                        top_concept_uri = label_to_concept_uri.get(top_concept_value.casefold())
+            elif broader_id is None and scheme_uri is not None:
+                # In the new schema, entries without broader_id are natural top concepts.
+                top_concept_uri = concept_uri
+
+            if scheme_uri and top_concept_uri:
+                graph.add((scheme_uri, SKOS.hasTopConcept, top_concept_uri))
+                graph.add((top_concept_uri, SKOS.topConceptOf, scheme_uri))
+                report["hierarchy"]["top_links"] += 1
 
     # Remove duplicate terms from report
     report["updated"] = sorted(list(set(report["updated"])))
     report["new"] = sorted(list(set(report["new"])))
     report["conflicts"] = sorted(list(set(report["conflicts"])))
+    report["hierarchy"]["unresolved_parents"] = sorted(list(set(report["hierarchy"]["unresolved_parents"])))
 
     return graph, conflicts, report
 
@@ -441,6 +774,8 @@ def serialize_graph_to_custom_turtle(graph):
     explicit_output_prefixes["skos"] = str(SKOS)
     ns_manager.bind("dct", DCTERMS)
     explicit_output_prefixes["dct"] = str(DCTERMS)
+    ns_manager.bind("xsd", XSD)
+    explicit_output_prefixes["xsd"] = str(XSD)
 
     # Bind ambplant/ambpath based on current_vocab_type if available in session state
     if "current_vocab_type" in st.session_state and st.session_state.current_vocab_type:
@@ -466,12 +801,18 @@ def serialize_graph_to_custom_turtle(graph):
     prefix_lines = [f"@prefix {p}: <{ns}> ." for p, ns in sorted(explicit_output_prefixes.items(), key=lambda x: x[0])]
     prefix_str = "\n".join(prefix_lines)
 
+    # Ensure AMB namespace is available when custom AMB predicates are present.
+    if any(True for _ in graph.subject_objects(AMB_IS_SELECTABLE)) and "amb" not in explicit_output_prefixes:
+        explicit_output_prefixes["amb"] = AMB_NAMESPACE_URI
+        prefix_lines = [f"@prefix {p}: <{ns}> ." for p, ns in sorted(explicit_output_prefixes.items(), key=lambda x: x[0])]
+        prefix_str = "\n".join(prefix_lines)
+
     # 4. Define the absolute property order
     prop_order = [
         DCTERMS.hasVersion, DCTERMS.issued, DCTERMS.modified,
         DCTERMS.creator, DCTERMS.contributor,
-        DCTERMS.title, DCTERMS.description, SKOS.inScheme, SKOS.prefLabel,
-        SKOS.altLabel, SKOS.definition, DCTERMS.source, SKOS.exactMatch,
+        DCTERMS.title, DCTERMS.description, SKOS.hasTopConcept, SKOS.inScheme, SKOS.prefLabel,
+        SKOS.altLabel, SKOS.definition, DCTERMS.source, AMB_IS_SELECTABLE, SKOS.exactMatch,
         SKOS.closeMatch, SKOS.broadMatch, SKOS.narrowMatch, SKOS.relatedMatch
     ]
     prop_order_map = {prop: i for i, prop in enumerate(prop_order)}
@@ -495,19 +836,34 @@ def serialize_graph_to_custom_turtle(graph):
             # Subjects and inScheme objects should always be full URIs.
             if is_subject or is_in_scheme_object:
                 return f"<{obj}>"
+
+            obj_str = str(obj)
+
+            # Internal scheme/concept URIs must always be full IRIs in Turtle.
+            # This avoids invalid prefixed names like `ambplant:concept/...`.
+            if any(marker in obj_str for marker in ["#concept/", "/concept/", "#scheme/", "/scheme/"]):
+                return f"<{obj}>"
             
             # For other URIRef objects, try to find a matching prefix from our explicit list.
             for pfx, ns_uri in explicit_output_prefixes.items():
-                if str(obj).startswith(ns_uri):
+                if obj_str.startswith(ns_uri):
                     # Manually construct the prefixed name if a match is found.
                     # This bypasses rdflib's internal qname generation which might add unwanted nsX prefixes.
-                    local_name = str(obj)[len(ns_uri):]
+                    local_name = obj_str[len(ns_uri):]
+
+                    # Prefixed names with slash are invalid Turtle; keep them as full IRIs.
+                    if "/" in local_name:
+                        return f"<{obj}>"
+
                     return f"{pfx}:{local_name}"
             
             # If no explicit prefix was found, return the full URI.
             return f"<{obj}>"
 
         elif isinstance(obj, Literal):
+            if obj.datatype is not None:
+                return obj.n3(namespace_manager=ns_manager)
+
             lang = f"@{obj.language}" if obj.language else ""
             # Use triple quotes for multiline strings or strings containing double quotes.
             if "\n" in obj or '"' in obj:
@@ -519,11 +875,15 @@ def serialize_graph_to_custom_turtle(graph):
             return obj.n3()
 
     # 7. Helper to build a complete Turtle block for a single subject
-    def build_subject_block(subject):
+    def build_subject_block(subject, skip_predicates=frozenset()):
         # Format the subject, ensuring it's always a full URI.
         subject_str = format_object(subject, is_subject=True)
         
-        props_and_objects = list(graph.predicate_objects(subject))
+        props_and_objects = [
+            (p, o)
+            for p, o in graph.predicate_objects(subject)
+            if p not in skip_predicates
+        ]
         prop_dict = {}
         for p, o in props_and_objects:
             if p not in prop_dict:
@@ -569,15 +929,35 @@ def serialize_graph_to_custom_turtle(graph):
         # Join the property lines with semicolons and end the block with a period.
         if len(lines) > 1:
             return " ;\n".join(lines) + " ."
-        # Handle the case where there's only a subject and type declaration.
-        elif lines:
-            return lines[0] + " ."
-        return ""
+    header_preds = [
+        DCTERMS.hasVersion,
+        DCTERMS.issued,
+        DCTERMS.modified,
+        DCTERMS.creator,
+        DCTERMS.contributor,
+        DCTERMS.title,
+        DCTERMS.description,
+    ]
+    header_block = None
+    if sorted_pure_schemes:
+        primary_scheme = sorted_pure_schemes[0]
+        scheme_str = str(primary_scheme)
+        base_collection = scheme_str.split('#', 1)[0] if '#' in scheme_str else scheme_str
+        header_subject = f"<{base_collection}>"
+        property_lines = []
+        for pred in sorted(header_preds, key=lambda p: prop_order_map.get(p, len(prop_order))):
+            objs = sorted({o for o in graph.objects(primary_scheme, pred)}, key=str)
+            for obj in objs:
+                property_lines.append(f"    {format_object(pred)} {format_object(obj)}")
+        if property_lines:
+            header_block = f"{header_subject}\n" + " ;\n".join(property_lines) + " ."
 
-    # 8. Assemble the final Turtle string
     all_blocks = []
+    if header_block:
+        all_blocks.append(header_block)
+
     for s in sorted_pure_schemes:
-        all_blocks.append(build_subject_block(s))
+        all_blocks.append(build_subject_block(s, skip_predicates=set(header_preds)))
     for s in sorted_concepts:
         all_blocks.append(build_subject_block(s))
 
@@ -590,26 +970,39 @@ def render_skos_generator_ui(embedded=False, key_ns=""):
     st.title("SKOS Vocabulary Generator")
 
     st.markdown("""
-This tool generates a SKOS vocabulary from an uploaded Excel file.
+This tool generates a SKOS vocabulary from an uploaded table file.
 """)
 
-    st.subheader("Excel File Structure Information")
+    st.subheader("Input File Structure Information")
     st.info("""
-Your Excel file should be structured with the following columns:
-- **Term**: The primary term for the SKOS Concept (required).
-- **altLabel**: Alternative labels for the term (comma-separated, optional).
+Your input file (`.xlsx` or `.csv`) should be structured with the following columns:
+- **id**: Concept identifier (preferred for URI generation).
+- **prefLabel**: Preferred label (required; falls back to legacy `Term` if present).
+- **altLabels**: Alternative labels (pipe-separated, e.g. `label1|label2|label3`).
+- **scheme**: Concept scheme/top-level grouping.
+- **broader_id**: Direct parent concept id (for `skos:broader`).
+- **concept_type**: Optional role hint (e.g., top concept).
+- **is_selectable**: Selectable flag (`true/false`, `1/0`, `yes/no`).
+
+Legacy fallback columns remain supported when present:
+- `Term`, `altLabel`, `ConceptGroup`, `proposed_scheme`, `top_concept`, `current_scheme`, `broader_direct`, `parent_label`, `parent_id_or_uri`, `hierarchy_role`.
+
+Provider/mapping columns (still supported):
 - **ProviderDescription1**: A description for the term (optional).
 - **URI1, Match Type1**: First external mapping (URI and SKOS match type, e.g., `skos:exactMatch`).
 - **URI2, Match Type2**: Second external mapping (optional).
 - **URI3, Match Type3**: Third external mapping (optional).
-- **ConceptGroup**: The group for the term, used to structure the URI.
+
+CSV notes:
+- Semicolon/comma delimiters are auto-detected.
+- UTF-8/UTF-8-SIG/CP1252/Latin-1 encodings are supported.
 
 **Maximum of 3 external mappings are supported.**
 """)
 
     # Define the template columns
     template_columns = [
-        "Term", "altLabel", "ConceptGroup",
+        "id", "prefLabel", "altLabels", "scheme", "broader_id", "concept_type", "is_selectable",
         "URI1", "Match Type1", "SourceProvider1", "ProviderTerm1", "ProviderDescription1",
         "URI2", "Match Type2", "SourceProvider2", "ProviderTerm2", "ProviderDescription2",
         "URI3", "Match Type3", "SourceProvider3", "ProviderTerm3", "ProviderDescription3"
@@ -631,7 +1024,7 @@ Your Excel file should be structured with the following columns:
 
     st.markdown("---") # Add a separator for clarity
 
-    uploaded_file = st.file_uploader("Upload your Excel file (.xlsx)", type=["xlsx"])
+    uploaded_file = st.file_uploader("Upload your vocabulary table (.xlsx or .csv)", type=["xlsx", "csv"])
 
     with st.expander("Extend Existing Vocabulary (Optional)"):
         existing_vocab_file = st.file_uploader(
@@ -691,14 +1084,20 @@ Your Excel file should be structured with the following columns:
 
     if uploaded_file:
         try:
-            df = pd.read_excel(uploaded_file)
-            st.success("File uploaded successfully!")
+            df, detected_format = load_input_table(uploaded_file)
+            st.success(f"File uploaded successfully ({detected_format}).")
             st.dataframe(df.head())
 
-            # Attempt to determine vocabulary type from Excel 'ConceptGroup'
+            # Attempt to determine vocabulary type from grouping column
             # Only if a vocabulary type hasn't been set by an existing TTL file
-            if st.session_state.current_vocab_type is None and 'ConceptGroup' in df.columns:
-                unique_groups = df['ConceptGroup'].dropna().unique()
+            inference_column = None
+            if 'scheme' in df.columns:
+                inference_column = 'scheme'
+            elif 'ConceptGroup' in df.columns:
+                inference_column = 'ConceptGroup'
+
+            if st.session_state.current_vocab_type is None and inference_column:
+                unique_groups = df[inference_column].dropna().unique()
                 if unique_groups.size > 0:
                     # Check if all unique groups belong to a single vocabulary type
                     potential_vocab_types = {determine_vocabulary_type(str(g)) for g in unique_groups}
@@ -708,13 +1107,13 @@ Your Excel file should be structured with the following columns:
                         inferred_type = list(potential_vocab_types)[0]
                         st.session_state.current_vocab_type = inferred_type
                         st.session_state.base_namespace = VOCAB_MAPPINGS[inferred_type]["base_uri"]
-                        st.info(f"Inferred vocabulary type from Excel: **{inferred_type.capitalize()}**")
+                        st.info(f"Inferred vocabulary type from `{inference_column}` column: **{inferred_type.capitalize()}**")
                     elif len(potential_vocab_types) > 1:
-                        st.warning("Multiple vocabulary types detected in ConceptGroup column. Please ensure the Excel file contains concepts for a single vocabulary type.")
+                        st.warning(f"Multiple vocabulary types detected in `{inference_column}` column. Please ensure the input file contains concepts for a single vocabulary type.")
                         st.session_state.current_vocab_type = None
                         st.session_state.base_namespace = "https://w3id.org/ambrosia/" # Reset to generic default
                     else:
-                        st.info("Could not infer vocabulary type from Excel file. Using generic base URI.")
+                        st.info("Could not infer vocabulary type from input file. Using generic base URI.")
                         st.session_state.current_vocab_type = None
                         st.session_state.base_namespace = "https://w3id.org/ambrosia/" # Reset to generic default
             
@@ -986,7 +1385,7 @@ Your Excel file should be structured with the following columns:
                             st.exception(e)
 
         except Exception as e:
-            st.error(f"Error reading Excel file: {e}")
+            st.error(f"Error reading input file: {e}")
             st.exception(e)
 
     # Existing vocabulary only flow (no Excel upload)
