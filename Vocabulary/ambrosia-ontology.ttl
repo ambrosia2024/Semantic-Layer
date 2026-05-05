@@ -29,6 +29,7 @@
 @prefix ambdash: <https://w3id.org/ambrosia/dashboard#> .
 @prefix ambag:   <https://w3id.org/ambrosia/agent#> .
 @prefix amobs:   <https://w3id.org/ambrosia/observation#> .
+@prefix ambwf:   <https://w3id.org/ambrosia/workflow#> .
 @prefix ambplant:   <https://w3id.org/ambrosia/plant-vocab#> .
 @prefix ambpath:   <https://w3id.org/ambrosia/pathogen-vocab#> .
 @prefix amb:     <https://w3id.org/ambrosia/ontology#> .   # global ontology IRI base
@@ -44,10 +45,10 @@
     a owl:Ontology ;
     dct:title "AMBROSIA Ontology"@en ;
     dct:description "Ontology for the AMBROSIA project: linking, agents, dashboard context, observation model and alert/incident patterns."@en ;
-    owl:versionInfo "1.1.1" ;
-    owl:versionIRI <https://w3id.org/ambrosia/ontology/1.1.1> ;
+    owl:versionInfo "1.2.0" ;
+    owl:versionIRI <https://w3id.org/ambrosia/ontology/1.2.0> ;
     dct:issued "2025-12-03"^^xsd:date ;
-    dct:modified "2026-04-14"^^xsd:date ;
+    dct:modified "2026-05-05"^^xsd:date ;
     dct:creator "https://orcid.org/0000-0003-4691-0483" ;
     owl:imports
         <http://www.w3.org/2004/02/skos/core> ,
@@ -1042,8 +1043,434 @@ amobs:hasQuantityResult a owl:ObjectProperty ;
     rdfs:subPropertyOf sosa:hasResult .
 
 
+
 #################################################################
-# 6. Alerts / incident alignments
+# 6. Workflow model (inlined from ambrosia-workflow-v0.1.0-revised)
+#################################################################
+
+#################################################################
+# 6.1 Analytical tasks
+#################################################################
+
+ambwf:AnalyticalTask a owl:Class ;
+    rdfs:label "Analytical task"@en ;
+    rdfs:comment """
+A class of analytical questions that the AMBROSIA platform can answer for a user. The task defines what is being asked independently of the concrete computational realisation.
+"""@en ;
+    rdfs:subClassOf skos:Concept .
+
+ambwf:TaskScheme a skos:ConceptScheme ;
+    skos:prefLabel "AMBROSIA analytical tasks"@en ;
+    dct:description "Controlled concept scheme for analytical tasks supported by the AMBROSIA platform."@en .
+
+ambwf:hasPrimaryObservedProperty a owl:ObjectProperty ;
+    rdfs:label "has primary observed property"@en ;
+    rdfs:comment "Links an analytical task to the observed property that characterises its primary user-facing result."@en ;
+    rdfs:domain ambwf:AnalyticalTask ;
+    rdfs:range skos:Concept .
+
+ambwf:hasSecondaryObservedProperty a owl:ObjectProperty ;
+    rdfs:label "has secondary observed property"@en ;
+    rdfs:comment "Links an analytical task to an additional observed property that may be exposed as an intermediate or supporting result."@en ;
+    rdfs:domain ambwf:AnalyticalTask ;
+    rdfs:range skos:Concept .
+
+ambwf:ToxinConcentrationTask a ambwf:AnalyticalTask ;
+    skos:inScheme ambwf:TaskScheme ;
+    skos:prefLabel "Toxin concentration estimation"@en ;
+    skos:definition "Analytical task that estimates the concentration of a chemical hazard, such as a mycotoxin, in a target food matrix for a crop-region-context."@en ;
+    ambwf:hasPrimaryObservedProperty amblink:ToxinConcentration .
+
+ambwf:GrowthAUCTask a ambwf:AnalyticalTask ;
+    skos:inScheme ambwf:TaskScheme ;
+    skos:prefLabel "Growth AUC change estimation"@en ;
+    skos:altLabel "Growth AUC"@en ;
+    skos:definition "Analytical task that estimates pathogen growth potential from a model output curve and reports the change between a baseline and a future climate period for a given crop, pathogen and region."@en ;
+    ambwf:hasPrimaryObservedProperty ambwf:GrowthAUCChange ;
+    ambwf:hasSecondaryObservedProperty ambwf:GrowthAUC .
+
+ambwf:PathogenPrevalenceTask a ambwf:AnalyticalTask ;
+    skos:inScheme ambwf:TaskScheme ;
+    skos:prefLabel "Pathogen prevalence estimation"@en ;
+    skos:altLabel "Contamination prevalence estimation"@en ;
+    skos:definition "Analytical task that estimates the proportion of units contaminated by a given pathogen for a crop-region-context under specified climatic and contextual conditions."@en ;
+    ambwf:hasPrimaryObservedProperty amblink:Prevalence .
+
+ambwf:GrowthAUC a skos:Concept ;
+    skos:inScheme amblink:ObservedPropertyScheme ;
+    skos:prefLabel "Growth area under curve"@en ;
+    skos:altLabel "AUC of pathogen growth"@en ;
+    skos:altLabel "Growth potential index"@en ;
+    skos:definition "Time-integrated excess of the predicted log10 population over the baseline initial population, computed from a predictive growth model output curve over a defined simulation horizon."@en .
+
+ambwf:GrowthAUCChange a skos:Concept ;
+    skos:inScheme amblink:ObservedPropertyScheme ;
+    skos:prefLabel "Growth AUC percent change"@en ;
+    skos:altLabel "Change in growth potential"@en ;
+    skos:definition "Percent change between a baseline-period growth AUC and a future-period growth AUC for the same crop, pathogen and region."@en .
+
+#################################################################
+# 6.2. Workflow plans and steps
+#################################################################
+
+ambwf:Workflow a owl:Class ;
+    rdfs:label "Analytical workflow"@en ;
+    rdfs:comment "A reusable PROV plan that realises an analytical task by composing contextualisation, model execution, summarisation, comparison or loop steps."@en ;
+    rdfs:subClassOf prov:Plan .
+
+ambwf:WorkflowStep a owl:Class ;
+    rdfs:label "Workflow step"@en ;
+    rdfs:comment "A reusable plan for one conceptual step within an analytical workflow."@en ;
+    rdfs:subClassOf prov:Plan .
+
+ambwf:ModelStep a owl:Class ;
+    rdfs:label "Model step"@en ;
+    rdfs:comment "Workflow step that invokes one AMBROSIA predictive model resource."@en ;
+    rdfs:subClassOf ambwf:WorkflowStep .
+
+ambwf:ContextualisationStep a owl:Class ;
+    rdfs:label "Contextualisation step"@en ;
+    rdfs:comment "Workflow step that derives a model-ready value from contextual data, such as a region, time period, scenario or climate dataset."@en ;
+    rdfs:subClassOf ambwf:WorkflowStep .
+
+ambwf:SummarisationStep a owl:Class ;
+    rdfs:label "Summarisation step"@en ;
+    rdfs:comment "Workflow step that reduces an upstream output, such as a curve, distribution or time series, to a simpler user-facing quantity."@en ;
+    rdfs:subClassOf ambwf:WorkflowStep .
+
+ambwf:ComparisonStep a owl:Class ;
+    rdfs:label "Comparison step"@en ;
+    rdfs:comment "Workflow step that compares homogeneous values from two workflow branches, such as a baseline value and a future value."@en ;
+    rdfs:subClassOf ambwf:WorkflowStep .
+
+ambwf:LoopStep a owl:Class ;
+    rdfs:label "Loop step"@en ;
+    rdfs:comment "Workflow step that repeats a contained workflow step for a fixed maximum number of iterations or until a controlled termination condition is fulfilled."@en ;
+    rdfs:subClassOf ambwf:WorkflowStep .
+
+ambwf:realisesTask a owl:ObjectProperty ;
+    rdfs:label "realises task"@en ;
+    rdfs:comment "Links a workflow plan to the analytical task it is designed to answer."@en ;
+    rdfs:domain ambwf:Workflow ;
+    rdfs:range ambwf:AnalyticalTask .
+
+ambwf:workflowVersion a owl:DatatypeProperty ;
+    rdfs:label "workflow version"@en ;
+    rdfs:comment "Version identifier of a workflow plan, independent of the version of any contained model."@en ;
+    rdfs:domain ambwf:Workflow ;
+    rdfs:range xsd:string .
+
+ambwf:hasStep a owl:ObjectProperty ;
+    rdfs:label "has step"@en ;
+    rdfs:comment "Links a workflow or composite loop step to one of its contained workflow steps."@en ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( ambwf:Workflow ambwf:LoopStep ) ] ;
+    rdfs:range ambwf:WorkflowStep .
+
+ambwf:hasFirstStep a owl:ObjectProperty ;
+    rdfs:label "has first step"@en ;
+    rdfs:comment "Identifies the entry step of a workflow. Subsequent ordering is represented through ambwf:nextStep."@en ;
+    rdfs:domain ambwf:Workflow ;
+    rdfs:range ambwf:WorkflowStep ;
+    rdfs:subPropertyOf ambwf:hasStep .
+
+ambwf:nextStep a owl:ObjectProperty ;
+    rdfs:label "next step"@en ;
+    rdfs:comment "Successor relation between two workflow steps. Multiple successors represent branching."@en ;
+    rdfs:domain ambwf:WorkflowStep ;
+    rdfs:range ambwf:WorkflowStep .
+
+ambwf:stepOrder a owl:DatatypeProperty ;
+    rdfs:label "step order"@en ;
+    rdfs:comment "Optional numeric display and serialisation hint. The authoritative workflow structure is defined by hasFirstStep and nextStep."@en ;
+    rdfs:domain ambwf:WorkflowStep ;
+    rdfs:range xsd:positiveInteger .
+
+ambwf:executesModel a owl:ObjectProperty ;
+    rdfs:label "executes model"@en ;
+    rdfs:comment "Links a model step to the AMBROSIA predictive model resource it invokes."@en ;
+    rdfs:domain ambwf:ModelStep ;
+    rdfs:range amblink:PredictiveModel .
+
+ambwf:derivesQuantity a owl:ObjectProperty ;
+    rdfs:label "derives quantity"@en ;
+    rdfs:comment "Observed property or model parameter concept produced by a contextualisation step."@en ;
+    rdfs:domain ambwf:ContextualisationStep ;
+    rdfs:range skos:Concept .
+
+ambwf:derivesFromSource a owl:ObjectProperty ;
+    rdfs:label "derives from source"@en ;
+    rdfs:comment "Semantic resource or dataset concept used as the source for contextual derivation."@en ;
+    rdfs:domain ambwf:ContextualisationStep ;
+    rdfs:range skos:Concept .
+
+ambwf:derivationMethod a owl:ObjectProperty ;
+    rdfs:label "derivation method"@en ;
+    rdfs:comment "Controlled concept describing how a contextual value is derived, for example spatial mean, temporal mean or percentile."@en ;
+    rdfs:domain ambwf:ContextualisationStep ;
+    rdfs:range skos:Concept .
+
+ambwf:summarisesOutputOf a owl:ObjectProperty ;
+    rdfs:label "summarises output of"@en ;
+    rdfs:comment "Links a summarisation step to the upstream workflow step whose output it summarises."@en ;
+    rdfs:domain ambwf:SummarisationStep ;
+    rdfs:range ambwf:WorkflowStep .
+
+ambwf:summarisationMethod a owl:ObjectProperty ;
+    rdfs:label "summarisation method"@en ;
+    rdfs:comment "Controlled concept describing the summarisation method used by a summarisation step."@en ;
+    rdfs:domain ambwf:SummarisationStep ;
+    rdfs:range skos:Concept .
+
+ambwf:producesSummary a owl:ObjectProperty ;
+    rdfs:label "produces summary"@en ;
+    rdfs:comment "Observed property or summary concept produced by a summarisation step."@en ;
+    rdfs:domain ambwf:SummarisationStep ;
+    rdfs:range skos:Concept .
+
+ambwf:comparisonBaseline a owl:ObjectProperty ;
+    rdfs:label "comparison baseline"@en ;
+    rdfs:comment "Workflow step whose output acts as the baseline value in a comparison."@en ;
+    rdfs:domain ambwf:ComparisonStep ;
+    rdfs:range ambwf:WorkflowStep .
+
+ambwf:comparisonTarget a owl:ObjectProperty ;
+    rdfs:label "comparison target"@en ;
+    rdfs:comment "Workflow step whose output is compared against the baseline value."@en ;
+    rdfs:domain ambwf:ComparisonStep ;
+    rdfs:range ambwf:WorkflowStep .
+
+ambwf:comparisonMethod a owl:ObjectProperty ;
+    rdfs:label "comparison method"@en ;
+    rdfs:comment "Controlled concept describing the comparison operation, such as percent change, ratio or absolute difference."@en ;
+    rdfs:domain ambwf:ComparisonStep ;
+    rdfs:range skos:Concept .
+
+ambwf:producesComparison a owl:ObjectProperty ;
+    rdfs:label "produces comparison"@en ;
+    rdfs:comment "Observed property or result concept produced by a comparison step."@en ;
+    rdfs:domain ambwf:ComparisonStep ;
+    rdfs:range skos:Concept .
+
+ambwf:loopBody a owl:ObjectProperty ;
+    rdfs:label "loop body"@en ;
+    rdfs:comment "Workflow step that is repeated by a loop step."@en ;
+    rdfs:domain ambwf:LoopStep ;
+    rdfs:range ambwf:WorkflowStep ;
+    rdfs:subPropertyOf ambwf:hasStep .
+
+ambwf:maxIterations a owl:DatatypeProperty ;
+    rdfs:label "maximum iterations"@en ;
+    rdfs:comment "Maximum number of iterations allowed for a loop step."@en ;
+    rdfs:domain ambwf:LoopStep ;
+    rdfs:range xsd:positiveInteger .
+
+ambwf:terminationCondition a owl:ObjectProperty ;
+    rdfs:label "termination condition"@en ;
+    rdfs:comment "Controlled concept describing the condition under which a loop step terminates."@en ;
+    rdfs:domain ambwf:LoopStep ;
+    rdfs:range skos:Concept .
+
+#################################################################
+# 6.3 Workflow data flow and input bindings
+#################################################################
+
+ambwf:DataFlow a owl:Class ;
+    rdfs:label "Data flow"@en ;
+    rdfs:comment "Directed connection between the output of a producing workflow step and the input of a consuming workflow step. DataFlow is workflow-internal wiring and is therefore modelled as a provenance entity, not as a static model link."@en ;
+    rdfs:subClassOf prov:Entity .
+
+ambwf:hasDataFlow a owl:ObjectProperty ;
+    rdfs:label "has data flow"@en ;
+    rdfs:comment "Links a workflow to an internal data-flow edge."@en ;
+    rdfs:domain ambwf:Workflow ;
+    rdfs:range ambwf:DataFlow .
+
+ambwf:fromStep a owl:ObjectProperty ;
+    rdfs:label "from step"@en ;
+    rdfs:comment "Producing step in a workflow data flow."@en ;
+    rdfs:domain ambwf:DataFlow ;
+    rdfs:range ambwf:WorkflowStep .
+
+ambwf:toStep a owl:ObjectProperty ;
+    rdfs:label "to step"@en ;
+    rdfs:comment "Consuming step in a workflow data flow."@en ;
+    rdfs:domain ambwf:DataFlow ;
+    rdfs:range ambwf:WorkflowStep .
+
+ambwf:fromOutputParameter a owl:ObjectProperty ;
+    rdfs:label "from output parameter"@en ;
+    rdfs:comment "Model parameter or semantic output concept produced by the source step."@en ;
+    rdfs:domain ambwf:DataFlow ;
+    rdfs:range vocab:ModelParameter .
+
+ambwf:toInputParameter a owl:ObjectProperty ;
+    rdfs:label "to input parameter"@en ;
+    rdfs:comment "Model parameter consumed by the target step."@en ;
+    rdfs:domain ambwf:DataFlow ;
+    rdfs:range vocab:ModelParameter .
+
+ambwf:StepInputBinding a owl:Class ;
+    rdfs:label "Step input binding"@en ;
+    rdfs:comment "Workflow-specific declaration of how an input parameter of a workflow step is filled when the value is not supplied by a preceding data-flow edge."@en ;
+    rdfs:subClassOf prov:Entity .
+
+ambwf:hasStepInputBinding a owl:ObjectProperty ;
+    rdfs:label "has step input binding"@en ;
+    rdfs:comment "Attaches a workflow-specific input binding to a workflow step."@en ;
+    rdfs:domain ambwf:WorkflowStep ;
+    rdfs:range ambwf:StepInputBinding .
+
+ambwf:bindsParameter a owl:ObjectProperty ;
+    rdfs:label "binds parameter"@en ;
+    rdfs:comment "Model parameter filled by this step input binding."@en ;
+    rdfs:domain ambwf:StepInputBinding ;
+    rdfs:range vocab:ModelParameter .
+
+ambwf:fromRequestProperty a owl:ObjectProperty ;
+    rdfs:label "from request property"@en ;
+    rdfs:comment "AMBROSIA dashboard property whose value is read from the triggering user request, for example ambdash:hasCrop, ambdash:hasNUTSRegion or ambdash:hasTimeSelection."@en ;
+    rdfs:domain ambwf:StepInputBinding ;
+    rdfs:range rdf:Property .
+
+ambwf:fromConcept a owl:ObjectProperty ;
+    rdfs:label "from concept"@en ;
+    rdfs:comment "Controlled vocabulary concept that supplies the value of this input binding."@en ;
+    rdfs:domain ambwf:StepInputBinding ;
+    rdfs:range skos:Concept .
+
+ambwf:constantValue a owl:DatatypeProperty ;
+    rdfs:label "constant value"@en ;
+    rdfs:comment "Literal constant assigned to the bound parameter when the workflow uses a fixed value."@en ;
+    rdfs:domain ambwf:StepInputBinding .
+
+#################################################################
+# 6.4 Workflow and step executions
+#################################################################
+
+ambwf:WorkflowExecution a owl:Class ;
+    rdfs:label "Workflow execution"@en ;
+    rdfs:comment "Concrete run of a workflow plan, usually triggered by a dashboard user request."@en ;
+    rdfs:subClassOf prov:Activity .
+
+ambwf:StepExecution a owl:Class ;
+    rdfs:label "Step execution"@en ;
+    rdfs:comment "Concrete run of one workflow step within a workflow execution."@en ;
+    rdfs:subClassOf prov:Activity .
+
+ambwf:executesWorkflow a owl:ObjectProperty ;
+    rdfs:label "executes workflow"@en ;
+    rdfs:comment "Links a workflow execution to the workflow plan used by that execution."@en ;
+    rdfs:domain ambwf:WorkflowExecution ;
+    rdfs:range ambwf:Workflow ;
+    rdfs:subPropertyOf prov:used .
+
+ambwf:executesStep a owl:ObjectProperty ;
+    rdfs:label "executes step"@en ;
+    rdfs:comment "Links a step execution to the workflow step plan used by that execution."@en ;
+    rdfs:domain ambwf:StepExecution ;
+    rdfs:range ambwf:WorkflowStep ;
+    rdfs:subPropertyOf prov:used .
+
+ambwf:partOfExecution a owl:ObjectProperty ;
+    rdfs:label "part of execution"@en ;
+    rdfs:comment "Links a step execution to the workflow execution it belongs to."@en ;
+    rdfs:domain ambwf:StepExecution ;
+    rdfs:range ambwf:WorkflowExecution ;
+    rdfs:subPropertyOf dct:isPartOf .
+
+ambwf:forUserRequest a owl:ObjectProperty ;
+    rdfs:label "for user request"@en ;
+    rdfs:comment "Links a workflow execution to the AMBROSIA dashboard user request that triggered it."@en ;
+    rdfs:domain ambwf:WorkflowExecution ;
+    rdfs:range ambdash:UserRequest ;
+    rdfs:subPropertyOf prov:used .
+
+ambwf:iterationIndex a owl:DatatypeProperty ;
+    rdfs:label "iteration index"@en ;
+    rdfs:comment "Zero-based iteration index for step executions produced by a loop step."@en ;
+    rdfs:domain ambwf:StepExecution ;
+    rdfs:range xsd:nonNegativeInteger .
+
+ambwf:usedInputValue a owl:ObjectProperty ;
+    rdfs:label "used input value"@en ;
+    rdfs:comment "Provenance entity used as input by a step execution, such as a quantity value, extracted climate series, model input object or previous step output."@en ;
+    rdfs:domain ambwf:StepExecution ;
+    rdfs:range prov:Entity ;
+    rdfs:subPropertyOf prov:used .
+
+ambwf:producedOutputValue a owl:ObjectProperty ;
+    rdfs:label "produced output value"@en ;
+    rdfs:comment "Provenance entity generated as output by a step execution."@en ;
+    rdfs:domain ambwf:StepExecution ;
+    rdfs:range prov:Entity ;
+    rdfs:subPropertyOf prov:generated .
+
+ambwf:producedObservation a owl:ObjectProperty ;
+    rdfs:label "produced observation"@en ;
+    rdfs:comment "Connects a workflow execution to the AMBROSIA observation generated as its user-facing result."@en ;
+    rdfs:domain ambwf:WorkflowExecution ;
+    rdfs:range amobs:AmbrosiaObservation ;
+    rdfs:subPropertyOf prov:generated .
+
+#################################################################
+# 6.5 Execution status and timing
+#################################################################
+
+ambwf:ExecutionStatus a owl:Class ;
+    rdfs:label "Execution status"@en ;
+    rdfs:comment "Lifecycle state of a workflow or step execution."@en ;
+    rdfs:subClassOf skos:Concept .
+
+ambwf:ExecutionStatusScheme a skos:ConceptScheme ;
+    skos:prefLabel "Execution status values"@en .
+
+ambwf:Pending a ambwf:ExecutionStatus ;
+    skos:inScheme ambwf:ExecutionStatusScheme ;
+    skos:prefLabel "Pending"@en ;
+    skos:definition "Execution has been created but has not started."@en .
+
+ambwf:Running a ambwf:ExecutionStatus ;
+    skos:inScheme ambwf:ExecutionStatusScheme ;
+    skos:prefLabel "Running"@en ;
+    skos:definition "Execution is currently running."@en .
+
+ambwf:Succeeded a ambwf:ExecutionStatus ;
+    skos:inScheme ambwf:ExecutionStatusScheme ;
+    skos:prefLabel "Succeeded"@en ;
+    skos:definition "Execution finished successfully."@en .
+
+ambwf:Failed a ambwf:ExecutionStatus ;
+    skos:inScheme ambwf:ExecutionStatusScheme ;
+    skos:prefLabel "Failed"@en ;
+    skos:definition "Execution stopped with an error."@en .
+
+ambwf:Cancelled a ambwf:ExecutionStatus ;
+    skos:inScheme ambwf:ExecutionStatusScheme ;
+    skos:prefLabel "Cancelled"@en ;
+    skos:definition "Execution was cancelled before successful completion."@en .
+
+ambwf:hasStatus a owl:ObjectProperty ;
+    rdfs:label "has status"@en ;
+    rdfs:comment "Current lifecycle status of a workflow or step execution."@en ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( ambwf:WorkflowExecution ambwf:StepExecution ) ] ;
+    rdfs:range ambwf:ExecutionStatus .
+
+ambwf:startedAt a owl:DatatypeProperty ;
+    rdfs:label "started at"@en ;
+    rdfs:comment "Timestamp at which the execution started."@en ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( ambwf:WorkflowExecution ambwf:StepExecution ) ] ;
+    rdfs:range xsd:dateTime ;
+    rdfs:subPropertyOf prov:startedAtTime .
+
+ambwf:endedAt a owl:DatatypeProperty ;
+    rdfs:label "ended at"@en ;
+    rdfs:comment "Timestamp at which the execution ended."@en ;
+    rdfs:domain [ a owl:Class ; owl:unionOf ( ambwf:WorkflowExecution ambwf:StepExecution ) ] ;
+    rdfs:range xsd:dateTime ;
+    rdfs:subPropertyOf prov:endedAtTime .
+
+#################################################################
+# 7. Alerts / incident alignments
 #################################################################
 
 # Food safety incident as alert-like entity
