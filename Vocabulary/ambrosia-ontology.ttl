@@ -6,36 +6,29 @@
 @prefix skos:   <http://www.w3.org/2004/02/skos/core#> .
 
 @prefix foaf:   <http://xmlns.com/foaf/0.1/> .
-@prefix schema: <http://schema.org/> .
 @prefix prov:   <http://www.w3.org/ns/prov#> .
 
 @prefix sosa:   <http://www.w3.org/ns/sosa/> .
 @prefix ssn:    <http://www.w3.org/ns/ssn/> .
 @prefix time:   <http://www.w3.org/2006/time#> .
 @prefix qudt:   <http://qudt.org/schema/qudt/> .
-@prefix qk:     <http://qudt.org/vocab/quantitykind/> .
-@prefix unit:   <http://qudt.org/vocab/unit/> .
 @prefix wgs84_pos: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
 @prefix geosparql: <http://www.opengis.net/ont/geosparql#> .
 
 @prefix s4agri: <https://saref.etsi.org/saref4agri/> .
-@prefix agrovoc: <http://aims.fao.org/aos/agrovoc/> .
-@prefix nuts:   <http://data.europa.eu/nuts/> .
 
 @prefix fiware: <https://uri.fiware.org/ns/data-models#> .
 @prefix foodie: <http://foodie.cloud/Model#> .
+@prefix obo:    <http://purl.obolibrary.org/obo/> .   # BFO 2020 upper-ontology categories (informal SKOS mappings)
 
 @prefix amblink: <https://w3id.org/ambrosia/linking#> .
 @prefix ambdash: <https://w3id.org/ambrosia/dashboard#> .
 @prefix ambag:   <https://w3id.org/ambrosia/agent#> .
 @prefix amobs:   <https://w3id.org/ambrosia/observation#> .
 @prefix ambwf:   <https://w3id.org/ambrosia/workflow#> .
-@prefix ambplant:   <https://w3id.org/ambrosia/plant-vocab#> .
-@prefix ambpath:   <https://w3id.org/ambrosia/pathogen-vocab#> .
 @prefix amb:     <https://w3id.org/ambrosia/ontology#> .   # global ontology IRI base
 @prefix fskxo:   <http://semanticlookup.zbmed.de/km/fskxo/> .
 @prefix vocab:   <https://w3id.org/ambrosia/vocab#> .
-@prefix ncbitaxon: <http://purl.obolibrary.org/obo/NCBITaxon_> .
 
 #################################################################
 # AMBROSIA Ontology
@@ -45,11 +38,12 @@
     a owl:Ontology ;
     dct:title "AMBROSIA Ontology"@en ;
     dct:description "Ontology for the AMBROSIA project: linking, agents, dashboard context, observation model and alert/incident patterns."@en ;
-    owl:versionInfo "1.2.0" ;
-    owl:versionIRI <https://w3id.org/ambrosia/ontology/1.2.0> ;
+    owl:versionInfo "1.2.1" ;
+    owl:versionIRI <https://w3id.org/ambrosia/ontology/1.2.1> ;
     dct:issued "2025-12-03"^^xsd:date ;
-    dct:modified "2026-05-05"^^xsd:date ;
-    dct:creator "https://orcid.org/0000-0003-4691-0483" ;
+    dct:modified "2026-06-10"^^xsd:date ;
+    dct:creator <https://orcid.org/0000-0003-4691-0483> ;
+    dct:license <https://creativecommons.org/licenses/by/4.0/> ;
     owl:imports
         <http://www.w3.org/2004/02/skos/core> ,
         <http://www.w3.org/ns/sosa/> ,
@@ -85,12 +79,12 @@ amblink:ObservedProperty a owl:Class ;
 
 amblink:Endpoint a owl:Class ;
   rdfs:label "Health endpoint"@en ;
-  rdfs:comment "A health endpoint used in risk modeling (e.g., infection)." ;
+  rdfs:comment "A health endpoint used in risk modeling (e.g., infection)."@en ;
   rdfs:subClassOf skos:Concept .
 
 amblink:ExposureRoute a owl:Class ;
   rdfs:label "Exposure route"@en ;
-  rdfs:comment "The route of exposure (e.g., oral) used in risk modeling." ;
+  rdfs:comment "The route of exposure (e.g., oral) used in risk modeling."@en ;
   rdfs:subClassOf skos:Concept .
 
 amblink:Population a owl:Class ;
@@ -174,7 +168,7 @@ amblink:representsStatistic a owl:ObjectProperty ;
 
 amblink:hasOutputUnit a owl:ObjectProperty ;
   rdfs:label "has output unit"@en ;
-  rdfs:comment "Unit of the output values."@en ;
+  rdfs:comment "Unit of the output values. The range is intentionally left unconstrained: a unit may be a qudt:Unit, an FSKXO unit individual, or an AMBROSIA unit concept, depending on the source mapping. A fixed rdfs:range (e.g. qudt:Unit) would cause a reasoner to wrongly infer that unit type for all values."@en ;
   rdfs:domain amblink:OutputMapping .
 
 # Aggregation / Temporal / Transformation Hints
@@ -331,13 +325,6 @@ amblink:Transformation a skos:ConceptScheme ;
   skos:prefLabel "Derived-input transformations"@en ;
   dct:description "Lightweight references to transformations from raw variables to model-ready inputs."@en .
 
-# Concept utility properties
-
-amb:isSelectable a owl:DatatypeProperty ;
-  rdfs:label "is selectable"@en ;
-  rdfs:domain skos:Concept ;
-  rdfs:range xsd:boolean .
-
 # Linking-specific Properties, Classes, and Concepts
 
 amblink:forTaxon a owl:ObjectProperty ;
@@ -418,7 +405,7 @@ amblink:confidence a owl:DatatypeProperty ;
 
 amblink:occursInRegion a owl:ObjectProperty ;
   rdfs:domain amblink:FoodSafetyIncident ;
-  rdfs:range  <http://data.europa.eu/nuts/> .   # NUTS concepts
+  rdfs:range  skos:Concept .   # a NUTS region concept (NUTS is published as SKOS)
 
 amblink:occursOn a owl:DatatypeProperty ;
   rdfs:domain amblink:FoodSafetyIncident ;
@@ -450,7 +437,7 @@ amblink:mitigatesHazard a owl:ObjectProperty ;
 
 amblink:mitigationForScenario a owl:ObjectProperty ;
   rdfs:domain amblink:MitigationMeasure ;
-  rdfs:range  amblink:RiskLevel . # or Scenario Concept
+  rdfs:range  skos:Concept . # risk-level or scenario concept (amblink:RiskLevel is a ConceptScheme, not a class)
 
 amblink:hasChecklistItem a owl:DatatypeProperty ;
   rdfs:domain amblink:MitigationMeasure ;
@@ -731,7 +718,7 @@ ambdash:hasNUTSRegion a owl:ObjectProperty ;
     rdfs:label "has NUTS region"@en ;
     rdfs:comment "Links the farm profile to its NUTS region (e.g. NUTS2) selected on the map."@en ;
     rdfs:domain ambdash:FarmProfile ;
-    rdfs:range  nuts: ;
+    rdfs:range  skos:Concept ;   # a NUTS region concept (NUTS is published as SKOS)
     rdfs:subPropertyOf dct:spatial .
 
 # Optional: explicit point location (separate resource)
@@ -988,7 +975,7 @@ amobs:hasRegion a owl:ObjectProperty ;
     rdfs:label "has region"@en ;
     rdfs:comment "NUTS region used as spatial aggregation unit."@en ;
     rdfs:domain amobs:CropInRegionContext ;
-    rdfs:range  nuts: ;
+    rdfs:range  skos:Concept ;   # a NUTS region concept (NUTS is published as SKOS)
     rdfs:subPropertyOf dct:spatial .
 
 # Observation subclasses
@@ -1328,9 +1315,9 @@ ambwf:bindsParameter a owl:ObjectProperty ;
 
 ambwf:fromRequestProperty a owl:ObjectProperty ;
     rdfs:label "from request property"@en ;
-    rdfs:comment "AMBROSIA dashboard property whose value is read from the triggering user request, for example ambdash:hasCrop, ambdash:hasNUTSRegion or ambdash:hasTimeSelection."@en ;
+    rdfs:comment "AMBROSIA dashboard property whose value is read from the triggering user request, for example ambdash:hasCrop, ambdash:hasNUTSRegion or ambdash:hasTimeSelection. The value is itself an RDF property IRI; rdfs:Resource is used as range to keep the ontology within OWL 2 DL and avoid metamodelling on rdf:Property."@en ;
     rdfs:domain ambwf:StepInputBinding ;
-    rdfs:range rdf:Property .
+    rdfs:range rdfs:Resource .
 
 ambwf:fromConcept a owl:ObjectProperty ;
     rdfs:label "from concept"@en ;
@@ -1482,3 +1469,57 @@ amblink:FoodSafetyIncident
         time:TemporalEntity ;
     owl:equivalentClass fiware:Alert ,
                         foodie:Alert .
+
+
+#################################################################
+# 8. BFO alignment (informal)
+#################################################################
+
+# Design note:
+# AMBROSIA is grounded primarily in the SOSA/SSN, PROV-O, QUDT and OWL-Time
+# stack, which fits the observation/workflow/provenance nature of the domain
+# and keeps IRIs human-readable. To support readers and reviewers from
+# BFO-aligned communities, the core classes are additionally given INFORMAL
+# mappings to Basic Formal Ontology (BFO 2020) upper categories.
+#
+# These mappings deliberately use SKOS mapping properties (primarily
+# skos:broadMatch — the BFO category is broader than the AMBROSIA class)
+# rather than rdfs:subClassOf or owl:equivalentClass. This documents the
+# ontological grounding without forcing a reasoner to merge two upper
+# ontologies, and avoids committing AMBROSIA classes to strict BFO subsumption.
+# BFO is NOT imported; the obo:BFO_* IRIs are referenced as mapping targets only.
+
+# --- Occurrents: BFO process (obo:BFO_0000015) ---
+amblink:FoodSafetyIncident skos:broadMatch obo:BFO_0000015 .   # process
+ambdash:UserRequest        skos:broadMatch obo:BFO_0000015 .   # process
+ambwf:WorkflowExecution    skos:broadMatch obo:BFO_0000015 .   # process
+ambwf:StepExecution        skos:broadMatch obo:BFO_0000015 .   # process
+amobs:AmbrosiaObservation  skos:broadMatch obo:BFO_0000015 .   # process
+
+# --- Generically dependent continuants: plans & information artefacts (obo:BFO_0000031) ---
+amblink:PredictiveModel    skos:broadMatch obo:BFO_0000031 .   # generically dependent continuant (plan)
+ambwf:Workflow             skos:broadMatch obo:BFO_0000031 .   # generically dependent continuant (plan)
+ambwf:WorkflowStep         skos:broadMatch obo:BFO_0000031 .   # generically dependent continuant (plan)
+amblink:InputMapping       skos:broadMatch obo:BFO_0000031 .   # generically dependent continuant
+amblink:OutputMapping      skos:broadMatch obo:BFO_0000031 .   # generically dependent continuant
+amblink:TransformationRule skos:broadMatch obo:BFO_0000031 .   # generically dependent continuant
+ambwf:DataFlow             skos:broadMatch obo:BFO_0000031 .   # generically dependent continuant
+ambwf:StepInputBinding     skos:broadMatch obo:BFO_0000031 .   # generically dependent continuant
+ambdash:FarmProfile        skos:broadMatch obo:BFO_0000031 .   # generically dependent continuant (information record)
+ambdash:TimeSelection      skos:broadMatch obo:BFO_0000031 .   # generically dependent continuant
+ambdash:ScenarioSelection  skos:broadMatch obo:BFO_0000031 .   # generically dependent continuant
+
+# --- Independent continuants ---
+ambag:Person       skos:broadMatch obo:BFO_0000040 .   # material entity
+ambag:Organization skos:broadMatch obo:BFO_0000027 .   # object aggregate
+ambag:Farm         skos:broadMatch obo:BFO_0000029 .   # site
+ambag:Parcel       skos:broadMatch obo:BFO_0000029 .   # site
+
+# --- Specifically dependent continuants: quality (obo:BFO_0000020) ---
+amblink:ObservedProperty skos:broadMatch obo:BFO_0000020 .   # specifically dependent continuant
+
+# --- Roles (obo:BFO_0000023) ---
+ambdash:FarmerRole        skos:broadMatch obo:BFO_0000023 .   # role
+ambdash:AdvisorRole       skos:broadMatch obo:BFO_0000023 .   # role
+ambdash:FoodProcessorRole skos:broadMatch obo:BFO_0000023 .   # role
+ambdash:PolicyMakerRole   skos:broadMatch obo:BFO_0000023 .   # role
