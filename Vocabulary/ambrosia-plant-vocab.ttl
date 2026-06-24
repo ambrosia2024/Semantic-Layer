@@ -942,7 +942,7 @@
         "Wikidata" ;
     amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A014J> ,
-        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000402> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000018907> ,
         <http://www.wikidata.org/entity/Q773987> ;
     skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/nuts/nuts> .
 
@@ -1374,7 +1374,7 @@
         "Wikidata" ;
     amb:isSelectable "true"^^xsd:boolean ;
     skos:exactMatch <http://data.food.gov.uk/codes/foodtype/id/A00XB> ,
-        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000000401> ,
+        <http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000018906> ,
         <http://www.wikidata.org/entity/Q21281535> ;
     skos:broader <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/herbs-and-aromatic-crops> .
 

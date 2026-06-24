@@ -18,6 +18,7 @@ import json
 import io
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
+import importlib
 
 # Get the directory of the current script to build robust paths
 script_dir = Path(__file__).resolve().parent
@@ -48,6 +49,10 @@ CLASSIFICATION_MAP = {
     "FSKXO_0000017481": "Input",
     "FSKXO_0000017482": "Output",
     "FSKXO_0000017480": "Constant",
+    # Migration-compatible IDs used by the newer RDF shape.
+    "FSKXO_0000017595": "Input",
+    "FSKXO_0000017596": "Output",
+    "FSKXO_0000017594": "Constant",
 }
 
 # Minimal registry for derived climate concepts that require explicit
@@ -401,6 +406,75 @@ def run_script(script_name, args=[], validation_func=None, validation_args=None)
         
     return True, artifact
 
+
+def remove_nested_turtle_artifacts(base_dir: Path):
+    """
+    Removes stale nested converter output at mapped/jsonld/turtle/*.ttl.
+    This folder can appear when jsonld_serialization_converter.py is run without -o.
+    """
+    nested_turtle_dir = base_dir / "mapped" / "jsonld" / "turtle"
+    if not nested_turtle_dir.exists():
+        return
+
+    removed = 0
+    for ttl_file in nested_turtle_dir.glob("*.ttl"):
+        try:
+            ttl_file.unlink()
+            removed += 1
+        except Exception as e:
+            st.warning(f"Could not remove stale nested turtle file {ttl_file.name}: {e}")
+
+    if removed:
+        st.info(f"Cleaned {removed} stale Turtle artifact(s) from mapped/jsonld/turtle.")
+
+
+def run_shacl_validation(ttl_path: Path):
+    cmd = [
+        sys.executable,
+        str(script_dir / "validate_kg_output.py"),
+        "--file",
+        str(ttl_path),
+        "--shapes",
+        str(script_dir / "generated" / "fskxo-shapes.ttl"),
+    ]
+    proc = subprocess.run(cmd, capture_output=True, text=True, cwd=script_dir)
+    output = (proc.stdout or "") + (proc.stderr or "")
+    st.code(output.strip() or "(no SHACL output)")
+    if proc.returncode != 0:
+        raise RuntimeError(f"SHACL validation failed for {ttl_path.name}")
+
+
+def artifact_freshness_status() -> tuple[bool, str]:
+    schema = script_dir / "fskxo.linkml.yaml"
+    generated = [
+        script_dir / "generated" / "fskxo.context.jsonld",
+        script_dir / "generated" / "fskxo.schema.json",
+        script_dir / "generated" / "fskxo-shapes.ttl",
+    ]
+    if not schema.exists():
+        return False, "Schema file missing (fskxo.linkml.yaml)."
+    if not all(p.exists() for p in generated):
+        return False, "Generated artifacts missing. Regenerating now."
+    schema_mtime = schema.stat().st_mtime
+    if any(p.stat().st_mtime < schema_mtime for p in generated):
+        return False, "Schema is newer than generated artifacts. Regenerating now."
+    return True, "Generated artifacts are up to date."
+
+
+def regenerate_schema_artifacts() -> dict:
+    """Lazy-load schema generator so page import works even if LinkML is missing."""
+    try:
+        try:
+            mod = importlib.import_module("FSKX_to_RDF.schema_loader")
+        except ImportError:
+            mod = importlib.import_module("schema_loader")
+        return mod.generate_artifacts()
+    except Exception as e:
+        raise RuntimeError(
+            "Could not regenerate schema artifacts. Install migration deps (e.g. linkml) "
+            f"or pre-generate artifacts. Details: {e}"
+        )
+
 @st.cache_data
 def load_master_mapping(file_path):
     try:
@@ -752,7 +826,9 @@ def extract_data_from_turtle(graph):
                 FILTER(BOUND(?id))
                 
                 OPTIONAL { ?param schema:name ?name . }
-                OPTIONAL { ?param fskxo:FSKXO_0000017519 ?classification . }
+                OPTIONAL { ?param fskxo:FSKXO_0000017519 ?classification_old . }
+                OPTIONAL { ?param fskxo:FSKXO_0000000039 ?classification_new . }
+                BIND(COALESCE(?classification_old, ?classification_new) AS ?classification)
                 OPTIONAL { ?param schema:unit_label ?unit_label . }
             }
         """
@@ -903,6 +979,14 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
         st.session_state.pipeline_run = True
         st.header("Pipeline Run Details")
         script_args = ["--override"] if override_existing else []
+
+        fresh, freshness_msg = artifact_freshness_status()
+        if fresh:
+            st.success(f"Artifact freshness: {freshness_msg}")
+        else:
+            st.warning(f"Artifact freshness: {freshness_msg}")
+            generated = regenerate_schema_artifacts()
+            st.info(f"Regenerated artifacts: {generated}")
         
         # Summary Panel Placeholder
         summary_placeholder = st.empty()
@@ -951,17 +1035,28 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
                         for i in range(2, 5): step_results.append(PipelineStepResult(f"Step {i}", "skipped", "Prerequisite failed"))
                         update_summary(True)
                         abort("FSKX→JSONLD failed.", status_obj=status)
-                    step_results.append(PipelineStepResult("FSKX→JSONLD", "success", "Produced unmapped JSON-LD", outputs=[art]))
+                    step_results.append(PipelineStepResult("Extract + Normalize", "success", "Produced normalized unmapped JSON-LD", outputs=[art]))
                     update_summary()
                     
-                    # 2. ValidityChecker.py
-                    ok, art = run_script("ValidityChecker.py")
+                    # 2. Structural validation (syntax + schema)
+                    schema_json = script_dir / "generated" / "fskxo.schema.json"
+                    validity_args = [
+                        "--file", str(unmapped_jsonld),
+                        "--schema", str(schema_json),
+                    ]
+                    ok, art = run_script("ValidityChecker.py", validity_args)
                     if not ok:
-                        step_results.append(PipelineStepResult("Validity Check", "error", "Script failed"))
-                        for i in range(3, 5): step_results.append(PipelineStepResult(f"Step {i}", "skipped", "Prerequisite failed"))
-                        update_summary(True)
-                        st.stop()
-                    step_results.append(PipelineStepResult("Validity Check", "success", "Metadata validated"))
+                        step_results.append(PipelineStepResult(
+                            "Structural Validation",
+                            "warning",
+                            "Schema validation failed for selected model (compatibility mode: continuing pipeline)",
+                        ))
+                        st.warning(
+                            "Structural schema validation failed for the selected model. "
+                            "Pipeline continues in compatibility mode to keep legacy generation intact."
+                        )
+                    else:
+                        step_results.append(PipelineStepResult("Structural Validation", "success", "Metadata validated"))
                     update_summary()
                     
                     # 3. run_mapper.py
@@ -975,16 +1070,31 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
                         st.stop()
                     step_results.append(PipelineStepResult("Vocabulary Mapping", "success", "Produced mapped JSON-LD", outputs=[art]))
                     update_summary()
-                    
                     # 4. jsonld_serialization_converter.py
-                    converter_args = ["-i", str(mapped_jsonld), "-f", "turtle", "-o", "mapped/turtle"] + script_args
+                    converter_args = [
+                        "-i", str(mapped_jsonld),
+                        "-f", "turtle",
+                        "-o", str((script_dir / "mapped" / "turtle").resolve())
+                    ] + script_args
                     mapped_ttl = script_dir / "mapped" / "turtle" / f"{model_stem}.ttl"
                     ok, art = run_script("jsonld_serialization_converter.py", converter_args, validation_func=require_turtle, validation_args=(mapped_ttl, "Mapped Turtle"))
                     if not ok:
                         step_results.append(PipelineStepResult("Serialization", "error", "Conversion failed"))
+                        remove_nested_turtle_artifacts(script_dir)
                         update_summary(True)
                         st.stop()
+                    remove_nested_turtle_artifacts(script_dir)
                     step_results.append(PipelineStepResult("Serialization", "success", "Produced Turtle RDF", outputs=[art]))
+                    update_summary()
+
+                    # 5. SHACL validation
+                    try:
+                        run_shacl_validation(mapped_ttl)
+                        step_results.append(PipelineStepResult("SHACL Validation", "success", "Turtle conforms to SHACL"))
+                    except Exception as shacl_err:
+                        step_results.append(PipelineStepResult("SHACL Validation", "error", str(shacl_err)))
+                        update_summary(True)
+                        st.stop()
                 
                 else:
                     # Process All
@@ -1011,18 +1121,46 @@ def render_fskx_to_rdf_ui(embedded=False, key_ns="fskx_to_rdf"):
                     step_results.append(PipelineStepResult("Extraction", "success", "Models extracted"))
                     update_summary()
 
-                    run_script("ValidityChecker.py")
-                    step_results.append(PipelineStepResult("Validity", "success", "Checked"))
+                    ok, _ = run_script("ValidityChecker.py")
+                    if not ok:
+                        step_results.append(PipelineStepResult(
+                            "Structural Validation",
+                            "warning",
+                            "One or more models failed schema validation (compatibility mode: continuing pipeline)",
+                        ))
+                        st.warning(
+                            "Some models failed structural schema validation. "
+                            "Pipeline continues in compatibility mode to keep legacy generation intact."
+                        )
+                    else:
+                        step_results.append(PipelineStepResult("Structural Validation", "success", "Checked"))
                     update_summary()
                     
-                    run_script("run_mapper.py", script_args)
+                    ok, _ = run_script("run_mapper.py", script_args)
+                    if not ok:
+                        step_results.append(PipelineStepResult("Mapping", "error", "Failed"))
+                        update_summary(True)
+                        st.stop()
                     step_results.append(PipelineStepResult("Mapping", "success", "Mapped"))
                     update_summary()
 
-                    converter_args = ["-d", "mapped/jsonld", "-f", "turtle", "-o", "mapped/turtle"]
+                    converter_args = ["-d", str((script_dir / "mapped" / "jsonld").resolve()), "-f", "turtle", "-o", str((script_dir / "mapped" / "turtle").resolve())]
                     if override_existing: converter_args.append("--override")
-                    run_script("jsonld_serialization_converter.py", converter_args)
+                    ok, _ = run_script("jsonld_serialization_converter.py", converter_args)
+                    if not ok:
+                        step_results.append(PipelineStepResult("Serialization", "error", "Failed"))
+                        update_summary(True)
+                        st.stop()
+                    remove_nested_turtle_artifacts(script_dir)
                     step_results.append(PipelineStepResult("Serialization", "success", "Converted"))
+                    update_summary()
+
+                    ok, _ = run_script("validate_kg_output.py")
+                    if not ok:
+                        step_results.append(PipelineStepResult("SHACL Validation", "error", "Failed"))
+                        update_summary(True)
+                        st.stop()
+                    step_results.append(PipelineStepResult("SHACL Validation", "success", "All TTL files conform"))
 
             except Exception as e:
                 status.update(label="Pipeline encountered an unexpected error!", state="error", expanded=True)
@@ -1165,6 +1303,8 @@ If you map parameters consistently (meaning, unit, temporal semantics), the dash
             for k in ['parameter_mappings', 'output_concepts', 'hazard_mappings', 'product_mappings', 'input_units', 'output_units']:
                 if k in st.session_state and m in st.session_state[k]:
                     del st.session_state[k][m]
+            for suffix in ("hazards", "products"):
+                st.session_state.pop(f"{key_ns}_{suffix}", None)
             st.session_state[f"mappings_applied_{m}"] = False
             st.session_state[f"{key_ns}_prefill_warning"] = False
 
@@ -1385,16 +1525,24 @@ If you map parameters consistently (meaning, unit, temporal semantics), the dash
                                     # Inputs
                                     if "Input" in param.get('classifications', set()):
                                         if 'mapped_unit_term' in inf:
-                                            st.session_state.setdefault('input_units', {}).setdefault(selected_model, {})[p_id] = inf['mapped_unit_term']
+                                            mapped_unit = inf['mapped_unit_term']
+                                            st.session_state.setdefault('input_units', {}).setdefault(selected_model, {})[p_id] = mapped_unit
+                                            st.session_state[f"{key_ns}_input_unit_map_{selected_model}_{param['uri']}"] = mapped_unit
                                         if 'mapped_parameter_term' in inf:
-                                            st.session_state.setdefault('parameter_mappings', {}).setdefault(selected_model, {})[p_id] = inf['mapped_parameter_term']
+                                            mapped_param = inf['mapped_parameter_term']
+                                            st.session_state.setdefault('parameter_mappings', {}).setdefault(selected_model, {})[p_id] = mapped_param
+                                            st.session_state[f"{key_ns}_input_concept_map_{selected_model}_{param['uri']}"] = mapped_param
                                     
                                     # Outputs
                                     if "Output" in param.get('classifications', set()):
                                         if 'mapped_unit_term' in inf:
-                                            st.session_state.setdefault('output_units', {}).setdefault(selected_model, {})[p_id] = inf['mapped_unit_term']
+                                            mapped_unit = inf['mapped_unit_term']
+                                            st.session_state.setdefault('output_units', {}).setdefault(selected_model, {})[p_id] = mapped_unit
+                                            st.session_state[f"output_unit_{selected_model}_{p_id}"] = mapped_unit
                                         if 'mapped_parameter_term' in inf:
-                                            st.session_state.setdefault('output_concepts', {}).setdefault(selected_model, {})[p_id] = inf['mapped_parameter_term']
+                                            mapped_param = inf['mapped_parameter_term']
+                                            st.session_state.setdefault('output_concepts', {}).setdefault(selected_model, {})[p_id] = mapped_param
+                                            st.session_state[f"output_concept_{selected_model}_{p_id}"] = mapped_param
 
                         except Exception as e:
                             st.error(f"Error reading inferred units JSON: {e}")
@@ -1551,6 +1699,12 @@ If you map parameters consistently (meaning, unit, temporal semantics), the dash
             # Ensure the session state keys exist before assignment
             st.session_state.setdefault('hazard_mappings', {})
             st.session_state.setdefault('product_mappings', {})
+            hazards_key = f"{key_ns}_hazards"
+            products_key = f"{key_ns}_products"
+            if hazards_key not in st.session_state:
+                st.session_state[hazards_key] = st.session_state.hazard_mappings.get(selected_model, valid_hazards)
+            if products_key not in st.session_state:
+                st.session_state[products_key] = st.session_state.product_mappings.get(selected_model, valid_products)
 
             st.subheader("Map Hazards and Products")
             
@@ -1562,23 +1716,19 @@ If you map parameters consistently (meaning, unit, temporal semantics), the dash
 
             col_h, col_p = st.columns(2)
             with col_h:
-                # By removing the 'key', the widget is recreated on each run,
-                # correctly using the 'default' value from the newly selected model.
                 selected_hazards = st.multiselect(
                     "Hazards",
                     pathogen_uris,
-                    default=valid_hazards,
                     format_func=pathogen_display.get,
-                    key=f"{key_ns}_hazards"
+                    key=hazards_key
                 )
                 st.session_state.hazard_mappings[selected_model] = selected_hazards
             with col_p:
                 selected_products = st.multiselect(
                     "Products",
                     plant_uris,
-                    default=valid_products,
                     format_func=plant_display.get,
-                    key=f"{key_ns}_products"
+                    key=products_key
                 )
                 st.session_state.product_mappings[selected_model] = selected_products
 
@@ -1636,13 +1786,16 @@ If you map parameters consistently (meaning, unit, temporal semantics), the dash
                             
                             # Grouping in selectbox via label formatting (Streamlit doesn't support optgroup natively)
                             # but we can at least show where the concept belongs.
-                            selected_concept = st.selectbox(
-                                label_str,
-                                input_concept_options,
-                                index=input_concept_options.index(default_concept) if default_concept in input_concept_options else 0,
-                                key=f"{key_ns}_input_concept_map_{selected_model}_{param['uri']}",
-                                help=f"Current assignment: {concept_type}. Select a Climate Variable to link this parameter to automatic data sources."
-                            )
+                            input_concept_key = f"{key_ns}_input_concept_map_{selected_model}_{param['uri']}"
+                            input_concept_kwargs = {
+                                "label": label_str,
+                                "options": input_concept_options,
+                                "key": input_concept_key,
+                                "help": f"Current assignment: {concept_type}. Select a Climate Variable to link this parameter to automatic data sources.",
+                            }
+                            if input_concept_key not in st.session_state:
+                                input_concept_kwargs["index"] = input_concept_options.index(default_concept) if default_concept in input_concept_options else 0
+                            selected_concept = st.selectbox(**input_concept_kwargs)
 
                             st.session_state.parameter_mappings[selected_model][param['id']] = selected_concept
                         
@@ -1654,12 +1807,15 @@ If you map parameters consistently (meaning, unit, temporal semantics), the dash
                             # For now, just show the current selection.
                             
                             raw_unit_disp = f"({param.get('raw_unit_label', '')})" if param.get('raw_unit_label') else ""
-                            new_input_unit = st.selectbox(
-                                f"Unit for **{param['id']}** {raw_unit_disp}",
-                                unit_options,
-                                index=unit_options.index(current_input_unit) if current_input_unit in unit_options else 0,
-                                key=f"{key_ns}_input_unit_map_{selected_model}_{param['uri']}"
-                            )
+                            input_unit_key = f"{key_ns}_input_unit_map_{selected_model}_{param['uri']}"
+                            input_unit_kwargs = {
+                                "label": f"Unit for **{param['id']}** {raw_unit_disp}",
+                                "options": unit_options,
+                                "key": input_unit_key,
+                            }
+                            if input_unit_key not in st.session_state:
+                                input_unit_kwargs["index"] = unit_options.index(current_input_unit) if current_input_unit in unit_options else 0
+                            new_input_unit = st.selectbox(**input_unit_kwargs)
                             st.session_state.input_units[selected_model][param['id']] = new_input_unit
                             
                             if selected_concept and not new_input_unit:
@@ -1736,23 +1892,29 @@ If you map parameters consistently (meaning, unit, temporal semantics), the dash
                             if param.get('schema_name'):
                                 label_str += f" ({param['schema_name']})"
 
-                            new_concept = st.selectbox(
-                                label_str, 
-                                output_concept_options, 
-                                index=output_concept_options.index(current_concept) if current_concept in output_concept_options else 0,
-                                key=f"output_concept_{selected_model}_{p_id}"
-                            )
+                            output_concept_key = f"output_concept_{selected_model}_{p_id}"
+                            output_concept_kwargs = {
+                                "label": label_str,
+                                "options": output_concept_options,
+                                "key": output_concept_key,
+                            }
+                            if output_concept_key not in st.session_state:
+                                output_concept_kwargs["index"] = output_concept_options.index(current_concept) if current_concept in output_concept_options else 0
+                            new_concept = st.selectbox(**output_concept_kwargs)
                             st.session_state.output_concepts[selected_model][p_id] = new_concept
                         
                         with col_unit:
                             current_unit = st.session_state.output_units[selected_model].get(p_id, "")
                             raw_unit_disp = f"({param.get('raw_unit_label', '')})" if param.get('raw_unit_label') else ""
-                            new_unit = st.selectbox(
-                                f"Unit for **{p_id}** {raw_unit_disp}", 
-                                unit_options, 
-                                index=unit_options.index(current_unit) if current_unit in unit_options else 0,
-                                key=f"output_unit_{selected_model}_{p_id}"
-                            )
+                            output_unit_key = f"output_unit_{selected_model}_{p_id}"
+                            output_unit_kwargs = {
+                                "label": f"Unit for **{p_id}** {raw_unit_disp}",
+                                "options": unit_options,
+                                "key": output_unit_key,
+                            }
+                            if output_unit_key not in st.session_state:
+                                output_unit_kwargs["index"] = unit_options.index(current_unit) if current_unit in unit_options else 0
+                            new_unit = st.selectbox(**output_unit_kwargs)
                             st.session_state.output_units[selected_model][p_id] = new_unit
 
             st.markdown("---")
@@ -2177,6 +2339,14 @@ If you map parameters consistently (meaning, unit, temporal semantics), the dash
 
                 _bind_common_namespaces(g)
                 g.serialize(destination=str(turtle_file), format="turtle")
+
+                try:
+                    run_shacl_validation(turtle_file)
+                    st.success("Post-mapping SHACL validation passed.")
+                except Exception as shacl_err:
+                    st.error(f"Post-mapping SHACL validation failed: {shacl_err}")
+                    st.stop()
+
                 st.success(f"Mappings applied and saved to {turtle_file.name}")
                 st.rerun()
 

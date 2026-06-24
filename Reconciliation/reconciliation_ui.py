@@ -132,6 +132,8 @@ def render_reconciliation_ui():
     if 'available_ontologies_by_provider' not in st.session_state: st.session_state['available_ontologies_by_provider'] = {}
     if 'selected_ontologies_by_provider' not in st.session_state: st.session_state['selected_ontologies_by_provider'] = {}
     if 'ontology_loading_status' not in st.session_state: st.session_state['ontology_loading_status'] = {} # e.g., {'BioPortal': 'loading', 'AgroPortal': 'loaded', 'OLS (EBI)': 'error'}
+    # When True for a provider, the query ignores the ontology filter and searches ALL of that provider's ontologies.
+    if 'use_all_ontologies_by_provider' not in st.session_state: st.session_state['use_all_ontologies_by_provider'] = {}
 
     st.title("Data Reconciliation Tool")
     st.write("Upload tabular data, select sources, manage queue via sidebar, reconcile terms.")
@@ -569,7 +571,24 @@ Your matching table (CSV or Excel) should be structured with the following colum
                     current_selected_ontos = st.session_state.get('selected_ontologies_by_provider', {}).get(provider_name, [])
 
                     if available_ontos:
+                        use_all_state_key = f"include_all_ontologies_{provider_name}"
+                        # Seed the toggle default exactly once. After this, the widget (via its key)
+                        # owns the value, so flipping it survives the rerun instead of snapping back.
+                        if use_all_state_key not in st.session_state:
+                            st.session_state[use_all_state_key] = st.session_state.get(
+                                'use_all_ontologies_by_provider', {}
+                            ).get(provider_name, False)
+
                         with st.expander(f"Filter {provider_name} Ontologies ({len(current_selected_ontos)} selected)", expanded=False):
+                            use_all_ontologies = st.toggle(
+                                f"Include ALL {provider_name} ontologies",
+                                key=use_all_state_key,
+                                help=f"When enabled, queries search every available {provider_name} ontology "
+                                     f"({len(available_ontos)} total) and the filter below is ignored."
+                            )
+                            # Keep the canonical flag (consumed by processing) in sync with the widget.
+                            st.session_state.use_all_ontologies_by_provider[provider_name] = use_all_ontologies
+
                             config_key_for_provider = provider_name.lower().replace('(ebi)', '').strip().replace(' ', '_')
                             preferred_ontologies_str = CONFIG.get(config_key_for_provider, {}).get('preferred_ontologies', '')
                             preferred_ontologies_list_upper = [o.strip().upper() for o in preferred_ontologies_str.split(',') if o.strip()]
@@ -586,20 +605,23 @@ Your matching table (CSV or Excel) should be structured with the following colum
 
                             default_selection_for_multiselect = [o for o in current_selected_ontos if o in available_ontos]
 
-                            new_selection = st.multiselect(
-                                f"Select ontologies for {provider_name}:",
-                                options=display_options,
-                                default=default_selection_for_multiselect,
-                                key=f"filter_ontologies_{provider_name}",
-                                help=f"Select specific ontologies to filter results from {provider_name}. If none selected, all ontologies will be included."
-                            )
-                            
-                            final_new_selection = [o for o in new_selection if o != "--- All Other Ontologies (Alphabetical) ---"]
+                            if use_all_ontologies:
+                                st.caption(f"✅ All {len(available_ontos)} {provider_name} ontologies are included. Disable the toggle to filter.")
+                            else:
+                                new_selection = st.multiselect(
+                                    f"Select ontologies for {provider_name}:",
+                                    options=display_options,
+                                    default=default_selection_for_multiselect,
+                                    key=f"filter_ontologies_{provider_name}",
+                                    help=f"Select specific ontologies to filter results from {provider_name}. If none selected, all ontologies will be included."
+                                )
 
-                            if set(final_new_selection) != set(current_selected_ontos):
-                                st.session_state.selected_ontologies_by_provider[provider_name] = final_new_selection
-                                logger.info(f"Updated selected ontologies for {provider_name}: {final_new_selection}")
-                                st.rerun()
+                                final_new_selection = [o for o in new_selection if o != "--- All Other Ontologies (Alphabetical) ---"]
+
+                                if set(final_new_selection) != set(current_selected_ontos):
+                                    st.session_state.selected_ontologies_by_provider[provider_name] = final_new_selection
+                                    logger.info(f"Updated selected ontologies for {provider_name}: {final_new_selection}")
+                                    st.rerun()
                     else:
                         st.info(f"No ontologies available for {provider_name} or failed to load.")
                 elif st.session_state.get('ontology_loading_status', {}).get(provider_name) == 'loading':
@@ -898,10 +920,16 @@ Your matching table (CSV or Excel) should be structured with the following colum
                                     current_config_for_provider['local_backend'] = st.session_state.get('local_backend', "auto")
                                 
                                 if provider_name in st.session_state.get('selected_ontologies_by_provider', {}):
+                                    # An empty list means "search ALL ontologies" downstream, so honor the
+                                    # "Include ALL ontologies" toggle by forcing the filter to empty.
+                                    if st.session_state.get('use_all_ontologies_by_provider', {}).get(provider_name, False):
+                                        effective_ontologies = []
+                                    else:
+                                        effective_ontologies = st.session_state.get('selected_ontologies_by_provider', {}).get(provider_name, [])
                                     current_config_for_provider['selected_ontologies_by_provider'] = {
-                                        provider_name: st.session_state.get('selected_ontologies_by_provider', {}).get(provider_name, [])
+                                        provider_name: effective_ontologies
                                     }
-                                
+
                                 future = executor.submit(
                                     fetch_suggestions_for_term_from_provider,
                                     provider_name, term_to_process, current_config_for_provider,
@@ -1421,8 +1449,13 @@ Your matching table (CSV or Excel) should be structured with the following colum
                                                 # Create a dynamic config for the dialog search, including current ontology selections
                                                 dynamic_dialog_config = CONFIG.copy()
                                                 if p_name in st.session_state.get('selected_ontologies_by_provider', {}):
+                                                    # Empty list => search ALL ontologies downstream; honor the toggle.
+                                                    if st.session_state.get('use_all_ontologies_by_provider', {}).get(p_name, False):
+                                                        effective_dialog_ontologies = []
+                                                    else:
+                                                        effective_dialog_ontologies = st.session_state.get('selected_ontologies_by_provider', {}).get(p_name, [])
                                                     dynamic_dialog_config['selected_ontologies_by_provider'] = {
-                                                        p_name: st.session_state.get('selected_ontologies_by_provider', {}).get(p_name, [])
+                                                        p_name: effective_dialog_ontologies
                                                     }
                                                 if p_name == "NCBI":
                                                     dynamic_dialog_config['ncbi_databases'] = st.session_state.get('ncbi_selected_databases', [])

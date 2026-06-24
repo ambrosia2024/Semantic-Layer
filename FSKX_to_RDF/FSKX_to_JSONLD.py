@@ -24,20 +24,66 @@ from xml.etree import ElementTree as ET
 from pathlib import Path
 from difflib import SequenceMatcher
 from pyld import jsonld
+from rdflib import Graph, URIRef
+from rdflib.namespace import OWL, RDF, RDFS, SKOS
 from robust_metadata_matching import load_all_metadata_robust
+from schema_loader import build_jsonld_context, get_enum_slots
+from fskx_normalizer import normalize as normalize_fskx_metadata
 
+
+SCRIPT_DIR = Path(__file__).resolve().parent
 
 # Folder for the FSKX models to be read
-INPUT_FOLDER = "fskx_models"
+INPUT_FOLDER = SCRIPT_DIR / "fskx_models"
 
 # Folder for the resulting LD files
-OUTPUT_FOLDER = "unmapped/jsonld"
+OUTPUT_FOLDER = SCRIPT_DIR / "unmapped" / "jsonld"
 
 # Base URI for generating IDs - aligned with fskx.owl ontology
 BASE_URI = "http://semanticlookup.zbmed.de/km/fskxo/"
 
-# Path to the fskx.owl ontology file
-ONTOLOGY_FILE = "fskxo.owl"
+# Path to the ontology file
+ONTOLOGY_FILE = SCRIPT_DIR / "fskxo.owl"
+
+# Schema-driven enum slots for vocabulary linking
+ENUM_SLOTS = set(get_enum_slots())
+
+# Keep these list-typed slots stable after compaction (singletons must remain arrays)
+ARRAY_SLOT_PATHS = {
+    ("generalInformation", "creator"),
+    ("generalInformation", "reference"),
+    ("generalInformation", "author"),
+    ("generalInformation", "modificationDate"),
+    ("generalInformation", "modelSubClass"),
+    ("scope", "product"),
+    ("scope", "product", "method"),
+    ("scope", "product", "packaging"),
+    ("scope", "product", "treatment"),
+    ("scope", "hazard"),
+    ("scope", "populationGroup"),
+    ("dataBackground", "studySample"),
+    ("dataBackground", "laboratory"),
+    ("dataBackground", "laboratory", "accreditation"),
+    ("dataBackground", "assay"),
+    ("modelMath", "modelEquation"),
+    ("modelMath", "parameter"),
+    ("modelMath", "qualityMeasures"),
+    ("modelMath", "exposure"),
+}
+
+
+def _enforce_array_slots(obj, path=()):
+    """Ensure selected schema-relevant slots remain arrays after JSON-LD compaction."""
+    if isinstance(obj, dict):
+        for key, value in list(obj.items()):
+            current_path = path + (key,)
+            if current_path in ARRAY_SLOT_PATHS and value is not None and not isinstance(value, list):
+                obj[key] = [value]
+                value = obj[key]
+            _enforce_array_slots(value, current_path)
+    elif isinstance(obj, list):
+        for item in obj:
+            _enforce_array_slots(item, path)
 
 
 #ZENODO_TOKEN = "QgH8nwT9xXzgn1ZeJafy4D88GMLRLNhu5ZL11IHpdpbBUR2d2nEsaYUOPw5M"
@@ -204,9 +250,10 @@ def generate_jsonld_for_composite(composite_model: CompositeModel, original_fskx
     # Process each sub-model using the single-model transformation logic
     for model_id, model in composite_model.models.items():
         logging.info(f"  - Processing sub-model with rich context: {model.id}")
+        normalized_metadata = normalize_fskx_metadata(model.metadata)
         
         # Use the single-model function to get a fully processed sub-model JSON-LD
-        sub_model_ld = transformJsonToJsonLD(model.id, model.metadata, context_doc)
+        sub_model_ld = transformJsonToJsonLD(model.id, normalized_metadata, context_doc)
         
         if sub_model_ld:
             # The transform function adds a context, which we don't need on the sub-part.
@@ -310,60 +357,61 @@ def load_ontology_mappings(ontology_file):
         return {}, {}, {}, {}
 
     try:
-        tree = ET.parse(ontology_file)
-        root = tree.getroot()
-
-        # Define namespaces
-        namespaces = {
-            'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-            'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
-            'owl': 'http://www.w3.org/2002/07/owl#',
-            'oboInOwl': 'http://www.geneontology.org/formats/oboInOwl#'
-        }
-
+        graph = Graph()
+        graph.parse(str(ontology_file))
         classes = {}
         properties = {}
         individuals = {}
         synonyms = {}
 
-        # Extract OWL Classes
-        for owl_class in root.findall('.//owl:Class', namespaces):
-            about = owl_class.get('{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about')
-            label_elem = owl_class.find('rdfs:label', namespaces)
-            if about and label_elem is not None:
-                label = label_elem.text
-                classes[label] = about
+        label_predicates = (RDFS.label, SKOS.prefLabel)
+        synonym_predicates = (
+            URIRef("http://www.geneontology.org/formats/oboInOwl#hasSynonym"),
+            URIRef("http://www.geneontology.org/formats/oboInOwl#hasExactSynonym"),
+            URIRef("http://www.geneontology.org/formats/oboInOwl#hasRelatedSynonym"),
+            URIRef("http://www.geneontology.org/formats/oboInOwl#hasBroadSynonym"),
+            URIRef("http://www.geneontology.org/formats/oboInOwl#hasNarrowSynonym"),
+            SKOS.altLabel,
+            SKOS.hiddenLabel,
+        )
 
-        # Extract Object Properties
-        for obj_prop in root.findall('.//owl:ObjectProperty', namespaces):
-            about = obj_prop.get('{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about')
-            label_elem = obj_prop.find('rdfs:label', namespaces)
-            if about and label_elem is not None:
-                label = label_elem.text
-                properties[label] = about
+        def _labels(subject):
+            values = []
+            for predicate in label_predicates:
+                values.extend(str(label).strip() for label in graph.objects(subject, predicate) if str(label).strip())
+            return values
 
-        # Extract NamedIndividuals with their labels and synonyms
-        for named_ind in root.findall('.//owl:NamedIndividual', namespaces):
-            about = named_ind.get('{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about')
-            label_elem = named_ind.find('rdfs:label', namespaces)
+        def _add(subject, store_dict):
+            labels = _labels(subject)
+            if not labels:
+                return
+            iri = str(subject)
+            for label in labels:
+                store_dict[label] = iri
+                store_dict[normalize(label)] = iri
 
-            if about and label_elem is not None:
-                label = label_elem.text
-                individuals[label] = about
+            canonical = normalize(labels[0])
+            for predicate in synonym_predicates:
+                for synonym in graph.objects(subject, predicate):
+                    synonym_text = str(synonym).strip()
+                    if synonym_text:
+                        synonym_key = normalize(synonym_text)
+                        synonyms[synonym_key] = canonical
+                        store_dict[synonym_key] = iri
 
-                # Also map normalized versions for fuzzy matching
-                normalized_label = label.lower().strip()
-                individuals[normalized_label] = about
+        for owl_class in graph.subjects(RDF.type, OWL.Class):
+            _add(owl_class, classes)
 
-                # Extract synonyms
-                synonym_elems = named_ind.findall('oboInOwl:hasSynonym', namespaces)
-                for syn_elem in synonym_elems:
-                    synonym = syn_elem.text
-                    if synonym:
-                        synonyms[synonym.lower().strip()] = label
-                        individuals[synonym.lower().strip()] = about
+        property_types = (OWL.ObjectProperty, OWL.DatatypeProperty, OWL.AnnotationProperty)
+        for property_type in property_types:
+            for prop in graph.subjects(RDF.type, property_type):
+                _add(prop, properties)
 
-        logging.info(f"Loaded {len(classes)} classes, {len(properties)} properties, and {len(set(individuals.values()))} NamedIndividuals from ontology.")
+        for named_ind in graph.subjects(RDF.type, OWL.NamedIndividual):
+            _add(named_ind, individuals)
+
+        logging.info(f"Loaded {len(classes)} class labels, {len(properties)} property labels, "
+                     f"and {len(set(individuals.values()))} NamedIndividuals from ontology.")
         return classes, properties, individuals, synonyms
 
     except Exception as e:
@@ -620,7 +668,7 @@ def map_vocab_field_to_iri(field_name, field_value):
         'classification': 'classification'
     }
 
-    field_type = field_type_mapping.get(field_name)
+    field_type = field_type_mapping.get(field_name, field_name if field_name in ENUM_SLOTS else None)
     if not field_type:
         return field_value
 
@@ -637,18 +685,267 @@ def map_vocab_field_to_iri(field_name, field_value):
     # Return original value if no mapping found
     return field_value
 
+
+def _ensure_list_slot(obj, key):
+    if not isinstance(obj, dict) or key not in obj:
+        return
+    value = obj.get(key)
+    if value is None:
+        return
+    if isinstance(value, list):
+        return
+    obj[key] = [value]
+
+
+def _coerce_metadata_for_schema(metadata):
+    """Coerce common legacy FSKX patterns into generated-schema compatible shapes."""
+    if not isinstance(metadata, dict):
+        return metadata
+
+    gi = metadata.get("generalInformation")
+    if isinstance(gi, dict):
+        if not gi.get("identifier"):
+            identifier = gi.get("doi")
+            if identifier:
+                gi["identifier"] = str(identifier)
+        # In generated schema, identifier is used (not doi) at generalInformation level
+        gi.pop("doi", None)
+        _ensure_list_slot(gi, "creator")
+        _ensure_list_slot(gi, "reference")
+        _ensure_list_slot(gi, "author")
+        _ensure_list_slot(gi, "modificationDate")
+        _ensure_list_slot(gi, "modelSubClass")
+        mc = gi.get("modelCategory")
+        if isinstance(mc, dict):
+            if "type" in mc and "modelClass" not in mc:
+                mc["modelClass"] = mc.pop("type")
+            _ensure_list_slot(mc, "modelSubClass")
+            _ensure_list_slot(mc, "basicProcess")
+
+    db = metadata.get("dataBackground")
+    if isinstance(db, dict):
+        _ensure_list_slot(db, "studySample")
+        _ensure_list_slot(db, "laboratory")
+        _ensure_list_slot(db, "assay")
+        labs = db.get("laboratory")
+        if isinstance(labs, list):
+            for lab in labs:
+                if isinstance(lab, dict) and "accreditation" in lab:
+                    acc = lab.get("accreditation")
+                    if acc is None:
+                        lab["accreditation"] = ["unspecified"]
+                    elif isinstance(acc, list):
+                        if not acc:
+                            lab["accreditation"] = ["unspecified"]
+                    elif isinstance(acc, str):
+                        lab["accreditation"] = [acc]
+                    else:
+                        lab["accreditation"] = [str(acc)]
+
+    scope = metadata.get("scope")
+    if isinstance(scope, dict):
+        for list_slot in ("product", "hazard", "populationGroup"):
+            _ensure_list_slot(scope, list_slot)
+
+        # New schema does not carry modelClass on nested scope entities
+        for slot_name in ("product", "hazard", "populationGroup"):
+            entries = scope.get(slot_name)
+            if isinstance(entries, list):
+                for entry in entries:
+                    if isinstance(entry, dict):
+                        entry.pop("modelClass", None)
+                        if slot_name == "product":
+                            for product_list_slot in ("method", "packaging", "treatment"):
+                                _ensure_list_slot(entry, product_list_slot)
+                        for key in (
+                            "populationSpan",
+                            "patternConsumption",
+                            "populationAge",
+                            "populationDescription",
+                            "populationGender",
+                            "populationRiskFactor",
+                            "bmi",
+                            "country",
+                            "region",
+                        ):
+                            if key in entry and entry[key] is not None and not isinstance(entry[key], list):
+                                entry[key] = [entry[key]]
+
+        # Legacy payloads sometimes place population-group fields directly on scope
+        pg_field_names = {
+            "populationSpan",
+            "patternConsumption",
+            "populationAge",
+            "populationDescription",
+            "populationGender",
+            "populationRiskFactor",
+            "bmi",
+            "country",
+            "region",
+        }
+        promoted = {k: scope.pop(k) for k in list(scope.keys()) if k in pg_field_names}
+        if promoted:
+            groups = scope.get("populationGroup")
+            if not isinstance(groups, list):
+                groups = []
+                scope["populationGroup"] = groups
+            if not groups or not isinstance(groups[0], dict):
+                groups.insert(0, {"name": "unspecified"})
+            groups[0].update({k: v for k, v in promoted.items() if v is not None})
+
+    mm = metadata.get("modelMath")
+    if isinstance(mm, dict):
+        _ensure_list_slot(mm, "modelEquation")
+        _ensure_list_slot(mm, "parameter")
+        _ensure_list_slot(mm, "qualityMeasures")
+        _ensure_list_slot(mm, "exposure")
+        equations = mm.get("modelEquation")
+        if isinstance(equations, list):
+            for eq in equations:
+                if not isinstance(eq, dict):
+                    continue
+                # Generated schema does not include modelClass in ModelMath/ModelEquation
+                eq.pop("modelClass", None)
+                if "type" in eq and "modelEquationClass" not in eq:
+                    eq["modelEquationClass"] = eq.pop("type")
+
+        params = mm.get("parameter")
+        if isinstance(params, list):
+            for i, p in enumerate(params):
+                if not isinstance(p, dict):
+                    continue
+                if not p.get("id"):
+                    base = p.get("name") or p.get("symbol") or f"param_{i+1}"
+                    p["id"] = sanitize_iri_component(str(base)) or f"param_{i+1}"
+                p.pop("doi", None)
+
+                for enum_key in ("classification", "dataType"):
+                    val = p.get(enum_key)
+                    if isinstance(val, dict):
+                        p[enum_key] = val.get("label") or val.get("@id") or ""
+
+    return metadata
+
+
+def _align_compacted_schema_keys(doc):
+    """Fix context-compacted aliasing (e.g., doi) so output matches generated schema keys."""
+    if not isinstance(doc, dict):
+        return doc
+
+    def _rename_plain_id_to_identifier(obj):
+        if isinstance(obj, dict) and "id" in obj and "identifier" not in obj:
+            obj["identifier"] = obj.pop("id")
+
+    gi = doc.get("generalInformation")
+    if isinstance(gi, dict):
+        _rename_plain_id_to_identifier(gi)
+        if "doi" in gi and "identifier" not in gi:
+            gi["identifier"] = gi.pop("doi")
+        _ensure_list_slot(gi, "modificationDate")
+        _ensure_list_slot(gi, "modelSubClass")
+        mc = gi.get("modelCategory")
+        if isinstance(mc, dict):
+            if "type" in mc and "modelClass" not in mc:
+                mc["modelClass"] = mc.pop("type")
+            _ensure_list_slot(mc, "modelSubClass")
+            _ensure_list_slot(mc, "basicProcess")
+
+    db = doc.get("dataBackground")
+    if isinstance(db, dict):
+        study = db.get("study")
+        if isinstance(study, dict):
+            _rename_plain_id_to_identifier(study)
+
+    mm = doc.get("modelMath")
+    if isinstance(mm, dict):
+        equations = mm.get("modelEquation")
+        if isinstance(equations, list):
+            for eq in equations:
+                if isinstance(eq, dict) and "modelClass" in eq:
+                    eq.pop("modelClass", None)
+                if isinstance(eq, dict) and "type" in eq and "modelEquationClass" not in eq:
+                    eq["modelEquationClass"] = eq.pop("type")
+
+        # Cleanup any legacy field accidentally compacted onto modelMath
+        mm.pop("modelClass", None)
+
+        params = mm.get("parameter")
+        if isinstance(params, list):
+            for p in params:
+                if isinstance(p, dict) and "doi" in p and "id" not in p:
+                    p["id"] = p.pop("doi")
+
+    scope = doc.get("scope")
+    if isinstance(scope, dict):
+        if "populationSpan" in scope:
+            pg = scope.get("populationGroup")
+            if not isinstance(pg, list):
+                pg = []
+                scope["populationGroup"] = pg
+            if not pg or not isinstance(pg[0], dict):
+                pg.insert(0, {"name": "unspecified"})
+            if "populationSpan" not in pg[0]:
+                pg[0]["populationSpan"] = scope.get("populationSpan")
+            scope.pop("populationSpan", None)
+
+        for slot_name in ("product", "hazard", "populationGroup"):
+            entries = scope.get(slot_name)
+            if isinstance(entries, list):
+                for entry in entries:
+                    if isinstance(entry, dict):
+                        entry.pop("modelClass", None)
+                        if slot_name == "product":
+                            for product_list_slot in ("method", "packaging", "treatment"):
+                                _ensure_list_slot(entry, product_list_slot)
+                        for key in (
+                            "populationSpan",
+                            "patternConsumption",
+                            "populationAge",
+                            "populationDescription",
+                            "populationGender",
+                            "populationRiskFactor",
+                            "bmi",
+                            "country",
+                            "region",
+                        ):
+                            if key in entry and entry[key] is not None and not isinstance(entry[key], list):
+                                entry[key] = [entry[key]]
+
+    return doc
+
 def add_ids_to_structure(data, model_id, path=""):
     """Recursively add @id fields to nested structures."""
     if isinstance(data, dict):
+        type_by_path = {
+            "generalInformation": "GeneralInformation",
+            "generalInformation.creator": "Contact",
+            "generalInformation.reference": "Reference",
+            "generalInformation.modelCategory": "ModelCategory",
+            "scope": "Scope",
+            "scope.product": "Product",
+            "scope.hazard": "Hazard",
+            "scope.populationGroup": "PopulationGroup",
+            "dataBackground": "DataBackground",
+            "dataBackground.study": "Study",
+            "dataBackground.studySample": "StudySample",
+            "dataBackground.dietaryAssessmentMethod": "DietaryAssessmentMethod",
+            "dataBackground.laboratory": "Laboratory",
+            "dataBackground.assay": "Assay",
+            "modelMath": "ModelMath",
+            "modelMath.parameter": "Parameter",
+            "modelMath.qualityMeasures": "QualityMeasures",
+            "modelMath.modelEquation": "ModelEquation",
+            "modelMath.exposure": "Exposure",
+        }
+
+        if path in type_by_path and "@type" not in data:
+            data["@type"] = type_by_path[path]
+
         # Preserve original unit string
         if 'unit' in data and isinstance(data['unit'], str):
             data['unit_label'] = data['unit']
 
-        # Map vocabulary fields to IRIs BEFORE processing structure
-        for vocab_field in ['unit', 'unitCategory', 'dataType', 'classification']:
-            if vocab_field in data and isinstance(data[vocab_field], str):
-                mapped_value = map_vocab_field_to_iri(vocab_field, data[vocab_field])
-                data[vocab_field] = mapped_value
+        # Keep unmapped JSON-LD schema-conformant; ontology linking happens in mapping stage.
 
         # Always add @id if not present (unless it's a simple value)
         if "@id" not in data and len(data) > 1:
@@ -658,16 +955,12 @@ def add_ids_to_structure(data, model_id, path=""):
             # Handle main sections
             if path == "generalInformation":
                 data["@id"] = f"{BASE_URI}{safe_model_id}/generalInformation"
-                data["@type"] = "generalInformation"
             elif path == "scope":
                 data["@id"] = f"{BASE_URI}{safe_model_id}/scope"
-                data["@type"] = "scope"
             elif path == "dataBackground":
                 data["@id"] = f"{BASE_URI}{safe_model_id}/dataBackground"
-                data["@type"] = "dataBackground"
             elif path == "modelMath":
                 data["@id"] = f"{BASE_URI}{safe_model_id}/modelMath"
-                data["@type"] = "modelMath"
 
             # Handle specific object types with custom generators
             elif path == "generalInformation.creator":
@@ -715,7 +1008,7 @@ def add_ids_to_structure(data, model_id, path=""):
 
         # Handle arrays within objects
         for key, value in data.items():
-            if key != "@id" and key != "@type":  # Don't process @id and @type fields
+            if key not in {"@context", "@id", "@type"}:  # Don't process JSON-LD control fields
                 new_path = f"{path}.{key}" if path else key
 
                 # Special handling for known array fields
@@ -871,6 +1164,7 @@ def transformJsonToJsonLD(id, metadata, context_doc):
         data["@id"] = root_id
     else:
         logging.warning(f"No identifier for {id}; root will remain a blank node.")
+    data.setdefault("@type", "GenericModel")
 
     # Add @id fields to nested structures to avoid blank nodes
     logging.info(f"Adding IDs to nested structures for model {model_identifier}...")
@@ -975,6 +1269,8 @@ def process_fskx_file(fskx_file_path: Path, context_doc: dict, override=False):
                 return logging.error(f"metaData.json not found for single model '{fskx_file_path.name}'")
             
             metadata = json.loads(metadata_path.read_text(encoding='utf-8'))
+            metadata = normalize_fskx_metadata(metadata)
+            metadata = _coerce_metadata_for_schema(metadata)
             final_jsonld = transformJsonToJsonLD(fskx_file_path.stem, metadata, context_doc)
 
         compaction_context = context_doc
@@ -1000,12 +1296,17 @@ def process_fskx_file(fskx_file_path: Path, context_doc: dict, override=False):
 
                 expanded = jsonld.expand(final_jsonld)
                 compacted = jsonld.compact(expanded, compaction_context, options={'compactArrays': True, 'skipExpansion': False})
+                _enforce_array_slots(compacted)
+                _align_compacted_schema_keys(compacted)
+                output_model_id = (compacted.get("generalInformation") or {}).get("identifier") or fskx_file_path.stem
+                add_ids_to_structure(compacted, output_model_id)
                 fix_ontology_iris(compacted)
                 
                 # Ensure output_filename is set correctly for single models
                 if not is_joined:
                     output_filename = Path(OUTPUT_FOLDER) / f"{fskx_file_path.stem}.jsonld"
 
+                output_filename.parent.mkdir(parents=True, exist_ok=True)
                 output_filename.write_text(json.dumps(compacted, indent=2, ensure_ascii=False), encoding='utf-8')
                 logging.info(f"Successfully wrote linked JSON-LD to {output_filename}")
             except Exception as e:
@@ -1025,9 +1326,17 @@ if __name__ == '__main__':
         ONTOLOGY_INDIVIDUALS.update(ont_individuals)
         ONTOLOGY_SYNONYMS.update(ont_synonyms)
 
-        context = loadContext("jsonld-context_fsk_enhanced.json")
-        if not context:
-            sys.exit("Failed to load context. Exiting.")
+        try:
+            context = build_jsonld_context()
+            logging.info("Using schema-generated JSON-LD context from fskxo.linkml.yaml")
+        except Exception as schema_ctx_error:
+            logging.warning(
+                "Failed to build schema-generated context (%s). Falling back to jsonld-context_fsk_enhanced.json",
+                schema_ctx_error,
+            )
+            context = loadContext("jsonld-context_fsk_enhanced.json")
+            if not context:
+                sys.exit("Failed to load context. Exiting.")
 
         fskx_path = Path(args.fskx_path)
         if fskx_path.is_dir():

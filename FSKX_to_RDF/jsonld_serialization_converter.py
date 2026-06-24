@@ -30,6 +30,14 @@ except ImportError:
     print("Error: rdflib is required. Install with: pip install rdflib")
     sys.exit(1)
 
+try:
+    from schema_loader import DEFAULT_SCHEMA, get_default_vocab_path
+    from fskxo_vocab_linking import apply_vocab_linking
+except ImportError:
+    DEFAULT_SCHEMA = None
+    get_default_vocab_path = None
+    apply_vocab_linking = None
+
 # --- Logging Setup ---
 logging.basicConfig(
     level=logging.INFO,
@@ -102,6 +110,7 @@ class JSONLDConverter:
             'processed': 0,
             'successful': 0,
             'failed': 0,
+            'skipped': 0,
             'formats_created': {}
         }
 
@@ -137,6 +146,15 @@ class JSONLDConverter:
             # Convert dict to JSON string for parsing
             jsonld_str = json.dumps(jsonld_data, ensure_ascii=False)
             g.parse(data=jsonld_str, format='json-ld')
+
+            if apply_vocab_linking and get_default_vocab_path and output_format != 'jsonld':
+                linked = apply_vocab_linking(
+                    g,
+                    get_default_vocab_path(),
+                    schema_path=DEFAULT_SCHEMA,
+                )
+                if linked:
+                    logging.info(f"  -> RDF vocabulary linking updated {linked} triple(s)")
 
             # Bind common namespaces for cleaner output
             for prefix, namespace in PREFIX_MAP.items():
@@ -199,6 +217,8 @@ class JSONLDConverter:
 
         self.stats['processed'] += 1
         success_count = 0
+        skip_count = 0
+        attempted_count = 0
 
         # Convert to each requested format
         for format_name in output_formats:
@@ -206,7 +226,10 @@ class JSONLDConverter:
                 output_path = self.get_output_path(input_file, format_name)
                 if not self.override and os.path.exists(output_path):
                     logging.info(f"  -> Skipping existing file: {output_path}")
+                    skip_count += 1
                     continue
+
+                attempted_count += 1
 
                 # Convert to target format
                 serialized_data = self.convert_to_format(jsonld_data, format_name)
@@ -230,6 +253,9 @@ class JSONLDConverter:
 
         if success_count > 0:
             self.stats['successful'] += 1
+            return True
+        elif skip_count == len(output_formats) and attempted_count == 0:
+            self.stats['skipped'] += 1
             return True
         else:
             self.stats['failed'] += 1
@@ -272,6 +298,7 @@ class JSONLDConverter:
         logging.info("="*50)
         logging.info(f"Files processed: {self.stats['processed']}")
         logging.info(f"Successfully converted: {self.stats['successful']}")
+        logging.info(f"Skipped existing outputs: {self.stats['skipped']}")
         logging.info(f"Failed conversions: {self.stats['failed']}")
 
         if self.stats['formats_created']:

@@ -1,9 +1,8 @@
 @prefix amb: <https://w3id.org/ambrosia/ontology#> .
 @prefix amblink: <https://w3id.org/ambrosia/linking#> .
-@prefix base: <http://id.zbmed.de/fskxo/> .
+@prefix bibo: <http://purl.org/ontology/bibo/> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix fskxo: <http://semanticlookup.zbmed.de/km/fskxo/> .
-@prefix ns2: <http://schema.org/> .
 @prefix obo: <http://purl.obolibrary.org/obo/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
@@ -14,20 +13,21 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 fskxo:ac398182-01ab-48f0-b25c-ca432631b018 a fskxo:FSKXO_0000018113,
+        fskxo:FSKXO_0000050318,
         amblink:PredictiveModel ;
     dcterms:source <urn:sha256:d3b83a211b84a2e287596e5cb74b3bb301e110a1e96270979fe131ea63f5f9ca> ;
     fskxo:FSKXO_0000000003 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/generalInformation> ;
     fskxo:FSKXO_0000000006 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/scope> ;
     fskxo:FSKXO_0000000007 <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/lettuce> ;
-    fskxo:FSKXO_0000000008 <https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/salmonella> ;
+    fskxo:FSKXO_0000000008 <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/salmonella> ;
     fskxo:FSKXO_0000000010 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/dataBackground> ;
     fskxo:FSKXO_0000000016 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/modelMath> ;
     fskxo:FSKXO_0000000044 "genericModel" ;
-    prov:generatedAtTime "2026-03-03T13:08:24+00:00"^^xsd:dateTime ;
+    prov:generatedAtTime "2026-06-24T12:18:03+00:00"^^xsd:dateTime ;
     prov:wasDerivedFrom <urn:sha256:d3b83a211b84a2e287596e5cb74b3bb301e110a1e96270979fe131ea63f5f9ca> ;
     prov:wasGeneratedBy <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/prov/activity/d3b83a211b84> ;
     amblink:forMatrix <https://w3id.org/ambrosia/plant-vocab#concept/vegetable/lettuce> ;
-    amblink:forTaxon <https://w3id.org/ambrosia/pathogen-vocab#concept/pathogen/salmonella> ;
+    amblink:forTaxon <https://w3id.org/ambrosia/pathogen-vocab#concept/biological-hazards/salmonella> ;
     amblink:hasInputMapping [ a amblink:InputMapping ;
             amblink:isFulfilledBy <https://w3id.org/ambrosia/netcdf-vocab#concept/netcdf/tas> ;
             amblink:mapsParameter <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/temp_celsius> ;
@@ -44,64 +44,69 @@ fskxo:ac398182-01ab-48f0-b25c-ca432631b018 a fskxo:FSKXO_0000018113,
 
 fskxo:FSKXO_0000000315 schema:label "English" .
 
-fskxo:FSKXO_0000007123 schema:label "Microorganism" .
-
 fskxo:FSKXO_0000017506 schema:label "° Celsius" .
+
+fskxo:FSKXO_0000017548 schema:label "g" .
 
 fskxo:FSKXO_0000017577 schema:label ".fskx" .
 
+fskxo:FSKXO_0000017632 schema:label "log10 CFU/g" .
+
+fskxo:FSKXO_0000017661 schema:label "g" .
+
 fskxo:FSKXO_0000018038 schema:label "FSK-Lab" .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/creator/d9c71653> schema:email "matthias.filter@bfr.bund.de" ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/creator/d9c71653> a fskxo:FSKXO_0000050319 ;
+    schema:email "matthias.filter@bfr.bund.de" ;
     schema:familyName "Filter" ;
     schema:givenName "Matthias" .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/dataBackground> a fskxo:FSKXO_0000000010 ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/dataBackground> a fskxo:FSKXO_0000050253 ;
     fskxo:FSKXO_0000000011 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/dataBackground/study/Prediction_of_pathogen_growth_on_iceberg_lettuce_u> ;
     fskxo:FSKXO_0000000012 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/dataBackground/studySample/3c859539> ;
     fskxo:FSKXO_0000000014 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/dataBackground/laboratory/Food_Processing_Laboratory_National_Food_Research> ;
     fskxo:FSKXO_0000000015 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/dataBackground/assay/Pathogen_growth_measurement> .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/dataBackground/assay/Pathogen_growth_measurement> dcterms:description "Measurement of bacterial growth on lettuce samples under controlled and fluctuating temperatures" ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/dataBackground/assay/Pathogen_growth_measurement> a fskxo:FSKXO_0000050258 ;
+    dcterms:description "Measurement of bacterial growth on lettuce samples under controlled and fluctuating temperatures" ;
     fskxo:FSKXO_0000000083 "3-4 log10 CFU/g" ;
     schema:name "Pathogen growth measurement" .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/dataBackground/laboratory/Food_Processing_Laboratory_National_Food_Research> dcterms:spatial "JP" ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/dataBackground/laboratory/Food_Processing_Laboratory_National_Food_Research> a fskxo:FSKXO_0000050257 ;
+    dcterms:spatial "JP" ;
+    fskxo:FSKXO_0000000038 "unspecified" ;
     schema:name "Food Processing Laboratory, National Food Research Institute" .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/dataBackground/study/Prediction_of_pathogen_growth_on_iceberg_lettuce_u> dcterms:description "Study examining pathogen growth on lettuce under constant and fluctuating temperatures to estimate microbial safety during distribution" ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/dataBackground/study/Prediction_of_pathogen_growth_on_iceberg_lettuce_u> a fskxo:FSKXO_0000050254 ;
+    dcterms:description "Study examining pathogen growth on lettuce under constant and fluctuating temperatures to estimate microbial safety during distribution" ;
     dcterms:title "Prediction of pathogen growth on iceberg lettuce under real temperature history during distribution from farm to table" ;
     fskxo:FSKXO_0000000067 "Growth study under controlled and real temperature conditions" .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/dataBackground/studySample/3c859539> obo:HSO_0000288 "Outer leaves and core removed, cut into 3x3 cm pieces using sterile surgical knife" ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/dataBackground/studySample/3c859539> a fskxo:FSKXO_0000050255 ;
+    obo:HSO_0000288 "Outer leaves and core removed, cut into 3x3 cm pieces using sterile surgical knife" ;
     obo:HSO_0000331 "100g leaf samples placed in plastic bags for inoculation" ;
     obo:HSO_0000357 "100g initial sample weight" ;
     schema:identifier "Iceberg lettuce" ;
     schema:size "10g samples used for analysis" .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/generalInformation> a fskxo:FSKXO_0000000003 ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/generalInformation> a fskxo:FSKXO_0000050247 ;
     obo:IAO_0000114 "Uncurated" ;
     dcterms:accessRights "Open access" ;
-    dcterms:created 3,
-        22,
-        2025 ;
+    dcterms:created "2025-03-22"^^xsd:date ;
     dcterms:creator <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/creator/d9c71653> ;
     dcterms:description "A predictive model for Salmonella spp on lettuce for temperatures between 5 to 25 °C" ;
+    dcterms:format fskxo:FSKXO_0000017577 ;
     dcterms:identifier "ac398182-01ab-48f0-b25c-ca432631b018" ;
-    dcterms:modified 3,
-        28,
-        2025 ;
+    dcterms:language fskxo:FSKXO_0000000315 ;
+    dcterms:modified "2025-03-28"^^xsd:date ;
     dcterms:rights "CC BY 4.0" ;
-    dcterms:title "Koseki_SalmonellaLettuce_Temperature" ;
     fskxo:FSKXO_0000000004 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/reference/10_1016_j_ijfoodmicro_2005_02_012> ;
-    fskxo:FSKXO_0000000005 [ fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017519 ] ;
-    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000000315,
-        fskxo:FSKXO_0000017577,
-        fskxo:FSKXO_0000018038 ;
+    fskxo:FSKXO_0000000005 fskxo:FSKXO_0000050318 ;
+    fskxo:FSKXO_0000000049 fskxo:FSKXO_0000018038 ;
+    schema:name "Koseki_SalmonellaLettuce_Temperature" ;
     schema:programmingLanguage "Python 3.12.9" .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/modelMath> a fskxo:FSKXO_0000000016 ;
-    base:0000041 "Baranyi model with DMFit Excel Add-In software" ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/modelMath> a fskxo:FSKXO_0000050259 ;
     fskxo:FSKXO_0000000017 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/Tmin>,
         <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/alpha0>,
         <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/b>,
@@ -111,85 +116,94 @@ fskxo:FSKXO_0000018038 schema:label "FSK-Lab" .
         <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/tmax>,
         <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/y0> ;
     fskxo:FSKXO_0000000018 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/modelMath/qualityMeasures/500a3a77> ;
-    fskxo:FSKXO_0000000019 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/modelMath/modelEquation/Baranyi-Ratkowsky_model> .
+    fskxo:FSKXO_0000000019 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/modelMath/modelEquation/Baranyi-Ratkowsky_model> ;
+    fskxo:FSKXO_0000017806 "Baranyi model with DMFit Excel Add-In software" .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/modelMath/modelEquation/Baranyi-Ratkowsky_model> dcterms:references "dq/dt = μmax*q, dx/dt = μmax*q/(1+q)*[1-x/(xmax)]*x" ;
-    dcterms:type "Differential equations" ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/modelMath/modelEquation/Baranyi-Ratkowsky_model> a fskxo:FSKXO_0000050262 ;
+    fskxo:FSKXO_0000000019 "dq/dt = μmax*q, dx/dt = μmax*q/(1+q)*[1-x/(xmax)]*x" ;
     schema:name "Baranyi-Ratkowsky model" .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/modelMath/qualityMeasures/500a3a77> fskxo:FSKXO_0000000092 1.5e-01 ;
-    fskxo:FSKXO_0000000093 9.5e-01 .
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/modelMath/qualityMeasures/500a3a77> a fskxo:FSKXO_0000050261 ;
+    fskxo:FSKXO_0000000092 "0.15"^^xsd:float ;
+    fskxo:FSKXO_0000000093 "0.95"^^xsd:float .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/Tmin> dcterms:identifier "Tmin" ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/Tmin> a fskxo:FSKXO_0000050260 ;
+    dcterms:identifier "Tmin" ;
+    fskxo:FSKXO_0000000039 fskxo:FSKXO_0000017594 ;
     fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
-    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017480,
-        fskxo:FSKXO_0000017490 ;
     schema:name "Tmin" ;
+    schema:unitText "[]" ;
     schema:unit_label "[]" ;
     schema:value "4.96" .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/alpha0> dcterms:identifier "alpha0" ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/alpha0> a fskxo:FSKXO_0000050260 ;
+    dcterms:identifier "alpha0" ;
+    fskxo:FSKXO_0000000039 fskxo:FSKXO_0000017594 ;
     fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
-    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017480,
-        fskxo:FSKXO_0000017490 ;
     schema:name "alpha0" ;
+    schema:unitText "[]" ;
     schema:unit_label "[]" ;
     schema:value "0.097" .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/b> dcterms:identifier "b" ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/b> a fskxo:FSKXO_0000050260 ;
+    dcterms:identifier "b" ;
+    fskxo:FSKXO_0000000039 fskxo:FSKXO_0000017594 ;
     fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
-    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017480,
-        fskxo:FSKXO_0000017490 ;
     schema:name "b" ;
+    schema:unitText "[]" ;
     schema:unit_label "[]" ;
     schema:value "0.033" .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/tmax> dcterms:description "maximal simulation duration" ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/tmax> a fskxo:FSKXO_0000050260 ;
+    dcterms:description "maximal simulation duration" ;
     dcterms:identifier "tmax" ;
-    ns2:maxValue "100" ;
+    fskxo:FSKXO_0000000039 fskxo:FSKXO_0000017595 ;
     fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
-    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017481,
-        fskxo:FSKXO_0000017490 ;
+    schema:maxValue "100" ;
     schema:minValue "0" ;
     schema:name "tmax" ;
+    schema:unitText "[]" ;
     schema:unit_label "[]" ;
     schema:value "72" .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/y0> dcterms:description "Initial concentration" ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/y0> a fskxo:FSKXO_0000050260 ;
+    dcterms:description "Initial concentration" ;
     dcterms:identifier "y0" ;
-    ns2:maxValue "9" ;
+    fskxo:FSKXO_0000000039 fskxo:FSKXO_0000017595 ;
     fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
-    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017481,
-        fskxo:FSKXO_0000017519 ;
+    schema:maxValue "9" ;
     schema:minValue "2" ;
     schema:name "y0" ;
+    schema:unitText fskxo:FSKXO_0000017519 ;
     schema:unit_label "log CFU/ml" ;
     schema:value "4" .
 
 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/prov/activity/d3b83a211b84> a prov:Activity ;
-    prov:atLocation <file:///Users/michael/Desktop/Ambrosia/Semantic-Layer-main/Semantic-Layer/FSKX_to_RDF/fskx_models/ac398182-01ab-48f0-b25c-ca432631b018.fskx> ;
-    prov:endedAtTime "2026-03-03T13:08:24+00:00"^^xsd:dateTime ;
+    prov:atLocation <file:///Users/michael/Desktop/Ambrosia/Semantic-Layer/FSKX_to_RDF/fskx_models/ac398182-01ab-48f0-b25c-ca432631b018.fskx> ;
+    prov:endedAtTime "2026-06-24T12:18:03+00:00"^^xsd:dateTime ;
     prov:used <urn:sha256:d3b83a211b84a2e287596e5cb74b3bb301e110a1e96270979fe131ea63f5f9ca> ;
     prov:wasAssociatedWith <https://w3id.org/ambrosia/software/pipeline> .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/reference/10_1016_j_ijfoodmicro_2005_02_012> dcterms:identifier "10.1016/j.ijfoodmicro.2005.02.012" ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/reference/10_1016_j_ijfoodmicro_2005_02_012> a fskxo:FSKXO_0000050248 ;
+    obo:IAO_0000114 "Accepted" ;
     dcterms:title "Prediction of pathogen growth on iceberg lettuce under real temperature history during distribution from farm to table" ;
+    bibo:doi "10.1016/j.ijfoodmicro.2005.02.012" ;
     fskxo:FSKXO_0000000021 "Shigenobu Koseki, Seiichiro Isobe" ;
     fskxo:FSKXO_0000000046 true ;
     fskxo:FSKXO_0000000047 "International Journal of Food Microbiology" ;
-    fskxo:FSKXO_00000000486 "Accepted" ;
     schema:datePublished "2005" ;
     schema:issueNumber "239– 248" ;
     schema:volumeNumber "104 (2005)" .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/scope> a fskxo:FSKXO_0000000006 ;
-    dcterms:temporal "Temperature monitored from farm harvest through retail display over 72 hours" ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/scope> a fskxo:FSKXO_0000050250 ;
     fskxo:FSKXO_0000000007 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/scope/product/Iceberg_lettuce> ;
-    fskxo:FSKXO_0000000008 fskxo:FSKXO_0000010627 .
+    fskxo:FSKXO_0000000008 fskxo:FSKXO_0000010627 ;
+    fskxo:FSKXO_0000000009 fskxo:FSKXO_0000018713 .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/scope/product/Iceberg_lettuce> dcterms:description fskxo:FSKXO_0000000507 ;
-    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017548 ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/scope/product/Iceberg_lettuce> a fskxo:FSKXO_0000000336 ;
+    dcterms:description fskxo:FSKXO_0000000507 ;
     schema:name fskxo:FSKXO_0000000507 ;
+    schema:unitText fskxo:FSKXO_0000017661 ;
     schema:unit_label fskxo:FSKXO_0000017548 .
 
 <https://w3id.org/ambrosia/software/pipeline> a prov:SoftwareAgent ;
@@ -199,61 +213,62 @@ fskxo:FSKXO_0000018038 schema:label "FSK-Lab" .
 fskxo:FSKXO_0000000507 schema:label "Fresh cut iceberg lettuce pieces",
         "Iceberg lettuce" .
 
-fskxo:FSKXO_0000010627 dcterms:type fskxo:FSKXO_0000007123 ;
-    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017611 ;
+fskxo:FSKXO_0000010627 a fskxo:FSKXO_0000003283 ;
     schema:label "Salmonella spp." ;
     schema:name fskxo:FSKXO_0000010627 ;
+    schema:unitText fskxo:FSKXO_0000017632 ;
     schema:unit_label fskxo:FSKXO_0000017519 .
 
-fskxo:FSKXO_0000017611 schema:label fskxo:FSKXO_0000017519 .
+fskxo:FSKXO_0000017596 schema:label "OUTPUT" .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/model_values> dcterms:identifier "model_values" ;
+fskxo:FSKXO_0000018713 a fskxo:FSKXO_0000050252 ;
+    dcterms:temporal "Temperature monitored from farm harvest through retail display over 72 hours" ;
+    schema:label "unspecified" ;
+    schema:name fskxo:FSKXO_0000018713 .
+
+fskxo:FSKXO_0000050318 a fskxo:FSKXO_0000050249 ;
+    dcterms:type fskxo:FSKXO_0000017519 .
+
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/model_values> a fskxo:FSKXO_0000050260 ;
+    dcterms:identifier "model_values" ;
+    fskxo:FSKXO_0000000039 fskxo:FSKXO_0000017596 ;
     fskxo:FSKXO_0000000041 "VECTOROFNUMBERS" ;
-    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017482,
-        fskxo:FSKXO_0000017490 ;
     skos:exactMatch amblink:FoodContaminationConcentration ;
     schema:name "model_values" ;
+    schema:unitText "[]" ;
     schema:unit_label "[]" .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/t> dcterms:identifier "t" ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/t> a fskxo:FSKXO_0000050260 ;
+    dcterms:identifier "t" ;
+    fskxo:FSKXO_0000000039 fskxo:FSKXO_0000017596 ;
     fskxo:FSKXO_0000000041 "VECTOROFNUMBERS" ;
-    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017482,
-        fskxo:FSKXO_0000017490 ;
     skos:exactMatch amblink:SimulationTimeSeries ;
     schema:name "t" ;
+    schema:unitText "[]" ;
     schema:unit_label "[]" .
 
-<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/temp_celsius> dcterms:description "Temperature" ;
+<http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/temp_celsius> a fskxo:FSKXO_0000050260 ;
+    dcterms:description "Temperature" ;
     dcterms:identifier "temp_celsius" ;
-    ns2:maxValue "25" ;
+    fskxo:FSKXO_0000000039 fskxo:FSKXO_0000017595 ;
     fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
-    fskxo:FSKXO_0000017519 fskxo:FSKXO_0000017481,
-        fskxo:FSKXO_0000017506 ;
     skos:exactMatch qk:Temperature,
         <https://cfconventions.org/Data/cf-standard-names/current/build/cf-standard-name-table.html#air_temperature> ;
+    schema:maxValue "25" ;
     schema:minValue "5" ;
     schema:name "temp_celsius" ;
+    schema:unitText fskxo:FSKXO_0000017506 ;
     schema:unit_label "° Celsius" ;
     schema:value "10" ;
     amblink:preferredInputUnit qudt-unit:DEG_C .
-
-fskxo:FSKXO_0000017482 schema:label fskxo:FSKXO_0000017482,
-        "OUTPUT" .
-
-fskxo:FSKXO_0000017548 schema:label fskxo:FSKXO_0000017548,
-        "g" .
-
-fskxo:FSKXO_0000017480 schema:label fskxo:FSKXO_0000017480,
-        "CONSTANT" .
-
-fskxo:FSKXO_0000017481 schema:label fskxo:FSKXO_0000017481,
-        "INPUT" .
 
 fskxo:FSKXO_0000017519 schema:label "Generic model",
         "log CFU/ml",
         "log10 CFU/g" .
 
-fskxo:FSKXO_0000017490 schema:label "[]" .
+fskxo:FSKXO_0000017594 schema:label "CONSTANT" .
+
+fskxo:FSKXO_0000017595 schema:label "INPUT" .
 
 fskxo:FSKXO_0000017803 schema:label "DOUBLE" .
 

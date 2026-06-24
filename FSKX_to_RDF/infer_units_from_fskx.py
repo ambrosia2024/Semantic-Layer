@@ -2,7 +2,7 @@ import argparse
 import json
 import pandas as pd
 from pathlib import Path
-from rdflib import Graph, Namespace
+from rdflib import Graph, Namespace, URIRef
 from rdflib.namespace import RDF, SKOS, RDFS
 import difflib
 import sys
@@ -22,6 +22,17 @@ def log(msg):
 FSKXO = Namespace("http://semanticlookup.zbmed.de/km/fskxo/")
 SCHEMA = Namespace("https://schema.org/")
 DCTERMS = Namespace("http://purl.org/dc/terms/")
+
+INPUT_CLASS_IDS = {
+    "INPUT",
+    "FSKXO_0000017481",
+    "FSKXO_0000017595",
+}
+OUTPUT_CLASS_IDS = {
+    "OUTPUT",
+    "FSKXO_0000017482",
+    "FSKXO_0000017596",
+}
 
 def load_master_mapping(file_path):
     try:
@@ -54,6 +65,77 @@ def get_candidates(df, concept_group):
             'row': row
         })
     return candidates
+
+def _clean_uri(value):
+    if value is None or pd.isna(value):
+        return ""
+    text = str(value).strip()
+    if not text or text.lower() == "nan":
+        return ""
+    return text
+
+def build_uri_lookup(candidates):
+    lookup = {}
+    for cand in candidates:
+        row = cand.get('row')
+        if row is None:
+            continue
+        for col in ('URI1', 'URI2', 'URI3'):
+            uri = _clean_uri(row.get(col))
+            if uri:
+                lookup[uri] = cand['display_label']
+    return lookup
+
+def extend_uri_lookup_with_ontology(uri_lookup, ontology_path):
+    if not ontology_path.exists():
+        return uri_lookup
+    try:
+        g = Graph()
+        g.parse(str(ontology_path))
+    except Exception as e:
+        log(f"Could not load ontology for unit URI expansion: {e}")
+        return uri_lookup
+
+    expanded = dict(uri_lookup)
+    match_predicates = (SKOS.exactMatch, SKOS.closeMatch, SKOS.narrowMatch, SKOS.broadMatch)
+    for source_uri, label in list(uri_lookup.items()):
+        source_ref = FSKXO[source_uri.rsplit("/", 1)[-1]] if source_uri.startswith(str(FSKXO)) else None
+        for pred in match_predicates:
+            for subject in g.subjects(pred, URIRef(source_uri)):
+                expanded.setdefault(str(subject), label)
+            if source_ref is not None:
+                for obj in g.objects(source_ref, pred):
+                    if str(obj) in uri_lookup:
+                        expanded.setdefault(str(source_ref), uri_lookup[str(obj)])
+
+    return expanded
+
+def _classification_token(value):
+    text = str(value).strip()
+    if not text:
+        return ""
+    if "/" in text:
+        text = text.rsplit("/", 1)[-1]
+    if "#" in text:
+        text = text.rsplit("#", 1)[-1]
+    return text.upper()
+
+def _resolve_unit_value(unit_value, unit_uri_lookup):
+    unit_text = str(unit_value).strip() if unit_value else ""
+    if not unit_text:
+        return "", None
+    mapped_label = unit_uri_lookup.get(unit_text)
+    if mapped_label:
+        return unit_text, mapped_label
+    return unit_text, None
+
+def _looks_like_time_unit(unit_label):
+    text = str(unit_label or "").lower()
+    return text.startswith("h ") or text.startswith("h(") or "hours" in text or "hour" in text
+
+def _looks_like_temperature_mapping(mapping_label):
+    text = str(mapping_label or "").lower()
+    return "temperature" in text
 
 def fuzzy_match_term(term_str, candidates, threshold=0.7, is_unit=False):
     if not term_str:
@@ -185,6 +267,10 @@ def keyword_match_term(term_str, candidates, verbose=False):
 
 def process_turtle_files(input_dirs, unit_candidates, input_candidates, output_candidates):
     results = {}
+    unit_uri_lookup = extend_uri_lookup_with_ontology(
+        build_uri_lookup(unit_candidates),
+        Path(__file__).parent / "fskxo.owl",
+    )
     
     files_to_process = []
     for d in input_dirs:
@@ -244,10 +330,12 @@ def process_turtle_files(input_dirs, unit_candidates, input_candidates, output_c
                 result_entry = {}
 
                 # Unit matching
-                unit_str = p_data['unit_str']
+                unit_str, direct_unit_match = _resolve_unit_value(p_data['unit_str'], unit_uri_lookup)
                 if unit_str:
-                    # User requested threshold 0.7 for units
-                    mapped_unit = fuzzy_match_term(unit_str, unit_candidates, threshold=0.7, is_unit=True) 
+                    mapped_unit = direct_unit_match
+                    if not mapped_unit:
+                        # User requested threshold 0.7 for units
+                        mapped_unit = fuzzy_match_term(unit_str, unit_candidates, threshold=0.7, is_unit=True)
                     if mapped_unit:
                         result_entry['original_unit'] = unit_str
                         result_entry['mapped_unit_term'] = mapped_unit
@@ -263,8 +351,11 @@ def process_turtle_files(input_dirs, unit_candidates, input_candidates, output_c
                 is_output = False
                 
                 for cls in p_data['classifications']:
-                    if "INPUT" in cls or "FSKXO_0000017481" in cls: is_input = True
-                    if "OUTPUT" in cls or "FSKXO_0000017482" in cls: is_output = True
+                    token = _classification_token(cls)
+                    if token in INPUT_CLASS_IDS:
+                        is_input = True
+                    if token in OUTPUT_CLASS_IDS:
+                        is_output = True
                 
                 log(f"    Classification: {'Input' if is_input else ''} {'Output' if is_output else ''} (Raw: {p_data['classifications']})")
 
@@ -284,6 +375,9 @@ def process_turtle_files(input_dirs, unit_candidates, input_candidates, output_c
                     for term in terms_to_try:
                         match = keyword_match_term(term, candidates_list, verbose=True)
                         if match:
+                            if is_input and _looks_like_time_unit(result_entry.get('mapped_unit_term')) and _looks_like_temperature_mapping(match):
+                                log(f"    Ignoring incompatible input match for time unit: '{term}' -> '{match}'")
+                                continue
                             mapped_param = match
                             result_entry['original_name'] = term
                             result_entry['mapped_parameter_term'] = mapped_param

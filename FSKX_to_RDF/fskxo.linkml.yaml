@@ -1,0 +1,1289 @@
+id: http://semanticlookup.zbmed.de/km/fskxo/
+name: fskxo
+title: FSKX Model Metadata Schema (FSKXO)
+description: >-
+  LinkML canonical model for FSKX food-safety model metadata. Replaces the
+  hand-maintained JSON-Schema, JSON-LD context, and SHACL shapes. IRIs follow
+  the enhanced FSKXO JSON-LD context; per-class overrides live in slot_usage.
+version: 2.0.1
+license: CC-BY-4.0
+
+prefixes:
+  linkml: https://w3id.org/linkml/
+  fskxo: http://semanticlookup.zbmed.de/km/fskxo/
+  # IMPORTANT: must remain http://schema.org/ (not https://) because
+  # linkml:types declares schema: http://schema.org/ and LinkML's prefix
+  # merger throws a ValueError on any mismatch.  The JSON-LD context
+  # (jsonld-context_fsk_enhanced.json) uses https://schema.org/ for its
+  # own property URIs — that discrepancy is handled at the rdflib layer
+  # via the dual SCHEMA / SCHEMA1 namespace bindings in the converters.
+  schema: http://schema.org/
+  dcterms: http://purl.org/dc/terms/
+  bibo: http://purl.org/ontology/bibo/
+  skos: http://www.w3.org/2004/02/skos/core#
+  rdfs: http://www.w3.org/2000/01/rdf-schema#
+  foaf: http://xmlns.com/foaf/0.1/
+  obo: http://purl.obolibrary.org/obo/
+  iao: http://purl.obolibrary.org/obo/IAO_
+  hso: http://purl.obolibrary.org/obo/HSO_
+  xsd: http://www.w3.org/2001/XMLSchema#
+  prov: http://www.w3.org/ns/prov#
+
+default_prefix: fskxo
+default_range: string
+default_curi_maps:
+  - semweb_context
+
+imports:
+  - linkml:types
+
+# =============================================================================
+# CLASSES
+# =============================================================================
+
+classes:
+
+  GenericModel:
+    description: Top-level container for a single FSKX model's metadata.
+    class_uri: fskxo:FSKXO_0000050318
+    tree_root: true
+    slots:
+      - generalInformation
+      - scope
+      - dataBackground
+      - modelMath
+      - modelType
+    slot_usage:
+      # scope and modelMath are mandatory components of every FSKX model;
+      # generalInformation is already required by its global slot definition.
+      scope:
+        required: true
+      modelMath:
+        required: true
+
+  GeneralInformation:
+    description: >-
+      Meta-data giving a general overview of the model / study / data set.
+    # class_uri aligned with JSON-LD context: "GeneralInformation": "base:GeneralInformation"
+    # where base = http://semanticlookup.zbmed.de/km/fskxo/
+    class_uri: fskxo:FSKXO_0000050247
+    slots:
+      - name
+      - source
+      - identifier
+      - author
+      - creator
+      - creationDate
+      - modificationDate
+      - rights
+      - availability
+      - url
+      - format
+      - reference
+      - language
+      - software
+      - languageWrittenIn
+      - modelCategory
+      # modelSubClass is also available directly on GeneralInformation (shortcut
+      # alongside modelCategory, per JSON-LD context line 90).
+      - modelSubClass
+      - status
+      - objective
+      - description
+    slot_usage:
+      name:
+        required: true
+        slot_uri: schema:name
+        description: A name given to the model or data
+      identifier:
+        required: true
+        slot_uri: dcterms:identifier
+        description: >-
+          An unambiguous ID given to the model or data. This can also be
+          created automatically by a software tool.
+      creator:
+        # Original JSON-Schema omits `creator` from `required` but enforces
+        # `minItems: 1` on the array — an inconsistency. Original SHACL
+        # (fskxo-shapes.ttl) treats creator as required. We follow SHACL.
+        required: true
+        multivalued: true
+        inlined_as_list: true
+        minimum_cardinality: 1
+        range: Contact
+        slot_uri: dcterms:creator
+      author:
+        multivalued: true
+        inlined_as_list: true
+        range: Contact
+        slot_uri: schema:author
+      creationDate:
+        required: true
+        range: date
+        slot_uri: dcterms:created
+      modificationDate:
+        multivalued: true
+        range: date
+        slot_uri: dcterms:modified
+      rights:
+        required: true
+        slot_uri: dcterms:rights
+      availability:
+        slot_uri: dcterms:accessRights
+      reference:
+        required: true
+        multivalued: true
+        inlined_as_list: true
+        minimum_cardinality: 1
+        range: Reference
+        slot_uri: fskxo:FSKXO_0000000004
+      url:
+        range: uri
+        slot_uri: schema:url
+      format:
+        slot_uri: dcterms:format
+      language:
+        slot_uri: dcterms:language
+      software:
+        slot_uri: fskxo:FSKXO_0000000049
+      languageWrittenIn:
+        slot_uri: schema:programmingLanguage
+      modelCategory:
+        range: ModelCategory
+        inlined: true
+        slot_uri: fskxo:FSKXO_0000000005
+      # modelSubClass as direct shortcut on GeneralInformation mirrors the JSON-LD
+      # context entry: "modelSubClass": "fskxo:FSKXO_0000000050" inside generalInformation.
+      modelSubClass:
+        multivalued: true
+        slot_uri: fskxo:FSKXO_0000000050
+        description: >-
+          Shortcut accessor for the sub-class(es) of the model, mirroring the
+          nested modelCategory.modelSubClass. Both map to FSKXO_0000000050.
+      status:
+        slot_uri: iao:0000114
+      objective:
+        slot_uri: fskxo:FSKXO_0000000052
+      description:
+        slot_uri: dcterms:description
+      source:
+        slot_uri: dcterms:source
+
+  Contact:
+    description: >-
+      vCard 4.0 style person record. Used for both authors and creators; email
+      is required.
+    # NOTE: The JSON-LD context reuses FSKXO_0000000021 as both the authorList
+    # property IRI and the Contact class IRI. This reflects the RAKIP design
+    # where the same term denotes the list-of-authors predicate and the person
+    # class. Using the non-numeric local name fskxo:Contact avoids the
+    # predicate/class collision and gives the class a clean, stable IRI.
+    class_uri: fskxo:FSKXO_0000050319
+    slots:
+      - title
+      - familyName
+      - givenName
+      - email
+      - telephone
+      - streetAddress
+      - country
+      - zipCode
+      - region
+      - timeZone
+      - gender
+      - note
+      - organization
+    slot_usage:
+      familyName:
+        slot_uri: schema:familyName
+      givenName:
+        slot_uri: schema:givenName
+      email:
+        # Not required: many real FSKX author/contact records omit email.
+        # Pattern is still enforced when the field IS present.
+        slot_uri: schema:email
+        pattern: "^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$"
+      telephone:
+        slot_uri: schema:telephone
+      streetAddress:
+        slot_uri: schema:streetAddress
+      country:
+        slot_uri: schema:addressCountry
+      zipCode:
+        slot_uri: schema:postalCode
+      region:
+        slot_uri: schema:addressRegion
+      timeZone:
+        slot_uri: fskxo:FSKXO_0000000045
+      gender:
+        slot_uri: schema:gender
+      note:
+        slot_uri: rdfs:comment
+      organization:
+        slot_uri: schema:affiliation
+
+  Reference:
+    description: Bibliographic reference (RIS-style publication record).
+    class_uri: fskxo:FSKXO_0000050248
+    slots:
+      - isReferenceDescription
+      - title
+      - doi
+      - publicationType
+      - publicationDate
+      - pmid
+      - authorList
+      - abstract
+      - journal
+      - volume
+      - issue
+      - status
+      - website
+      - comment
+    slot_usage:
+      isReferenceDescription:
+        required: true
+        range: boolean
+        slot_uri: fskxo:FSKXO_0000000046
+      title:
+        required: true
+        slot_uri: dcterms:title
+      doi:
+        required: true
+        slot_uri: bibo:doi
+      publicationType:
+        range: PublicationTypeEnum
+        slot_uri: dcterms:type
+      publicationDate:
+        slot_uri: schema:datePublished
+      pmid:
+        slot_uri: dcterms:identifier
+      authorList:
+        slot_uri: fskxo:FSKXO_0000000021
+      abstract:
+        slot_uri: dcterms:abstract
+      journal:
+        slot_uri: fskxo:FSKXO_0000000047
+      volume:
+        slot_uri: schema:volumeNumber
+      issue:
+        slot_uri: schema:issueNumber
+      status:
+        slot_uri: fskxo:FSKXO_0000000048
+      website:
+        slot_uri: schema:url
+      comment:
+        slot_uri: schema:comment
+
+  ModelCategory:
+    description: Classification of the model according to the RAKIP scheme.
+    class_uri: fskxo:FSKXO_0000050249
+    slots:
+      - modelClass
+      - modelSubClass
+      - modelClassComment
+      - basicProcess
+    slot_usage:
+      modelClass:
+        required: true
+        slot_uri: dcterms:type
+      modelSubClass:
+        multivalued: true
+        slot_uri: fskxo:FSKXO_0000000050
+      modelClassComment:
+        slot_uri: schema:comment
+      basicProcess:
+        multivalued: true
+        inlined_as_list: true
+        slot_uri: fskxo:FSKXO_0000000051
+
+  Scope:
+    description: Spatial, temporal, and subject scope of the model / data.
+    # class_uri aligned with JSON-LD context: "Scope": "base:Scope"
+    class_uri: fskxo:FSKXO_0000050250
+    slots:
+      - product
+      - hazard
+      - populationGroup
+      - generalComment
+      - temporalInformation
+      - spatialInformation
+    slot_usage:
+      product:
+        multivalued: true
+        inlined_as_list: true
+        range: Product
+        slot_uri: fskxo:FSKXO_0000000007
+      hazard:
+        multivalued: true
+        inlined_as_list: true
+        range: Hazard
+        slot_uri: fskxo:FSKXO_0000000008
+      populationGroup:
+        multivalued: true
+        inlined_as_list: true
+        range: PopulationGroup
+        slot_uri: fskxo:FSKXO_0000000009
+      generalComment:
+        slot_uri: schema:comment
+      temporalInformation:
+        slot_uri: dcterms:temporal
+      spatialInformation:
+        multivalued: true
+        slot_uri: dcterms:spatial
+
+  Product:
+    description: Food product, matrix, or environment for which the model applies.
+    class_uri: fskxo:FSKXO_0000000336
+    slots:
+      - name
+      - description
+      - unit
+      - method
+      - packaging
+      - treatment
+      - originCountry
+      - originArea
+      - fisheriesArea
+      - productionDate
+      - expiryDate
+    slot_usage:
+      name:
+        required: true
+        slot_uri: schema:name
+      description:
+        slot_uri: dcterms:description
+      unit:
+        required: true
+        slot_uri: schema:unitText
+      method:
+        multivalued: true
+        slot_uri: fskxo:FSKXO_0000000022
+      packaging:
+        multivalued: true
+        slot_uri: fskxo:FSKXO_0000000023
+      treatment:
+        multivalued: true
+        slot_uri: fskxo:FSKXO_0000000024
+      originCountry:
+        slot_uri: schema:countryOfOrigin
+      originArea:
+        slot_uri: fskxo:FSKXO_0000000025
+      fisheriesArea:
+        slot_uri: fskxo:FSKXO_0000000026
+      productionDate:
+        range: date
+        slot_uri: schema:productionDate
+      expiryDate:
+        range: date
+        slot_uri: schema:expires
+
+  Hazard:
+    description: Agent, contaminant, or chemical for which the model applies.
+    class_uri: fskxo:FSKXO_0000003283
+    slots:
+      - type
+      - name
+      - description
+      - unit
+      - adverseEffect
+      - sourceOfContamination
+      - benchmarkDose
+      - maximumResidueLimit
+      - noObservedAdverseAffectLevel
+      - lowestObservedAdverseAffectLevel
+      - acceptableOperatorsExposureLevel
+      - acuteReferenceDose
+      - acceptableDailyIntake
+      - indSum
+    slot_usage:
+      type:
+        slot_uri: dcterms:type
+      name:
+        required: true
+        slot_uri: schema:name
+      description:
+        slot_uri: dcterms:description
+      adverseEffect:
+        slot_uri: fskxo:FSKXO_0000000053
+      sourceOfContamination:
+        slot_uri: fskxo:FSKXO_0000000054
+      benchmarkDose:
+        slot_uri: fskxo:FSKXO_0000000055
+      maximumResidueLimit:
+        slot_uri: fskxo:FSKXO_0000000056
+      noObservedAdverseAffectLevel:
+        slot_uri: fskxo:FSKXO_0000000057
+      lowestObservedAdverseAffectLevel:
+        slot_uri: fskxo:FSKXO_0000000058
+      acceptableOperatorsExposureLevel:
+        slot_uri: fskxo:FSKXO_0000000059
+      acuteReferenceDose:
+        slot_uri: fskxo:FSKXO_0000000060
+      acceptableDailyIntake:
+        slot_uri: fskxo:FSKXO_0000000061
+      indSum:
+        slot_uri: fskxo:0000026
+
+  PopulationGroup:
+    description: Population group to which the model or data applies.
+    class_uri: fskxo:FSKXO_0000050252
+    slots:
+      - name
+      - targetPopulation
+      - populationSpan
+      - populationDescription
+      - populationAge
+      - populationGender
+      - bmi
+      - specialDietGroups
+      - patternConsumption
+      - region
+      - country
+      - populationRiskFactor
+      - season
+    slot_usage:
+      name:
+        required: true
+        slot_uri: schema:name
+      targetPopulation:
+        slot_uri: dcterms:type
+      populationSpan:
+        multivalued: true
+        slot_uri: dcterms:temporal
+      populationDescription:
+        multivalued: true
+        slot_uri: dcterms:description
+      populationAge:
+        multivalued: true
+        slot_uri: schema:typicalAgeRange
+      populationGender:
+        slot_uri: schema:gender
+      bmi:
+        multivalued: true
+        slot_uri: fskxo:FSKXO_0000000062
+      specialDietGroups:
+        multivalued: true
+        slot_uri: fskxo:FSKXO_0000000063
+      patternConsumption:
+        multivalued: true
+        slot_uri: fskxo:FSKXO_0000000064
+      region:
+        multivalued: true
+        slot_uri: fskxo:FSKXO_0000000029
+      country:
+        multivalued: true
+        slot_uri: dcterms:spatial
+      populationRiskFactor:
+        multivalued: true
+        slot_uri: fskxo:FSKXO_0000000065
+      season:
+        multivalued: true
+        slot_uri: fskxo:FSKXO_0000000066
+
+  DataBackground:
+    description: Provenance of the data used to build/parameterize the model.
+    # class_uri aligned with JSON-LD context: "DataBackground": "base:DataBackground"
+    class_uri: fskxo:FSKXO_0000050253
+    slots:
+      - study
+      - studySample
+      - dietaryAssessmentMethod
+      - laboratory
+      - assay
+    slot_usage:
+      study:
+        required: true
+        range: Study
+        inlined: true
+        slot_uri: fskxo:FSKXO_0000000011
+      studySample:
+        multivalued: true
+        inlined_as_list: true
+        range: StudySample
+        slot_uri: fskxo:FSKXO_0000000012
+      dietaryAssessmentMethod:
+        multivalued: true
+        inlined_as_list: true
+        range: DietaryAssessmentMethod
+        slot_uri: fskxo:FSKXO_0000000013
+      laboratory:
+        multivalued: true
+        inlined_as_list: true
+        range: Laboratory
+        slot_uri: fskxo:FSKXO_0000000014
+      assay:
+        multivalued: true
+        inlined_as_list: true
+        range: Assay
+        slot_uri: fskxo:FSKXO_0000000015
+
+  Study:
+    description: ISA-style description of the study that produced the data.
+    class_uri: fskxo:FSKXO_0000050254
+    slots:
+      - identifier
+      - title
+      - description
+      - designType
+      - assayMeasurementType
+      - assayTechnologyType
+      - assayTechnologyPlatform
+      - accreditationProcedureForTheAssayTechnology
+      - protocolName
+      - protocolType
+      - protocolDescription
+      - protocolURI
+      - protocolVersion
+      - protocolParametersName
+      - protocolComponentsName
+      - protocolComponentsType
+    slot_usage:
+      identifier:
+        slot_uri: dcterms:identifier
+      title:
+        required: true
+        slot_uri: dcterms:title
+      description:
+        slot_uri: dcterms:description
+      designType:
+        slot_uri: fskxo:FSKXO_0000000067
+      assayMeasurementType:
+        slot_uri: fskxo:FSKXO_0000000068
+      assayTechnologyType:
+        slot_uri: fskxo:FSKXO_0000000030
+      assayTechnologyPlatform:
+        slot_uri: fskxo:FSKXO_0000000069
+      accreditationProcedureForTheAssayTechnology:
+        slot_uri: fskxo:FSKXO_0000000031
+      protocolName:
+        slot_uri: fskxo:FSKXO_0000000070
+      protocolType:
+        slot_uri: fskxo:FSKXO_0000000071
+      protocolDescription:
+        slot_uri: fskxo:FSKXO_0000000072
+      protocolURI:
+        range: uri
+        slot_uri: fskxo:FSKXO_0000000073
+      protocolVersion:
+        slot_uri: fskxo:FSKXO_0000000074
+      protocolParametersName:
+        slot_uri: fskxo:FSKXO_0000000075
+      protocolComponentsName:
+        slot_uri: fskxo:FSKXO_0000000076
+      protocolComponentsType:
+        slot_uri: fskxo:FSKXO_0000000077
+
+  StudySample:
+    description: Individual study sample record.
+    class_uri: fskxo:FSKXO_0000050255
+    slots:
+      - sampleName
+      - protocolOfSampleCollection
+      - samplingStrategy
+      - typeOfSamplingProgram
+      - samplingMethod
+      - samplingPlan
+      - samplingWeight
+      - samplingSize
+      - lotSizeUnit
+      - samplingPoint
+    slot_usage:
+      sampleName:
+        required: true
+        slot_uri: schema:identifier
+      protocolOfSampleCollection:
+        required: true
+        slot_uri: hso:0000288
+      samplingStrategy:
+        slot_uri: hso:0000304
+      typeOfSamplingProgram:
+        slot_uri: fskxo:FSKXO_0000000032
+      samplingMethod:
+        slot_uri: fskxo:FSKXO_0000000033
+      samplingPlan:
+        required: true
+        slot_uri: hso:0000331
+      samplingWeight:
+        required: true
+        slot_uri: hso:0000357
+      samplingSize:
+        required: true
+        slot_uri: schema:size
+      lotSizeUnit:
+        slot_uri: fskxo:FSKXO_0000000034
+      samplingPoint:
+        slot_uri: fskxo:FSKXO_0000000035
+
+  DietaryAssessmentMethod:
+    description: Method used to collect dietary consumption data.
+    class_uri: fskxo:FSKXO_0000050256
+    slots:
+      - collectionTool
+      - numberOfNonConsecutiveOneDay
+      - softwareTool
+      - numberOfFoodItems
+      - recordTypes
+      - foodDescriptors
+    slot_usage:
+      collectionTool:
+        required: true
+        slot_uri: fskxo:FSKXO_0000000078
+      numberOfNonConsecutiveOneDay:
+        required: true
+        slot_uri: fskxo:FSKXO_0000000079
+      softwareTool:
+        slot_uri: fskxo:FSKXO_0000000080
+      numberOfFoodItems:
+        required: true
+        multivalued: true
+        minimum_cardinality: 1
+        slot_uri: dcterms:extent
+      recordTypes:
+        required: true
+        multivalued: true
+        minimum_cardinality: 1
+        slot_uri: fskxo:FSKXO_0000000036
+      foodDescriptors:
+        required: true
+        multivalued: true
+        minimum_cardinality: 1
+        slot_uri: fskxo:FSKXO_0000000037
+
+  Laboratory:
+    description: Laboratory that performed the analytical work.
+    class_uri: fskxo:FSKXO_0000050257
+    slots:
+      - accreditation
+      - name
+      - country
+    slot_usage:
+      accreditation:
+        required: true
+        multivalued: true
+        minimum_cardinality: 1
+        slot_uri: fskxo:FSKXO_0000000038
+      name:
+        slot_uri: schema:name
+      country:
+        slot_uri: dcterms:spatial
+
+  Assay:
+    description: Analytical assay performed on the study sample.
+    class_uri: fskxo:FSKXO_0000050258
+    slots:
+      - name
+      - description
+      - moisturePercentage
+      - fatPercentage
+      - detectionLimit
+      - quantificationLimit
+      - leftCensoredData
+      - contaminationRange
+      - uncertaintyValue
+    slot_usage:
+      name:
+        required: true
+        slot_uri: schema:name
+      description:
+        slot_uri: dcterms:description
+      moisturePercentage:
+        slot_uri: fskxo:FSKXO_0000000081
+      fatPercentage:
+        slot_uri: fskxo:FSKXO_0000000082
+      detectionLimit:
+        slot_uri: fskxo:FSKXO_0000000083
+      quantificationLimit:
+        slot_uri: fskxo:FSKXO_0000000084
+      leftCensoredData:
+        slot_uri: fskxo:FSKXO_0000000085
+      contaminationRange:
+        slot_uri: fskxo:FSKXO_0000000086
+      uncertaintyValue:
+        slot_uri: fskxo:FSKXO_0000000087
+
+  ModelMath:
+    description: Mathematical specification of the model.
+    # class_uri aligned with JSON-LD context: "ModelMath": "base:ModelMath"
+    class_uri: fskxo:FSKXO_0000050259
+    slots:
+      - parameter
+      - qualityMeasures
+      - modelEquation
+      - fittingProcedure
+      - exposure
+      - event
+    slot_usage:
+      parameter:
+        required: true
+        multivalued: true
+        inlined_as_list: true
+        minimum_cardinality: 1
+        range: Parameter
+        slot_uri: fskxo:FSKXO_0000000017
+      qualityMeasures:
+        multivalued: true
+        inlined_as_list: true
+        range: QualityMeasures
+        slot_uri: fskxo:FSKXO_0000000018
+      modelEquation:
+        multivalued: true
+        inlined_as_list: true
+        range: ModelEquation
+        slot_uri: fskxo:FSKXO_0000000019
+      fittingProcedure:
+        slot_uri: fskxo:FSKXO_0000017806
+      exposure:
+        multivalued: true
+        inlined_as_list: true
+        range: Exposure
+        slot_uri: fskxo:FSKXO_0000000020
+      event:
+        multivalued: true
+        slot_uri: fskxo:FSKXO_0000000102
+
+  Parameter:
+    description: A single model parameter (input, constant, or output).
+    class_uri: fskxo:FSKXO_0000050260
+    slots:
+      - id
+      - classification
+      - name
+      - description
+      - unit
+      - unitCategory
+      - dataType
+      - source
+      - subject
+      - distribution
+      - value
+      - reference
+      - variabilitySubject
+      - minValue
+      - maxValue
+      - error
+    slot_usage:
+      id:
+        required: true
+        # identifier: true removed — Parameter instances are embedded blank nodes
+        # in the graph; using identifier: true caused the linkml-runtime RDF dumper
+        # to try to expand bare id strings (e.g. "dose") as CURIEs against @base,
+        # which throws "Unknown CURIE prefix: @base".
+        pattern: "^[A-Za-z0-9_]+$"
+        slot_uri: dcterms:identifier
+      classification:
+        required: true
+        range: ParameterClassificationEnum
+        slot_uri: fskxo:FSKXO_0000000039
+      name:
+        required: true
+        slot_uri: schema:name
+      description:
+        slot_uri: dcterms:description
+      unit:
+        required: true
+        slot_uri: schema:unitText
+      unitCategory:
+        slot_uri: fskxo:FSKXO_0000000040
+      dataType:
+        required: true
+        range: ParameterDataTypeEnum
+        slot_uri: fskxo:FSKXO_0000000041
+      source:
+        slot_uri: dcterms:source
+      subject:
+        slot_uri: dcterms:subject
+      distribution:
+        slot_uri: fskxo:FSKXO_0000000042
+      value:
+        slot_uri: schema:value
+      reference:
+        range: Reference
+        inlined: true
+        # Use the global reference IRI, not dcterms:source — dcterms:source is
+        # already used by the plain-string `source` slot on Parameter and
+        # sharing the predicate causes SHACL ClassConstraint violations.
+        slot_uri: fskxo:FSKXO_0000000004
+      variabilitySubject:
+        slot_uri: fskxo:FSKXO_0000000088
+      minValue:
+        slot_uri: schema:minValue
+      maxValue:
+        slot_uri: schema:maxValue
+      error:
+        slot_uri: fskxo:FSKXO_0000000089
+
+  QualityMeasures:
+    description: Statistical quality measures for the model fit.
+    class_uri: fskxo:FSKXO_0000050261
+    slots:
+      - sse
+      - mse
+      - rmse
+      - rsquared
+      - aic
+      - bic
+      - sensitivityAnalysis
+    slot_usage:
+      sse: { range: float, slot_uri: fskxo:FSKXO_0000000090 }
+      mse: { range: float, slot_uri: fskxo:FSKXO_0000000091 }
+      rmse: { range: float, slot_uri: fskxo:FSKXO_0000000092 }
+      rsquared: { range: float, slot_uri: fskxo:FSKXO_0000000093 }
+      aic: { range: float, slot_uri: fskxo:FSKXO_0000000094 }
+      bic: { range: float, slot_uri: fskxo:FSKXO_0000000095 }
+      sensitivityAnalysis:
+        slot_uri: fskxo:FSKXO_0000000096
+
+  ModelEquation:
+    description: A single equation that together form the model math.
+    class_uri: fskxo:FSKXO_0000050262
+    slots:
+      - name
+      - modelEquationClass
+      - reference
+      - modelEquation
+      - modelHypothesis
+    slot_usage:
+      name:
+        required: true
+        slot_uri: schema:name
+      modelEquationClass:
+        slot_uri: dcterms:type
+      reference:
+        multivalued: true
+        inlined_as_list: true
+        range: Reference
+        slot_uri: dcterms:source
+      modelEquation:
+        required: true
+        slot_uri: fskxo:FSKXO_0000000019
+      modelHypothesis:
+        multivalued: true
+        slot_uri: fskxo:FSKXO_0000000097
+
+  Exposure:
+    description: Exposure assessment scenario attached to the model.
+    class_uri: fskxo:FSKXO_0000050263
+    slots:
+      - treatment
+      - contamination
+      - type
+      - scenario
+      - uncertaintyEstimation
+    slot_usage:
+      treatment:
+        multivalued: true
+        slot_uri: fskxo:FSKXO_0000000098
+      contamination:
+        multivalued: true
+        slot_uri: fskxo:FSKXO_0000000099
+      type:
+        required: true
+        slot_uri: dcterms:type
+      scenario:
+        multivalued: true
+        slot_uri: fskxo:FSKXO_0000000100
+      uncertaintyEstimation:
+        slot_uri: fskxo:FSKXO_0000000101
+
+# =============================================================================
+# SLOTS  (global definitions; per-class bindings via slot_usage above)
+# =============================================================================
+
+slots:
+
+  # --- top-level wiring ---
+  generalInformation:
+    slot_uri: fskxo:FSKXO_0000000003
+    range: GeneralInformation
+    required: true
+  scope:
+    slot_uri: fskxo:FSKXO_0000000006
+    range: Scope
+  dataBackground:
+    slot_uri: fskxo:FSKXO_0000000010
+    range: DataBackground
+  modelMath:
+    slot_uri: fskxo:FSKXO_0000000016
+    range: ModelMath
+  modelType:
+    slot_uri: fskxo:FSKXO_0000000044
+
+  # --- shared field names (overridden per class) ---
+  name:
+    description: A name given to the resource.
+    slot_uri: schema:name
+  description:
+    description: A description of the resource.
+    slot_uri: dcterms:description
+  title:
+    description: A title given to the resource.
+    slot_uri: dcterms:title
+  identifier:
+    description: An unambiguous identifier for the resource.
+    slot_uri: dcterms:identifier
+  type:
+    description: The type/classification of the resource.
+    slot_uri: dcterms:type
+  source:
+    description: A related source.
+    slot_uri: dcterms:source
+  unit:
+    description: Unit of measure.
+    slot_uri: schema:unitText
+  country:
+    description: Country (ISO 3166-1 alpha-2).
+    slot_uri: dcterms:spatial
+  region:
+    description: Spatial region.
+    slot_uri: fskxo:FSKXO_0000000029
+  reference:
+    description: Bibliographic reference(s).
+    slot_uri: fskxo:FSKXO_0000000004
+    range: Reference
+
+  # --- General Information slots ---
+  author:
+    slot_uri: schema:author
+  creator:
+    slot_uri: dcterms:creator
+  creationDate:
+    slot_uri: dcterms:created
+    range: date
+  modificationDate:
+    range: date
+    slot_uri: dcterms:modified
+  rights:
+    slot_uri: dcterms:rights
+  availability:
+    slot_uri: dcterms:accessRights
+  url:
+    slot_uri: schema:url
+    range: uri
+  format:
+    slot_uri: dcterms:format
+  language:
+    slot_uri: dcterms:language
+  software:
+    slot_uri: fskxo:FSKXO_0000000049
+  languageWrittenIn:
+    slot_uri: schema:programmingLanguage
+  modelCategory:
+    slot_uri: fskxo:FSKXO_0000000005
+    range: ModelCategory
+  status:
+    slot_uri: iao:0000114
+  objective:
+    slot_uri: fskxo:FSKXO_0000000052
+
+  # --- Contact (vCard) slots ---
+  familyName: { slot_uri: schema:familyName }
+  givenName: { slot_uri: schema:givenName }
+  email: { slot_uri: schema:email }
+  telephone: { slot_uri: schema:telephone }
+  streetAddress: { slot_uri: schema:streetAddress }
+  zipCode: { slot_uri: schema:postalCode }
+  timeZone: { slot_uri: fskxo:FSKXO_0000000045 }
+  gender: { slot_uri: schema:gender }
+  note: { slot_uri: rdfs:comment }
+  organization: { slot_uri: schema:affiliation }
+
+  # --- Reference slots ---
+  isReferenceDescription:
+    slot_uri: fskxo:FSKXO_0000000046
+    range: boolean
+  doi:
+    slot_uri: bibo:doi
+  publicationType:
+    slot_uri: dcterms:type
+    range: PublicationTypeEnum
+  publicationDate:
+    description: Publication date of the bibliographic reference.
+    slot_uri: schema:datePublished
+  pmid:
+    slot_uri: dcterms:identifier
+  authorList:
+    slot_uri: fskxo:FSKXO_0000000021
+  abstract:
+    slot_uri: dcterms:abstract
+  journal:
+    slot_uri: fskxo:FSKXO_0000000047
+  volume:
+    slot_uri: schema:volumeNumber
+  issue:
+    slot_uri: schema:issueNumber
+  website:
+    slot_uri: schema:url
+  comment:
+    slot_uri: schema:comment
+
+  # --- Model category slots ---
+  modelClass:
+    slot_uri: dcterms:type
+  modelSubClass:
+    slot_uri: fskxo:FSKXO_0000000050
+  modelClassComment:
+    slot_uri: schema:comment
+  basicProcess:
+    slot_uri: fskxo:FSKXO_0000000051
+
+  # --- Scope slots ---
+  product: { slot_uri: fskxo:FSKXO_0000000007, range: Product }
+  hazard: { slot_uri: fskxo:FSKXO_0000000008, range: Hazard }
+  populationGroup: { slot_uri: fskxo:FSKXO_0000000009, range: PopulationGroup }
+  generalComment: { slot_uri: schema:comment }
+  temporalInformation: { slot_uri: dcterms:temporal }
+  spatialInformation: { slot_uri: dcterms:spatial }
+
+  # --- Product slots ---
+  method: { slot_uri: fskxo:FSKXO_0000000022 }
+  packaging: { slot_uri: fskxo:FSKXO_0000000023 }
+  treatment: { slot_uri: fskxo:FSKXO_0000000024 }
+  originCountry: { slot_uri: schema:countryOfOrigin }
+  originArea: { slot_uri: fskxo:FSKXO_0000000025 }
+  fisheriesArea: { slot_uri: fskxo:FSKXO_0000000026 }
+  productionDate: { slot_uri: schema:productionDate, range: date }
+  expiryDate: { slot_uri: schema:expires, range: date }
+
+  # --- Hazard slots ---
+  adverseEffect: { slot_uri: fskxo:FSKXO_0000000053 }
+  sourceOfContamination: { slot_uri: fskxo:FSKXO_0000000054 }
+  benchmarkDose: { slot_uri: fskxo:FSKXO_0000000055 }
+  maximumResidueLimit: { slot_uri: fskxo:FSKXO_0000000056 }
+  noObservedAdverseAffectLevel: { slot_uri: fskxo:FSKXO_0000000057 }
+  lowestObservedAdverseAffectLevel: { slot_uri: fskxo:FSKXO_0000000058 }
+  acceptableOperatorsExposureLevel: { slot_uri: fskxo:FSKXO_0000000059 }
+  acuteReferenceDose: { slot_uri: fskxo:FSKXO_0000000060 }
+  acceptableDailyIntake: { slot_uri: fskxo:FSKXO_0000000061 }
+  indSum: { slot_uri: fskxo:0000026 }
+
+  # --- Population group slots ---
+  targetPopulation: { slot_uri: dcterms:type }
+  populationSpan: { slot_uri: dcterms:temporal }
+  populationDescription: { slot_uri: dcterms:description }
+  populationAge: { slot_uri: schema:typicalAgeRange }
+  populationGender: { slot_uri: schema:gender }
+  bmi: { slot_uri: fskxo:FSKXO_0000000062 }
+  specialDietGroups: { slot_uri: fskxo:FSKXO_0000000063 }
+  patternConsumption: { slot_uri: fskxo:FSKXO_0000000064 }
+  # KNOWN IRI COLLISION (upstream JSON-LD context bug):
+  # populationRiskFactor maps to FSKXO_0000000056 in the JSON-LD context, which
+  # is the same IRI as maximumResidueLimit (Hazard class). The correct IRI should
+  # likely be FSKXO_0000000065. Kept as-is to stay consistent with the JSON-LD
+  # context; update both files once the ontology assigns the correct IRI.
+  populationRiskFactor: { slot_uri: fskxo:FSKXO_0000000056 }
+  season: { slot_uri: fskxo:FSKXO_0000000066 }
+
+  # --- Data background child containers ---
+  study: { slot_uri: fskxo:FSKXO_0000000011, range: Study }
+  studySample: { slot_uri: fskxo:FSKXO_0000000012, range: StudySample }
+  dietaryAssessmentMethod: { slot_uri: fskxo:FSKXO_0000000013, range: DietaryAssessmentMethod }
+  laboratory: { slot_uri: fskxo:FSKXO_0000000014, range: Laboratory }
+  assay: { slot_uri: fskxo:FSKXO_0000000015, range: Assay }
+
+  # --- Study slots ---
+  designType: { slot_uri: fskxo:FSKXO_0000000067 }
+  assayMeasurementType: { slot_uri: fskxo:FSKXO_0000000068 }
+  assayTechnologyType: { slot_uri: fskxo:FSKXO_0000000030 }
+  assayTechnologyPlatform: { slot_uri: fskxo:FSKXO_0000000069 }
+  accreditationProcedureForTheAssayTechnology: { slot_uri: fskxo:FSKXO_0000000031 }
+  protocolName: { slot_uri: fskxo:FSKXO_0000000070 }
+  protocolType: { slot_uri: fskxo:FSKXO_0000000071 }
+  protocolDescription: { slot_uri: fskxo:FSKXO_0000000072 }
+  protocolURI: { slot_uri: fskxo:FSKXO_0000000073, range: uri }
+  protocolVersion: { slot_uri: fskxo:FSKXO_0000000074 }
+  protocolParametersName: { slot_uri: fskxo:FSKXO_0000000075 }
+  protocolComponentsName: { slot_uri: fskxo:FSKXO_0000000076 }
+  protocolComponentsType: { slot_uri: fskxo:FSKXO_0000000077 }
+
+  # --- Study sample slots ---
+  sampleName: { slot_uri: schema:identifier }
+  protocolOfSampleCollection: { slot_uri: hso:0000288 }
+  samplingStrategy: { slot_uri: hso:0000304 }
+  typeOfSamplingProgram: { slot_uri: fskxo:FSKXO_0000000032 }
+  samplingMethod: { slot_uri: fskxo:FSKXO_0000000033 }
+  samplingPlan: { slot_uri: hso:0000331 }
+  samplingWeight: { slot_uri: hso:0000357 }
+  samplingSize: { slot_uri: schema:size }
+  lotSizeUnit: { slot_uri: fskxo:FSKXO_0000000034 }
+  samplingPoint: { slot_uri: fskxo:FSKXO_0000000035 }
+
+  # --- Dietary assessment slots ---
+  collectionTool: { slot_uri: fskxo:FSKXO_0000000078 }
+  numberOfNonConsecutiveOneDay: { slot_uri: fskxo:FSKXO_0000000079 }
+  softwareTool: { slot_uri: fskxo:FSKXO_0000000080 }
+  numberOfFoodItems: { slot_uri: dcterms:extent }
+  recordTypes: { slot_uri: fskxo:FSKXO_0000000036 }
+  foodDescriptors: { slot_uri: fskxo:FSKXO_0000000037 }
+
+  # --- Laboratory / Assay slots ---
+  accreditation: { slot_uri: fskxo:FSKXO_0000000038 }
+  moisturePercentage: { slot_uri: fskxo:FSKXO_0000000081 }
+  fatPercentage: { slot_uri: fskxo:FSKXO_0000000082 }
+  detectionLimit: { slot_uri: fskxo:FSKXO_0000000083 }
+  quantificationLimit: { slot_uri: fskxo:FSKXO_0000000084 }
+  leftCensoredData: { slot_uri: fskxo:FSKXO_0000000085 }
+  contaminationRange: { slot_uri: fskxo:FSKXO_0000000086 }
+  uncertaintyValue: { slot_uri: fskxo:FSKXO_0000000087 }
+
+  # --- Model math / parameter slots ---
+  parameter: { slot_uri: fskxo:FSKXO_0000000017, range: Parameter }
+  qualityMeasures: { slot_uri: fskxo:FSKXO_0000000018, range: QualityMeasures }
+  # modelEquation is intentionally declared without a global range here.
+  # The same slot name serves two distinct roles (following the JSON-LD context design):
+  #   1. In ModelMath (slot_usage): slot_uri=FSKXO_0000000019, range=ModelEquation
+  #      — references the list of ModelEquation objects.
+  #   2. In ModelEquation (slot_usage): slot_uri=dcterms:references, range=string
+  #      — holds the actual equation formula text.
+  # Both roles override the global IRI and range via per-class slot_usage above.
+  modelEquation:
+    slot_uri: fskxo:FSKXO_0000000019
+    description: >-
+      In ModelMath: references ModelEquation objects (FSKXO_0000000019).
+      In ModelEquation: holds the equation formula string (dcterms:references).
+      Range and IRI are overridden per-class via slot_usage.
+  fittingProcedure:
+    slot_uri: fskxo:FSKXO_0000017806
+    description: >-
+      Free-text description of the fitting / optimisation procedure used to
+      parameterise the model.
+  exposure: { slot_uri: fskxo:FSKXO_0000000020, range: Exposure }
+  event: { slot_uri: fskxo:FSKXO_0000000102 }
+
+  id: { slot_uri: dcterms:identifier }
+  classification: { slot_uri: fskxo:FSKXO_0000000039 }
+  unitCategory: { slot_uri: fskxo:FSKXO_0000000040 }
+  dataType: { slot_uri: fskxo:FSKXO_0000000041 }
+  subject: { slot_uri: dcterms:subject }
+  distribution: { slot_uri: fskxo:FSKXO_0000000042 }
+  value: { slot_uri: schema:value }
+  variabilitySubject: { slot_uri: fskxo:FSKXO_0000000088 }
+  minValue: { slot_uri: schema:minValue }
+  maxValue: { slot_uri: schema:maxValue }
+  error: { slot_uri: fskxo:FSKXO_0000000089 }
+
+  # --- Quality measures ---
+  sse: { slot_uri: fskxo:FSKXO_0000000090, range: float }
+  mse: { slot_uri: fskxo:FSKXO_0000000091, range: float }
+  rmse: { slot_uri: fskxo:FSKXO_0000000092, range: float }
+  rsquared: { slot_uri: fskxo:FSKXO_0000000093, range: float }
+  aic: { slot_uri: fskxo:FSKXO_0000000094, range: float }
+  bic: { slot_uri: fskxo:FSKXO_0000000095, range: float }
+  sensitivityAnalysis: { slot_uri: fskxo:FSKXO_0000000096 }
+
+  # --- Model equation ---
+  modelEquationClass: { slot_uri: dcterms:type }
+  modelHypothesis: { slot_uri: fskxo:FSKXO_0000000097 }
+
+  # --- Exposure ---
+  contamination: { slot_uri: fskxo:FSKXO_0000000099 }
+  scenario: { slot_uri: fskxo:FSKXO_0000000100 }
+  uncertaintyEstimation: { slot_uri: fskxo:FSKXO_0000000101 }
+
+# =============================================================================
+# ENUMS
+# =============================================================================
+
+enums:
+
+  PublicationTypeEnum:
+    description: RIS-style publication type codes.
+    permissible_values:
+      ABST: { description: Abstract }
+      ADVS: { description: Audiovisual material }
+      AGGR: { description: Aggregated database }
+      ANCIENT: { description: Ancient text }
+      ART: { description: Art work }
+      BILL: { description: Bill }
+      BLOG: { description: Blog }
+      BOOK: { description: Whole book }
+      CASE: { description: Case }
+      CHAP: { description: Book chapter }
+      CHART: { description: Chart }
+      CLSWK: { description: Classical work }
+      COMP: { description: Computer program }
+      CONF: { description: Conference proceeding }
+      CPAPER: { description: Conference paper }
+      CTLG: { description: Catalogue }
+      DATA: { description: Data file }
+      DBASE: { description: Online database }
+      DICT: { description: Dictionary }
+      EBOOK: { description: Electronic book }
+      ECHAP: { description: Electronic book section }
+      EDBOOK: { description: Edited book }
+      EJOUR: { description: Electronic article }
+      ELECT: { description: Web page }
+      ENCYC: { description: Encyclopedia }
+      EQUA: { description: Equation }
+      FIGURE: { description: Figure }
+      GEN: { description: Generic }
+      GOVDOC: { description: Government document }
+      GRANT: { description: Grant }
+      HEAR: { description: Hearing }
+      ICOMM: { description: Internet communication }
+      INPR: { description: In press }
+      JOUR: { description: Journal article }
+      JFULL: { description: Journal full }
+      LEGAL: { description: Legal rule / regulation }
+      MANSCPT: { description: Manuscript }
+      MAP: { description: Map }
+      MGZN: { description: Magazine article }
+      MPCT: { description: Motion picture }
+      MULTI: { description: Online multimedia }
+      MUSIC: { description: Music score }
+      NEW: { description: Newspaper }
+      PAMP: { description: Pamphlet }
+      PAT: { description: Patent }
+      PCOMM: { description: Personal communication }
+      RPRT: { description: Report }
+      SER: { description: Serial publication }
+      SLIDE: { description: Slide }
+      SOUND: { description: Sound recording }
+      STAND: { description: Standard }
+      STAT: { description: Statute }
+      THES: { description: Thesis / dissertation }
+      UNPB: { description: Unpublished work }
+      VIDEO: { description: Video recording }
+
+  ParameterClassificationEnum:
+    description: Classification of a model parameter within the model math.
+    permissible_values:
+      CONSTANT:
+        description: >-
+          A parameter whose value is fixed and does not change during model
+          execution (e.g. a calibrated rate constant).
+      INPUT:
+        description: >-
+          A parameter supplied externally as input to the model before
+          execution (e.g. initial concentration, ambient temperature).
+      OUTPUT:
+        description: >-
+          A parameter produced as a result / output of the model
+          (e.g. predicted microbial count, risk estimate).
+
+  ParameterDataTypeEnum:
+    description: Data type of a model parameter value.
+    permissible_values:
+      INTEGER:
+        description: Whole-number (integer) value.
+      DOUBLE:
+        description: Double-precision (64-bit) floating-point value.
+      NUMBER:
+        description: Generic numeric value; may be integer or floating-point.
+      DATE:
+        description: Calendar date value formatted according to ISO 8601.
+      FILE:
+        description: Reference to an external file resource (path or URI).
+      BOOLEAN:
+        description: Boolean true / false value.
+      VECTOROFNUMBERS:
+        description: One-dimensional ordered array of numeric values.
+      VECTOROFSTRINGS:
+        description: One-dimensional ordered array of string values.
+      MATRIXOFNUMBERS:
+        description: Two-dimensional array (matrix) of numeric values.
+      MATRIXOFSTRINGS:
+        description: Two-dimensional array (matrix) of string values.
+      OBJECT:
+        description: Structured / complex object value (arbitrary JSON object).
+      STRING:
+        description: Free-text string value.

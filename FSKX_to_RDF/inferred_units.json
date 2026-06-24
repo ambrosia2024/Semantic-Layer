@@ -1,40 +1,42 @@
 {
   "c4adaff8-96af-40b5-adb9-79bca46c0b04": {
     "Tmin": {
-      "original_unit": "\u00b0C",
+      "original_unit": "http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017508",
       "mapped_unit_term": "\u00b0C (degrees Celsius, \u00b0 Celsius)"
     },
     "alpha0": {
-      "original_unit": "Dimensionless",
+      "original_unit": "http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017540",
       "mapped_unit_term": "[] (Dimensionless)"
     },
+    "b": {
+      "original_unit": "http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017506",
+      "mapped_unit_term": "\u00b0 (Degree)"
+    },
     "model_values": {
-      "original_unit": "log10 CFU/g",
-      "mapped_unit_term": "log10(CFU/g) (log\u2081\u2080 colony-forming units per gram)",
+      "original_unit": "http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017632",
+      "mapped_unit_term": "mg/100 mL (Milligram/100 Millilitre)",
       "original_name": "Predicted bacterial population",
       "mapped_parameter_term": "Risk summary table (risk summary per subpopulation, risk matrix)"
     },
     "t": {
-      "original_unit": "h",
+      "original_unit": "http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017569",
       "mapped_unit_term": "h (hours)",
       "original_name": "Time",
       "mapped_parameter_term": "Simulation time series (time axis of simulation)"
     },
     "temp_celsius": {
-      "original_unit": "\u00b0C",
+      "original_unit": "http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017508",
       "mapped_unit_term": "\u00b0C (degrees Celsius, \u00b0 Celsius)",
       "original_name": "Temperature",
       "mapped_parameter_term": "Temperature (Near-Surface Air Temperature)"
     },
     "tmax": {
-      "original_unit": "h",
-      "mapped_unit_term": "h (hours)",
-      "original_name": "Maximum simulation time",
-      "mapped_parameter_term": "Daily Maximum Temperature (Daily Maximum Near-Surface Air Temperature)"
+      "original_unit": "http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017569",
+      "mapped_unit_term": "h (hours)"
     },
     "y0": {
-      "original_unit": "log10 CFU/g",
-      "mapped_unit_term": "log10(CFU/g) (log\u2081\u2080 colony-forming units per gram)"
+      "original_unit": "http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017632",
+      "mapped_unit_term": "mg/100 mL (Milligram/100 Millilitre)"
     }
   },
   "ac398182-01ab-48f0-b25c-ca432631b018": {
@@ -59,8 +61,8 @@
       "mapped_unit_term": "[] (Dimensionless)"
     },
     "temp_celsius": {
-      "original_unit": "\u00b0 Celsius",
-      "mapped_unit_term": "\u00b0C (degrees Celsius, \u00b0 Celsius)",
+      "original_unit": "http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017506",
+      "mapped_unit_term": "\u00b0 (Degree)",
       "original_name": "temp_celsius",
       "mapped_parameter_term": "Temperature (Near-Surface Air Temperature)"
     },
@@ -69,8 +71,8 @@
       "mapped_unit_term": "[] (Dimensionless)"
     },
     "y0": {
-      "original_unit": "log CFU/ml",
-      "mapped_unit_term": "log10(CFU/mL) (log\u2081\u2080 colony-forming units per milliliter)"
+      "original_unit": "http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017519",
+      "mapped_unit_term": "C (Coulomb)"
     }
   }
 }

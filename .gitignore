@@ -13,3 +13,6 @@ reactodia/.env*
 *.pkl
 *.pyc
 __pycache__/
+
+# GitNexus local index artifacts
+.gitnexus/

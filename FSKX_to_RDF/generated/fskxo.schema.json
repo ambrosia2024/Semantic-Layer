@@ -1,0 +1,1566 @@
+{
+    "$defs": {
+        "Assay": {
+            "additionalProperties": false,
+            "description": "Analytical assay performed on the study sample.",
+            "properties": {
+                "contaminationRange": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "description": {
+                    "description": "A description of the resource.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "detectionLimit": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "fatPercentage": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "leftCensoredData": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "moisturePercentage": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "name": {
+                    "description": "A name given to the resource.",
+                    "type": "string"
+                },
+                "quantificationLimit": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "uncertaintyValue": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "title": "Assay",
+            "type": "object"
+        },
+        "Contact": {
+            "additionalProperties": false,
+            "description": "vCard 4.0 style person record. Used for both authors and creators; email is required.",
+            "properties": {
+                "country": {
+                    "description": "Country (ISO 3166-1 alpha-2).",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "email": {
+                    "pattern": "^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "familyName": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "gender": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "givenName": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "note": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "organization": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "region": {
+                    "description": "Spatial region.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "streetAddress": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "telephone": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "timeZone": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "title": {
+                    "description": "A title given to the resource.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "zipCode": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "title": "Contact",
+            "type": "object"
+        },
+        "DataBackground": {
+            "additionalProperties": false,
+            "description": "Provenance of the data used to build/parameterize the model.",
+            "properties": {
+                "assay": {
+                    "items": {
+                        "$ref": "#/$defs/Assay"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "dietaryAssessmentMethod": {
+                    "items": {
+                        "$ref": "#/$defs/DietaryAssessmentMethod"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "laboratory": {
+                    "items": {
+                        "$ref": "#/$defs/Laboratory"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "study": {
+                    "$ref": "#/$defs/Study"
+                },
+                "studySample": {
+                    "items": {
+                        "$ref": "#/$defs/StudySample"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "study"
+            ],
+            "title": "DataBackground",
+            "type": "object"
+        },
+        "DietaryAssessmentMethod": {
+            "additionalProperties": false,
+            "description": "Method used to collect dietary consumption data.",
+            "properties": {
+                "collectionTool": {
+                    "type": "string"
+                },
+                "foodDescriptors": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "minItems": 1,
+                    "type": "array"
+                },
+                "numberOfFoodItems": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "minItems": 1,
+                    "type": "array"
+                },
+                "numberOfNonConsecutiveOneDay": {
+                    "type": "string"
+                },
+                "recordTypes": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "minItems": 1,
+                    "type": "array"
+                },
+                "softwareTool": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "collectionTool",
+                "numberOfNonConsecutiveOneDay",
+                "numberOfFoodItems",
+                "recordTypes",
+                "foodDescriptors"
+            ],
+            "title": "DietaryAssessmentMethod",
+            "type": "object"
+        },
+        "Exposure": {
+            "additionalProperties": false,
+            "description": "Exposure assessment scenario attached to the model.",
+            "properties": {
+                "contamination": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "scenario": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "treatment": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "type": {
+                    "description": "The type/classification of the resource.",
+                    "type": "string"
+                },
+                "uncertaintyEstimation": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "type"
+            ],
+            "title": "Exposure",
+            "type": "object"
+        },
+        "GeneralInformation": {
+            "additionalProperties": false,
+            "description": "Meta-data giving a general overview of the model / study / data set.",
+            "properties": {
+                "author": {
+                    "items": {
+                        "$ref": "#/$defs/Contact"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "availability": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "creationDate": {
+                    "format": "date",
+                    "type": "string"
+                },
+                "creator": {
+                    "items": {
+                        "$ref": "#/$defs/Contact"
+                    },
+                    "minItems": 1,
+                    "type": "array"
+                },
+                "description": {
+                    "description": "A description of the resource.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "format": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "identifier": {
+                    "description": "An unambiguous ID given to the model or data. This can also be created automatically by a software tool.",
+                    "type": "string"
+                },
+                "language": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "languageWrittenIn": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "modelCategory": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/ModelCategory"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "modelSubClass": {
+                    "description": "Shortcut accessor for the sub-class(es) of the model, mirroring the nested modelCategory.modelSubClass. Both map to FSKXO_0000000050.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "modificationDate": {
+                    "items": {
+                        "format": "date",
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "name": {
+                    "description": "A name given to the model or data",
+                    "type": "string"
+                },
+                "objective": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "reference": {
+                    "description": "Bibliographic reference(s).",
+                    "items": {
+                        "$ref": "#/$defs/Reference"
+                    },
+                    "minItems": 1,
+                    "type": "array"
+                },
+                "rights": {
+                    "type": "string"
+                },
+                "software": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "source": {
+                    "description": "A related source.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "status": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "url": {
+                    "format": "uri",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "name",
+                "identifier",
+                "creator",
+                "creationDate",
+                "rights",
+                "reference"
+            ],
+            "title": "GeneralInformation",
+            "type": "object"
+        },
+        "GenericModel": {
+            "additionalProperties": false,
+            "description": "Top-level container for a single FSKX model's metadata.",
+            "properties": {
+                "dataBackground": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/DataBackground"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "generalInformation": {
+                    "$ref": "#/$defs/GeneralInformation"
+                },
+                "modelMath": {
+                    "$ref": "#/$defs/ModelMath"
+                },
+                "modelType": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "scope": {
+                    "$ref": "#/$defs/Scope"
+                }
+            },
+            "required": [
+                "generalInformation",
+                "scope",
+                "modelMath"
+            ],
+            "title": "GenericModel",
+            "type": "object"
+        },
+        "Hazard": {
+            "additionalProperties": false,
+            "description": "Agent, contaminant, or chemical for which the model applies.",
+            "properties": {
+                "acceptableDailyIntake": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "acceptableOperatorsExposureLevel": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "acuteReferenceDose": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "adverseEffect": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "benchmarkDose": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "description": {
+                    "description": "A description of the resource.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "indSum": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "lowestObservedAdverseAffectLevel": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "maximumResidueLimit": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "name": {
+                    "description": "A name given to the resource.",
+                    "type": "string"
+                },
+                "noObservedAdverseAffectLevel": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "sourceOfContamination": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "type": {
+                    "description": "The type/classification of the resource.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "unit": {
+                    "description": "Unit of measure.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "title": "Hazard",
+            "type": "object"
+        },
+        "Laboratory": {
+            "additionalProperties": false,
+            "description": "Laboratory that performed the analytical work.",
+            "properties": {
+                "accreditation": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "minItems": 1,
+                    "type": "array"
+                },
+                "country": {
+                    "description": "Country (ISO 3166-1 alpha-2).",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "name": {
+                    "description": "A name given to the resource.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "accreditation"
+            ],
+            "title": "Laboratory",
+            "type": "object"
+        },
+        "ModelCategory": {
+            "additionalProperties": false,
+            "description": "Classification of the model according to the RAKIP scheme.",
+            "properties": {
+                "basicProcess": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "modelClass": {
+                    "type": "string"
+                },
+                "modelClassComment": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "modelSubClass": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "modelClass"
+            ],
+            "title": "ModelCategory",
+            "type": "object"
+        },
+        "ModelEquation": {
+            "additionalProperties": false,
+            "description": "A single equation that together form the model math.",
+            "properties": {
+                "modelEquation": {
+                    "description": "In ModelMath: references ModelEquation objects (FSKXO_0000000019). In ModelEquation: holds the equation formula string (dcterms:references). Range and IRI are overridden per-class via slot_usage.",
+                    "type": "string"
+                },
+                "modelEquationClass": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "modelHypothesis": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "name": {
+                    "description": "A name given to the resource.",
+                    "type": "string"
+                },
+                "reference": {
+                    "description": "Bibliographic reference(s).",
+                    "items": {
+                        "$ref": "#/$defs/Reference"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "name",
+                "modelEquation"
+            ],
+            "title": "ModelEquation",
+            "type": "object"
+        },
+        "ModelMath": {
+            "additionalProperties": false,
+            "description": "Mathematical specification of the model.",
+            "properties": {
+                "event": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "exposure": {
+                    "items": {
+                        "$ref": "#/$defs/Exposure"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "fittingProcedure": {
+                    "description": "Free-text description of the fitting / optimisation procedure used to parameterise the model.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "modelEquation": {
+                    "description": "In ModelMath: references ModelEquation objects (FSKXO_0000000019). In ModelEquation: holds the equation formula string (dcterms:references). Range and IRI are overridden per-class via slot_usage.",
+                    "items": {
+                        "$ref": "#/$defs/ModelEquation"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "parameter": {
+                    "items": {
+                        "$ref": "#/$defs/Parameter"
+                    },
+                    "minItems": 1,
+                    "type": "array"
+                },
+                "qualityMeasures": {
+                    "items": {
+                        "$ref": "#/$defs/QualityMeasures"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "parameter"
+            ],
+            "title": "ModelMath",
+            "type": "object"
+        },
+        "Parameter": {
+            "additionalProperties": false,
+            "description": "A single model parameter (input, constant, or output).",
+            "properties": {
+                "classification": {
+                    "$ref": "#/$defs/ParameterClassificationEnum"
+                },
+                "dataType": {
+                    "$ref": "#/$defs/ParameterDataTypeEnum"
+                },
+                "description": {
+                    "description": "A description of the resource.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "distribution": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "error": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "id": {
+                    "pattern": "^[A-Za-z0-9_]+$",
+                    "type": "string"
+                },
+                "maxValue": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "minValue": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "name": {
+                    "description": "A name given to the resource.",
+                    "type": "string"
+                },
+                "reference": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/$defs/Reference"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "Bibliographic reference(s)."
+                },
+                "source": {
+                    "description": "A related source.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "subject": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "unit": {
+                    "description": "Unit of measure.",
+                    "type": "string"
+                },
+                "unitCategory": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "value": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "variabilitySubject": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "id",
+                "classification",
+                "name",
+                "unit",
+                "dataType"
+            ],
+            "title": "Parameter",
+            "type": "object"
+        },
+        "ParameterClassificationEnum": {
+            "description": "Classification of a model parameter within the model math.",
+            "enum": [
+                "CONSTANT",
+                "INPUT",
+                "OUTPUT"
+            ],
+            "title": "ParameterClassificationEnum",
+            "type": "string"
+        },
+        "ParameterDataTypeEnum": {
+            "description": "Data type of a model parameter value.",
+            "enum": [
+                "INTEGER",
+                "DOUBLE",
+                "NUMBER",
+                "DATE",
+                "FILE",
+                "BOOLEAN",
+                "VECTOROFNUMBERS",
+                "VECTOROFSTRINGS",
+                "MATRIXOFNUMBERS",
+                "MATRIXOFSTRINGS",
+                "OBJECT",
+                "STRING"
+            ],
+            "title": "ParameterDataTypeEnum",
+            "type": "string"
+        },
+        "PopulationGroup": {
+            "additionalProperties": false,
+            "description": "Population group to which the model or data applies.",
+            "properties": {
+                "bmi": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "country": {
+                    "description": "Country (ISO 3166-1 alpha-2).",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "name": {
+                    "description": "A name given to the resource.",
+                    "type": "string"
+                },
+                "patternConsumption": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "populationAge": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "populationDescription": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "populationGender": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "populationRiskFactor": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "populationSpan": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "region": {
+                    "description": "Spatial region.",
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "season": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "specialDietGroups": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "targetPopulation": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "title": "PopulationGroup",
+            "type": "object"
+        },
+        "Product": {
+            "additionalProperties": false,
+            "description": "Food product, matrix, or environment for which the model applies.",
+            "properties": {
+                "description": {
+                    "description": "A description of the resource.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "expiryDate": {
+                    "format": "date",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "fisheriesArea": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "method": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "name": {
+                    "description": "A name given to the resource.",
+                    "type": "string"
+                },
+                "originArea": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "originCountry": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "packaging": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "productionDate": {
+                    "format": "date",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "treatment": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "unit": {
+                    "description": "Unit of measure.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name",
+                "unit"
+            ],
+            "title": "Product",
+            "type": "object"
+        },
+        "PublicationTypeEnum": {
+            "description": "RIS-style publication type codes.",
+            "enum": [
+                "ABST",
+                "ADVS",
+                "AGGR",
+                "ANCIENT",
+                "ART",
+                "BILL",
+                "BLOG",
+                "BOOK",
+                "CASE",
+                "CHAP",
+                "CHART",
+                "CLSWK",
+                "COMP",
+                "CONF",
+                "CPAPER",
+                "CTLG",
+                "DATA",
+                "DBASE",
+                "DICT",
+                "EBOOK",
+                "ECHAP",
+                "EDBOOK",
+                "EJOUR",
+                "ELECT",
+                "ENCYC",
+                "EQUA",
+                "FIGURE",
+                "GEN",
+                "GOVDOC",
+                "GRANT",
+                "HEAR",
+                "ICOMM",
+                "INPR",
+                "JOUR",
+                "JFULL",
+                "LEGAL",
+                "MANSCPT",
+                "MAP",
+                "MGZN",
+                "MPCT",
+                "MULTI",
+                "MUSIC",
+                "NEW",
+                "PAMP",
+                "PAT",
+                "PCOMM",
+                "RPRT",
+                "SER",
+                "SLIDE",
+                "SOUND",
+                "STAND",
+                "STAT",
+                "THES",
+                "UNPB",
+                "VIDEO"
+            ],
+            "title": "PublicationTypeEnum",
+            "type": "string"
+        },
+        "QualityMeasures": {
+            "additionalProperties": false,
+            "description": "Statistical quality measures for the model fit.",
+            "properties": {
+                "aic": {
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "bic": {
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "mse": {
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "rmse": {
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "rsquared": {
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "sensitivityAnalysis": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "sse": {
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                }
+            },
+            "title": "QualityMeasures",
+            "type": "object"
+        },
+        "Reference": {
+            "additionalProperties": false,
+            "description": "Bibliographic reference (RIS-style publication record).",
+            "properties": {
+                "abstract": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "authorList": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "comment": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "doi": {
+                    "type": "string"
+                },
+                "isReferenceDescription": {
+                    "type": "boolean"
+                },
+                "issue": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "journal": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "pmid": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "publicationDate": {
+                    "description": "Publication date of the bibliographic reference.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "publicationType": {
+                    "$ref": "#/$defs/PublicationTypeEnum"
+                },
+                "status": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "title": {
+                    "description": "A title given to the resource.",
+                    "type": "string"
+                },
+                "volume": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "website": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "isReferenceDescription",
+                "title",
+                "doi"
+            ],
+            "title": "Reference",
+            "type": "object"
+        },
+        "Scope": {
+            "additionalProperties": false,
+            "description": "Spatial, temporal, and subject scope of the model / data.",
+            "properties": {
+                "generalComment": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "hazard": {
+                    "items": {
+                        "$ref": "#/$defs/Hazard"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "populationGroup": {
+                    "items": {
+                        "$ref": "#/$defs/PopulationGroup"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "product": {
+                    "items": {
+                        "$ref": "#/$defs/Product"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "spatialInformation": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": [
+                        "array",
+                        "null"
+                    ]
+                },
+                "temporalInformation": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "title": "Scope",
+            "type": "object"
+        },
+        "Study": {
+            "additionalProperties": false,
+            "description": "ISA-style description of the study that produced the data.",
+            "properties": {
+                "accreditationProcedureForTheAssayTechnology": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "assayMeasurementType": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "assayTechnologyPlatform": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "assayTechnologyType": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "description": {
+                    "description": "A description of the resource.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "designType": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "identifier": {
+                    "description": "An unambiguous identifier for the resource.",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "protocolComponentsName": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "protocolComponentsType": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "protocolDescription": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "protocolName": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "protocolParametersName": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "protocolType": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "protocolURI": {
+                    "format": "uri",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "protocolVersion": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "title": {
+                    "description": "A title given to the resource.",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "title"
+            ],
+            "title": "Study",
+            "type": "object"
+        },
+        "StudySample": {
+            "additionalProperties": false,
+            "description": "Individual study sample record.",
+            "properties": {
+                "lotSizeUnit": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "protocolOfSampleCollection": {
+                    "type": "string"
+                },
+                "sampleName": {
+                    "type": "string"
+                },
+                "samplingMethod": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "samplingPlan": {
+                    "type": "string"
+                },
+                "samplingPoint": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "samplingSize": {
+                    "type": "string"
+                },
+                "samplingStrategy": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "samplingWeight": {
+                    "type": "string"
+                },
+                "typeOfSamplingProgram": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                }
+            },
+            "required": [
+                "sampleName",
+                "protocolOfSampleCollection",
+                "samplingPlan",
+                "samplingWeight",
+                "samplingSize"
+            ],
+            "title": "StudySample",
+            "type": "object"
+        }
+    },
+    "$id": "http://semanticlookup.zbmed.de/km/fskxo/",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "additionalProperties": true,
+    "description": "Top-level container for a single FSKX model's metadata.",
+    "metamodel_version": "1.11.0",
+    "properties": {
+        "dataBackground": {
+            "anyOf": [
+                {
+                    "$ref": "#/$defs/DataBackground"
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        },
+        "generalInformation": {
+            "$ref": "#/$defs/GeneralInformation"
+        },
+        "modelMath": {
+            "$ref": "#/$defs/ModelMath"
+        },
+        "modelType": {
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "scope": {
+            "$ref": "#/$defs/Scope"
+        }
+    },
+    "required": [
+        "generalInformation",
+        "scope",
+        "modelMath"
+    ],
+    "title": "fskxo",
+    "type": "object",
+    "version": "2.0.1"
+}

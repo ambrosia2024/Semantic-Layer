@@ -3,6 +3,7 @@ import argparse
 import logging
 from pathlib import Path
 from vocab_mapper import VocabularyMapper
+from schema_loader import get_enum_slots
 
 # Configuration
 INPUT_FOLDER = "./unmapped/jsonld"
@@ -25,7 +26,8 @@ def process_files(input_file=None, override=False):
         override: Whether to override existing output files.
     """
     logging.info("Initializing Vocabulary Mapper...")
-    mapper = VocabularyMapper(ONTOLOGY_FILE)
+    enum_slots = set(get_enum_slots())
+    mapper = VocabularyMapper(ONTOLOGY_FILE, enum_slots=enum_slots)
 
     input_path = Path(INPUT_FOLDER)
     output_path = Path(OUTPUT_FOLDER)

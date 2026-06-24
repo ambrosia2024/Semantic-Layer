@@ -17,6 +17,8 @@ import re
 import unicodedata
 from difflib import SequenceMatcher
 from datetime import datetime, timedelta
+from rdflib import Graph, URIRef
+from rdflib.namespace import OWL, RDF, RDFS, SKOS
 
 # ========== CONFIGURATION ==========
 CACHE_DIR = "./model_cache"
@@ -36,8 +38,9 @@ VOCAB_TYPES = {
 class VocabularyMapper:
     """Maps vocabulary terms to ontology IRIs"""
 
-    def __init__(self, ontology_file: str):
+    def __init__(self, ontology_file: str, enum_slots: Optional[set[str]] = None):
         self.ontology_file = ontology_file
+        self.enum_slots = enum_slots or set()
         self.classes = {}
         self.properties = {}
         self.individuals = {}
@@ -61,59 +64,54 @@ class VocabularyMapper:
             return
 
         try:
-            tree = ET.parse(self.ontology_file)
-            root = tree.getroot()
+            graph = Graph()
+            graph.parse(self.ontology_file)
 
-            ns = {
-                'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-                'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
-                'owl': 'http://www.w3.org/2002/07/owl#',
-                'oboInOwl': 'http://www.geneontology.org/formats/oboInOwl#',
-                'skos': 'http://www.w3.org/2004/02/skos/core#',
-            }
+            label_predicates = (RDFS.label, SKOS.prefLabel)
+            synonym_predicates = (
+                URIRef("http://www.geneontology.org/formats/oboInOwl#hasExactSynonym"),
+                URIRef("http://www.geneontology.org/formats/oboInOwl#hasRelatedSynonym"),
+                URIRef("http://www.geneontology.org/formats/oboInOwl#hasBroadSynonym"),
+                URIRef("http://www.geneontology.org/formats/oboInOwl#hasNarrowSynonym"),
+                URIRef("http://www.geneontology.org/formats/oboInOwl#hasSynonym"),
+                SKOS.altLabel,
+                SKOS.hiddenLabel,
+            )
 
-            def _labels_for(elem):
+            def _labels_for(subject):
                 labels = []
-                for tag in ('rdfs:label', 'skos:prefLabel'):
-                    for lab in elem.findall(tag, ns):
-                        t = (lab.text or '').strip()
-                        if t:
-                            labels.append(t)
+                for predicate in label_predicates:
+                    labels.extend(str(label).strip() for label in graph.objects(subject, predicate) if str(label).strip())
                 return labels
 
-            def _add(elem, store_dict):
-                iri = elem.get('{%s}about' % ns['rdf'])
-                if not iri:
-                    return
-                labels = _labels_for(elem)
+            def _add(subject, store_dict):
+                labels = _labels_for(subject)
                 if not labels:
                     return
+                iri = str(subject)
 
                 for label in labels:
                     key = self._normalize_text(label)
                     if key:
                         store_dict[key] = iri
 
-                syn_preds = [
-                    'oboInOwl:hasExactSynonym',
-                    'oboInOwl:hasRelatedSynonym',
-                    'oboInOwl:hasBroadSynonym',
-                    'oboInOwl:hasNarrowSynonym',
-                    'oboInOwl:hasSynonym',
-                ]
                 canonical = self._normalize_text(labels[0])
-                for sp in syn_preds:
-                    for syn_elem in elem.findall(sp, ns):
-                        syn_text = (syn_elem.text or '').strip()
+                for predicate in synonym_predicates:
+                    for synonym in graph.objects(subject, predicate):
+                        syn_text = str(synonym).strip()
                         if syn_text:
                             self.synonyms[self._normalize_text(syn_text)] = canonical
 
-            for c in root.findall('.//owl:Class', ns):
-                _add(c, self.classes)
-            for p in root.findall('.//owl:ObjectProperty', ns):
-                _add(p, self.properties)
-            for ind in root.findall('.//owl:NamedIndividual', ns):
-                _add(ind, self.individuals)
+            for cls in graph.subjects(RDF.type, OWL.Class):
+                _add(cls, self.classes)
+
+            property_types = (OWL.ObjectProperty, OWL.DatatypeProperty, OWL.AnnotationProperty)
+            for property_type in property_types:
+                for prop in graph.subjects(RDF.type, property_type):
+                    _add(prop, self.properties)
+
+            for individual in graph.subjects(RDF.type, OWL.NamedIndividual):
+                _add(individual, self.individuals)
 
             print(f"[VocabMapper] Loaded {len(self.classes)} classes, "
                   f"{len(self.properties)} properties, {len(self.individuals)} individuals, "
@@ -233,6 +231,10 @@ class VocabularyMapper:
                     if key in fields or parent_field in fields:
                         vocab_category = cat
                         break
+
+                # Schema-driven enum fallback: treat enum slot names as controlled vocab
+                if not vocab_category and key in self.enum_slots:
+                    vocab_category = "general"
 
                 # Map string values
                 if isinstance(value, str) and vocab_category:

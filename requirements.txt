@@ -10,3 +10,7 @@ openpyxl
 xlrd
 beautifulsoup4
 pyld
+linkml
+linkml-runtime
+jsonschema
+pyshacl

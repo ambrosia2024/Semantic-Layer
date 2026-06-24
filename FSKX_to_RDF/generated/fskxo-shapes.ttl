@@ -1,0 +1,787 @@
+@prefix bibo: <http://purl.org/ontology/bibo/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix fskxo: <http://semanticlookup.zbmed.de/km/fskxo/> .
+@prefix hso: <http://purl.obolibrary.org/obo/HSO_> .
+@prefix iao: <http://purl.obolibrary.org/obo/IAO_> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema1: <https://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+fskxo:FSKXO_0000050318 a sh:NodeShape ;
+    rdfs:comment "Top-level container for a single FSKX model's metadata." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:class fskxo:FSKXO_0000050259 ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 3 ;
+            sh:path fskxo:FSKXO_0000000016 ],
+        [ sh:maxCount 1 ;
+            sh:order 4 ;
+            sh:path fskxo:FSKXO_0000000044 ],
+        [ sh:class fskxo:FSKXO_0000050250 ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 1 ;
+            sh:path fskxo:FSKXO_0000000006 ],
+        [ sh:class fskxo:FSKXO_0000050253 ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 2 ;
+            sh:path fskxo:FSKXO_0000000010 ],
+        [ sh:class fskxo:FSKXO_0000050247 ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 0 ;
+            sh:path fskxo:FSKXO_0000000003 ] ;
+    sh:targetClass fskxo:FSKXO_0000050318 .
+
+fskxo:FSKXO_0000000336 a sh:NodeShape ;
+    rdfs:comment "Food product, matrix, or environment for which the model applies." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:description "A description of the resource." ;
+            sh:maxCount 1 ;
+            sh:order 1 ;
+            sh:path dcterms:description ],
+        [ sh:order 5 ;
+            sh:path fskxo:FSKXO_0000000024 ],
+        [ sh:order 3 ;
+            sh:path fskxo:FSKXO_0000000022 ],
+        [ sh:description "A name given to the resource." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 0 ;
+            sh:path schema1:name ],
+        [ sh:order 4 ;
+            sh:path fskxo:FSKXO_0000000023 ],
+        [ sh:maxCount 1 ;
+            sh:order 9 ;
+            sh:path schema1:productionDate ],
+        [ sh:maxCount 1 ;
+            sh:order 6 ;
+            sh:path schema1:countryOfOrigin ],
+        [ sh:description "Unit of measure." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 2 ;
+            sh:path schema1:unitText ],
+        [ sh:maxCount 1 ;
+            sh:order 10 ;
+            sh:path schema1:expires ],
+        [ sh:maxCount 1 ;
+            sh:order 8 ;
+            sh:path fskxo:FSKXO_0000000026 ],
+        [ sh:maxCount 1 ;
+            sh:order 7 ;
+            sh:path fskxo:FSKXO_0000000025 ] ;
+    sh:targetClass fskxo:FSKXO_0000000336 .
+
+fskxo:FSKXO_0000003283 a sh:NodeShape ;
+    rdfs:comment "Agent, contaminant, or chemical for which the model applies." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:maxCount 1 ;
+            sh:order 4 ;
+            sh:path fskxo:FSKXO_0000000053 ],
+        [ sh:maxCount 1 ;
+            sh:order 13 ;
+            sh:path fskxo:0000026 ],
+        [ sh:maxCount 1 ;
+            sh:order 12 ;
+            sh:path fskxo:FSKXO_0000000061 ],
+        [ sh:maxCount 1 ;
+            sh:order 11 ;
+            sh:path fskxo:FSKXO_0000000060 ],
+        [ sh:description "A name given to the resource." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 1 ;
+            sh:path schema1:name ],
+        [ sh:maxCount 1 ;
+            sh:order 9 ;
+            sh:path fskxo:FSKXO_0000000058 ],
+        [ sh:description "A description of the resource." ;
+            sh:maxCount 1 ;
+            sh:order 2 ;
+            sh:path dcterms:description ],
+        [ sh:maxCount 1 ;
+            sh:order 7 ;
+            sh:path fskxo:FSKXO_0000000056 ],
+        [ sh:maxCount 1 ;
+            sh:order 5 ;
+            sh:path fskxo:FSKXO_0000000054 ],
+        [ sh:description "Unit of measure." ;
+            sh:maxCount 1 ;
+            sh:order 3 ;
+            sh:path schema1:unitText ],
+        [ sh:maxCount 1 ;
+            sh:order 10 ;
+            sh:path fskxo:FSKXO_0000000059 ],
+        [ sh:description "The type/classification of the resource." ;
+            sh:maxCount 1 ;
+            sh:order 0 ;
+            sh:path dcterms:type ],
+        [ sh:maxCount 1 ;
+            sh:order 6 ;
+            sh:path fskxo:FSKXO_0000000055 ],
+        [ sh:maxCount 1 ;
+            sh:order 8 ;
+            sh:path fskxo:FSKXO_0000000057 ] ;
+    sh:targetClass fskxo:FSKXO_0000003283 .
+
+fskxo:FSKXO_0000050247 a sh:NodeShape ;
+    rdfs:comment "Meta-data giving a general overview of the model / study / data set." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:maxCount 1 ;
+            sh:order 13 ;
+            sh:path fskxo:FSKXO_0000000049 ],
+        [ sh:class fskxo:FSKXO_0000050248 ;
+            sh:description "Bibliographic reference(s)." ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 11 ;
+            sh:path fskxo:FSKXO_0000000004 ],
+        [ sh:description "A description of the resource." ;
+            sh:maxCount 1 ;
+            sh:order 19 ;
+            sh:path dcterms:description ],
+        [ sh:description "A related source." ;
+            sh:maxCount 1 ;
+            sh:order 1 ;
+            sh:path dcterms:source ],
+        [ sh:maxCount 1 ;
+            sh:order 12 ;
+            sh:path dcterms:language ],
+        [ sh:class fskxo:FSKXO_0000050319 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 3 ;
+            sh:path schema1:author ],
+        [ sh:maxCount 1 ;
+            sh:order 14 ;
+            sh:path schema1:programmingLanguage ],
+        [ sh:class fskxo:FSKXO_0000050319 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 4 ;
+            sh:path dcterms:creator ],
+        [ sh:maxCount 1 ;
+            sh:order 9 ;
+            sh:path schema1:url ],
+        [ sh:maxCount 1 ;
+            sh:order 8 ;
+            sh:path dcterms:accessRights ],
+        [ sh:description "A name given to the model or data" ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 0 ;
+            sh:path schema1:name ],
+        [ sh:maxCount 1 ;
+            sh:order 10 ;
+            sh:path dcterms:format ],
+        [ sh:description "Shortcut accessor for the sub-class(es) of the model, mirroring the nested modelCategory.modelSubClass. Both map to FSKXO_0000000050." ;
+            sh:order 16 ;
+            sh:path fskxo:FSKXO_0000000050 ],
+        [ sh:order 6 ;
+            sh:path dcterms:modified ],
+        [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 7 ;
+            sh:path dcterms:rights ],
+        [ sh:description "An unambiguous ID given to the model or data. This can also be created automatically by a software tool." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 2 ;
+            sh:path dcterms:identifier ],
+        [ sh:maxCount 1 ;
+            sh:order 17 ;
+            sh:path iao:0000114 ],
+        [ sh:class fskxo:FSKXO_0000050249 ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 15 ;
+            sh:path fskxo:FSKXO_0000000005 ],
+        [ sh:maxCount 1 ;
+            sh:order 18 ;
+            sh:path fskxo:FSKXO_0000000052 ],
+        [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 5 ;
+            sh:path dcterms:created ] ;
+    sh:targetClass fskxo:FSKXO_0000050247 .
+
+fskxo:FSKXO_0000050249 a sh:NodeShape ;
+    rdfs:comment "Classification of the model according to the RAKIP scheme." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 0 ;
+            sh:path dcterms:type ],
+        [ sh:order 1 ;
+            sh:path fskxo:FSKXO_0000000050 ],
+        [ sh:maxCount 1 ;
+            sh:order 2 ;
+            sh:path schema1:comment ],
+        [ sh:order 3 ;
+            sh:path fskxo:FSKXO_0000000051 ] ;
+    sh:targetClass fskxo:FSKXO_0000050249 .
+
+fskxo:FSKXO_0000050250 a sh:NodeShape ;
+    rdfs:comment "Spatial, temporal, and subject scope of the model / data." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:maxCount 1 ;
+            sh:order 4 ;
+            sh:path dcterms:temporal ],
+        [ sh:maxCount 1 ;
+            sh:order 3 ;
+            sh:path schema1:comment ],
+        [ sh:class fskxo:FSKXO_0000000336 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 0 ;
+            sh:path fskxo:FSKXO_0000000007 ],
+        [ sh:order 5 ;
+            sh:path dcterms:spatial ],
+        [ sh:class fskxo:FSKXO_0000050252 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 2 ;
+            sh:path fskxo:FSKXO_0000000009 ],
+        [ sh:class fskxo:FSKXO_0000003283 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 1 ;
+            sh:path fskxo:FSKXO_0000000008 ] ;
+    sh:targetClass fskxo:FSKXO_0000050250 .
+
+fskxo:FSKXO_0000050252 a sh:NodeShape ;
+    rdfs:comment "Population group to which the model or data applies." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:description "Country (ISO 3166-1 alpha-2)." ;
+            sh:order 10 ;
+            sh:path dcterms:spatial ],
+        [ sh:description "Spatial region." ;
+            sh:order 9 ;
+            sh:path fskxo:FSKXO_0000000029 ],
+        [ sh:order 4 ;
+            sh:path schema1:typicalAgeRange ],
+        [ sh:order 6 ;
+            sh:path fskxo:FSKXO_0000000062 ],
+        [ sh:maxCount 1 ;
+            sh:order 1 ;
+            sh:path dcterms:type ],
+        [ sh:maxCount 1 ;
+            sh:order 5 ;
+            sh:path schema1:gender ],
+        [ sh:order 7 ;
+            sh:path fskxo:FSKXO_0000000063 ],
+        [ sh:order 2 ;
+            sh:path dcterms:temporal ],
+        [ sh:order 8 ;
+            sh:path fskxo:FSKXO_0000000064 ],
+        [ sh:description "A name given to the resource." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 0 ;
+            sh:path schema1:name ],
+        [ sh:order 11 ;
+            sh:path fskxo:FSKXO_0000000065 ],
+        [ sh:order 3 ;
+            sh:path dcterms:description ],
+        [ sh:order 12 ;
+            sh:path fskxo:FSKXO_0000000066 ] ;
+    sh:targetClass fskxo:FSKXO_0000050252 .
+
+fskxo:FSKXO_0000050253 a sh:NodeShape ;
+    rdfs:comment "Provenance of the data used to build/parameterize the model." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:class fskxo:FSKXO_0000050255 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 1 ;
+            sh:path fskxo:FSKXO_0000000012 ],
+        [ sh:class fskxo:FSKXO_0000050256 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 2 ;
+            sh:path fskxo:FSKXO_0000000013 ],
+        [ sh:class fskxo:FSKXO_0000050257 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 3 ;
+            sh:path fskxo:FSKXO_0000000014 ],
+        [ sh:class fskxo:FSKXO_0000050254 ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 0 ;
+            sh:path fskxo:FSKXO_0000000011 ],
+        [ sh:class fskxo:FSKXO_0000050258 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 4 ;
+            sh:path fskxo:FSKXO_0000000015 ] ;
+    sh:targetClass fskxo:FSKXO_0000050253 .
+
+fskxo:FSKXO_0000050254 a sh:NodeShape ;
+    rdfs:comment "ISA-style description of the study that produced the data." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:maxCount 1 ;
+            sh:order 3 ;
+            sh:path fskxo:FSKXO_0000000067 ],
+        [ sh:maxCount 1 ;
+            sh:order 13 ;
+            sh:path fskxo:FSKXO_0000000075 ],
+        [ sh:maxCount 1 ;
+            sh:order 5 ;
+            sh:path fskxo:FSKXO_0000000030 ],
+        [ sh:maxCount 1 ;
+            sh:order 8 ;
+            sh:path fskxo:FSKXO_0000000070 ],
+        [ sh:maxCount 1 ;
+            sh:order 9 ;
+            sh:path fskxo:FSKXO_0000000071 ],
+        [ sh:maxCount 1 ;
+            sh:order 4 ;
+            sh:path fskxo:FSKXO_0000000068 ],
+        [ sh:maxCount 1 ;
+            sh:order 10 ;
+            sh:path fskxo:FSKXO_0000000072 ],
+        [ sh:maxCount 1 ;
+            sh:order 7 ;
+            sh:path fskxo:FSKXO_0000000031 ],
+        [ sh:maxCount 1 ;
+            sh:order 12 ;
+            sh:path fskxo:FSKXO_0000000074 ],
+        [ sh:description "A description of the resource." ;
+            sh:maxCount 1 ;
+            sh:order 2 ;
+            sh:path dcterms:description ],
+        [ sh:maxCount 1 ;
+            sh:order 15 ;
+            sh:path fskxo:FSKXO_0000000077 ],
+        [ sh:maxCount 1 ;
+            sh:order 14 ;
+            sh:path fskxo:FSKXO_0000000076 ],
+        [ sh:description "An unambiguous identifier for the resource." ;
+            sh:maxCount 1 ;
+            sh:order 0 ;
+            sh:path dcterms:identifier ],
+        [ sh:description "A title given to the resource." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 1 ;
+            sh:path dcterms:title ],
+        [ sh:maxCount 1 ;
+            sh:order 11 ;
+            sh:path fskxo:FSKXO_0000000073 ],
+        [ sh:maxCount 1 ;
+            sh:order 6 ;
+            sh:path fskxo:FSKXO_0000000069 ] ;
+    sh:targetClass fskxo:FSKXO_0000050254 .
+
+fskxo:FSKXO_0000050255 a sh:NodeShape ;
+    rdfs:comment "Individual study sample record." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 7 ;
+            sh:path schema1:size ],
+        [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 5 ;
+            sh:path hso:0000331 ],
+        [ sh:maxCount 1 ;
+            sh:order 3 ;
+            sh:path fskxo:FSKXO_0000000032 ],
+        [ sh:maxCount 1 ;
+            sh:order 8 ;
+            sh:path fskxo:FSKXO_0000000034 ],
+        [ sh:maxCount 1 ;
+            sh:order 2 ;
+            sh:path hso:0000304 ],
+        [ sh:maxCount 1 ;
+            sh:order 4 ;
+            sh:path fskxo:FSKXO_0000000033 ],
+        [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 0 ;
+            sh:path schema1:identifier ],
+        [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 1 ;
+            sh:path hso:0000288 ],
+        [ sh:maxCount 1 ;
+            sh:order 9 ;
+            sh:path fskxo:FSKXO_0000000035 ],
+        [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 6 ;
+            sh:path hso:0000357 ] ;
+    sh:targetClass fskxo:FSKXO_0000050255 .
+
+fskxo:FSKXO_0000050256 a sh:NodeShape ;
+    rdfs:comment "Method used to collect dietary consumption data." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:minCount 1 ;
+            sh:order 3 ;
+            sh:path dcterms:extent ],
+        [ sh:minCount 1 ;
+            sh:order 5 ;
+            sh:path fskxo:FSKXO_0000000037 ],
+        [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 0 ;
+            sh:path fskxo:FSKXO_0000000078 ],
+        [ sh:minCount 1 ;
+            sh:order 4 ;
+            sh:path fskxo:FSKXO_0000000036 ],
+        [ sh:maxCount 1 ;
+            sh:order 2 ;
+            sh:path fskxo:FSKXO_0000000080 ],
+        [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 1 ;
+            sh:path fskxo:FSKXO_0000000079 ] ;
+    sh:targetClass fskxo:FSKXO_0000050256 .
+
+fskxo:FSKXO_0000050257 a sh:NodeShape ;
+    rdfs:comment "Laboratory that performed the analytical work." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:minCount 1 ;
+            sh:order 0 ;
+            sh:path fskxo:FSKXO_0000000038 ],
+        [ sh:description "A name given to the resource." ;
+            sh:maxCount 1 ;
+            sh:order 1 ;
+            sh:path schema1:name ],
+        [ sh:description "Country (ISO 3166-1 alpha-2)." ;
+            sh:maxCount 1 ;
+            sh:order 2 ;
+            sh:path dcterms:spatial ] ;
+    sh:targetClass fskxo:FSKXO_0000050257 .
+
+fskxo:FSKXO_0000050258 a sh:NodeShape ;
+    rdfs:comment "Analytical assay performed on the study sample." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:maxCount 1 ;
+            sh:order 6 ;
+            sh:path fskxo:FSKXO_0000000085 ],
+        [ sh:description "A name given to the resource." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 0 ;
+            sh:path schema1:name ],
+        [ sh:maxCount 1 ;
+            sh:order 8 ;
+            sh:path fskxo:FSKXO_0000000087 ],
+        [ sh:maxCount 1 ;
+            sh:order 7 ;
+            sh:path fskxo:FSKXO_0000000086 ],
+        [ sh:description "A description of the resource." ;
+            sh:maxCount 1 ;
+            sh:order 1 ;
+            sh:path dcterms:description ],
+        [ sh:maxCount 1 ;
+            sh:order 2 ;
+            sh:path fskxo:FSKXO_0000000081 ],
+        [ sh:maxCount 1 ;
+            sh:order 4 ;
+            sh:path fskxo:FSKXO_0000000083 ],
+        [ sh:maxCount 1 ;
+            sh:order 5 ;
+            sh:path fskxo:FSKXO_0000000084 ],
+        [ sh:maxCount 1 ;
+            sh:order 3 ;
+            sh:path fskxo:FSKXO_0000000082 ] ;
+    sh:targetClass fskxo:FSKXO_0000050258 .
+
+fskxo:FSKXO_0000050259 a sh:NodeShape ;
+    rdfs:comment "Mathematical specification of the model." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:class fskxo:FSKXO_0000050261 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 1 ;
+            sh:path fskxo:FSKXO_0000000018 ],
+        [ sh:class fskxo:FSKXO_0000050262 ;
+            sh:description "In ModelMath: references ModelEquation objects (FSKXO_0000000019). In ModelEquation: holds the equation formula string (dcterms:references). Range and IRI are overridden per-class via slot_usage." ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 2 ;
+            sh:path fskxo:FSKXO_0000000019 ],
+        [ sh:description "Free-text description of the fitting / optimisation procedure used to parameterise the model." ;
+            sh:maxCount 1 ;
+            sh:order 3 ;
+            sh:path fskxo:FSKXO_0000017806 ],
+        [ sh:class fskxo:FSKXO_0000050260 ;
+            sh:minCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 0 ;
+            sh:path fskxo:FSKXO_0000000017 ],
+        [ sh:class fskxo:FSKXO_0000050263 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 4 ;
+            sh:path fskxo:FSKXO_0000000020 ],
+        [ sh:order 5 ;
+            sh:path fskxo:FSKXO_0000000102 ] ;
+    sh:targetClass fskxo:FSKXO_0000050259 .
+
+fskxo:FSKXO_0000050260 a sh:NodeShape ;
+    rdfs:comment "A single model parameter (input, constant, or output)." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:maxCount 1 ;
+            sh:order 12 ;
+            sh:path fskxo:FSKXO_0000000088 ],
+        [ sh:description "Unit of measure." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 4 ;
+            sh:path schema1:unitText ],
+        [ sh:maxCount 1 ;
+            sh:order 8 ;
+            sh:path dcterms:subject ],
+        [ sh:description "A name given to the resource." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 2 ;
+            sh:path schema1:name ],
+        [ sh:description "A related source." ;
+            sh:maxCount 1 ;
+            sh:order 7 ;
+            sh:path dcterms:source ],
+        [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 0 ;
+            sh:path dcterms:identifier ;
+            sh:pattern "^[A-Za-z0-9_]+$" ],
+        [ sh:maxCount 1 ;
+            sh:order 5 ;
+            sh:path fskxo:FSKXO_0000000040 ],
+        [ sh:class fskxo:FSKXO_0000050248 ;
+            sh:description "Bibliographic reference(s)." ;
+            sh:maxCount 1 ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 11 ;
+            sh:path fskxo:FSKXO_0000000004 ],
+        [ sh:maxCount 1 ;
+            sh:order 14 ;
+            sh:path schema1:maxValue ],
+        [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 6 ;
+            sh:path fskxo:FSKXO_0000000041 ],
+        [ sh:maxCount 1 ;
+            sh:order 9 ;
+            sh:path fskxo:FSKXO_0000000042 ],
+        [ sh:maxCount 1 ;
+            sh:order 15 ;
+            sh:path fskxo:FSKXO_0000000089 ],
+        [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 1 ;
+            sh:path fskxo:FSKXO_0000000039 ],
+        [ sh:description "A description of the resource." ;
+            sh:maxCount 1 ;
+            sh:order 3 ;
+            sh:path dcterms:description ],
+        [ sh:maxCount 1 ;
+            sh:order 13 ;
+            sh:path schema1:minValue ],
+        [ sh:maxCount 1 ;
+            sh:order 10 ;
+            sh:path schema1:value ] ;
+    sh:targetClass fskxo:FSKXO_0000050260 .
+
+fskxo:FSKXO_0000050261 a sh:NodeShape ;
+    rdfs:comment "Statistical quality measures for the model fit." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:maxCount 1 ;
+            sh:order 3 ;
+            sh:path fskxo:FSKXO_0000000093 ],
+        [ sh:maxCount 1 ;
+            sh:order 0 ;
+            sh:path fskxo:FSKXO_0000000090 ],
+        [ sh:maxCount 1 ;
+            sh:order 4 ;
+            sh:path fskxo:FSKXO_0000000094 ],
+        [ sh:maxCount 1 ;
+            sh:order 6 ;
+            sh:path fskxo:FSKXO_0000000096 ],
+        [ sh:maxCount 1 ;
+            sh:order 1 ;
+            sh:path fskxo:FSKXO_0000000091 ],
+        [ sh:maxCount 1 ;
+            sh:order 2 ;
+            sh:path fskxo:FSKXO_0000000092 ],
+        [ sh:maxCount 1 ;
+            sh:order 5 ;
+            sh:path fskxo:FSKXO_0000000095 ] ;
+    sh:targetClass fskxo:FSKXO_0000050261 .
+
+fskxo:FSKXO_0000050262 a sh:NodeShape ;
+    rdfs:comment "A single equation that together form the model math." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:maxCount 1 ;
+            sh:order 1 ;
+            sh:path dcterms:type ],
+        [ sh:description "In ModelMath: references ModelEquation objects (FSKXO_0000000019). In ModelEquation: holds the equation formula string (dcterms:references). Range and IRI are overridden per-class via slot_usage." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 3 ;
+            sh:path fskxo:FSKXO_0000000019 ],
+        [ sh:description "A name given to the resource." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 0 ;
+            sh:path schema1:name ],
+        [ sh:class fskxo:FSKXO_0000050248 ;
+            sh:description "Bibliographic reference(s)." ;
+            sh:nodeKind sh:BlankNodeOrIRI ;
+            sh:order 2 ;
+            sh:path dcterms:source ],
+        [ sh:order 4 ;
+            sh:path fskxo:FSKXO_0000000097 ] ;
+    sh:targetClass fskxo:FSKXO_0000050262 .
+
+fskxo:FSKXO_0000050263 a sh:NodeShape ;
+    rdfs:comment "Exposure assessment scenario attached to the model." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:maxCount 1 ;
+            sh:order 4 ;
+            sh:path fskxo:FSKXO_0000000101 ],
+        [ sh:order 1 ;
+            sh:path fskxo:FSKXO_0000000099 ],
+        [ sh:order 0 ;
+            sh:path fskxo:FSKXO_0000000098 ],
+        [ sh:description "The type/classification of the resource." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 2 ;
+            sh:path dcterms:type ],
+        [ sh:order 3 ;
+            sh:path fskxo:FSKXO_0000000100 ] ;
+    sh:targetClass fskxo:FSKXO_0000050263 .
+
+fskxo:FSKXO_0000050319 a sh:NodeShape ;
+    rdfs:comment "vCard 4.0 style person record. Used for both authors and creators; email is required." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:maxCount 1 ;
+            sh:order 1 ;
+            sh:path schema1:familyName ],
+        [ sh:maxCount 1 ;
+            sh:order 2 ;
+            sh:path schema1:givenName ],
+        [ sh:maxCount 1 ;
+            sh:order 9 ;
+            sh:path fskxo:FSKXO_0000000045 ],
+        [ sh:maxCount 1 ;
+            sh:order 4 ;
+            sh:path schema1:telephone ],
+        [ sh:maxCount 1 ;
+            sh:order 7 ;
+            sh:path schema1:postalCode ],
+        [ sh:maxCount 1 ;
+            sh:order 12 ;
+            sh:path schema1:affiliation ],
+        [ sh:maxCount 1 ;
+            sh:order 10 ;
+            sh:path schema1:gender ],
+        [ sh:description "A title given to the resource." ;
+            sh:maxCount 1 ;
+            sh:order 0 ;
+            sh:path dcterms:title ],
+        [ sh:description "Spatial region." ;
+            sh:maxCount 1 ;
+            sh:order 8 ;
+            sh:path schema1:addressRegion ],
+        [ sh:maxCount 1 ;
+            sh:order 11 ;
+            sh:path rdfs:comment ],
+        [ sh:maxCount 1 ;
+            sh:order 5 ;
+            sh:path schema1:streetAddress ],
+        [ sh:description "Country (ISO 3166-1 alpha-2)." ;
+            sh:maxCount 1 ;
+            sh:order 6 ;
+            sh:path schema1:addressCountry ],
+        [ sh:maxCount 1 ;
+            sh:order 3 ;
+            sh:path schema1:email ;
+            sh:pattern "^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$" ] ;
+    sh:targetClass fskxo:FSKXO_0000050319 .
+
+fskxo:FSKXO_0000050248 a sh:NodeShape ;
+    rdfs:comment "Bibliographic reference (RIS-style publication record)." ;
+    sh:closed false ;
+    sh:ignoredProperties ( rdf:type ) ;
+    sh:property [ sh:maxCount 1 ;
+            sh:order 11 ;
+            sh:path fskxo:FSKXO_0000000048 ],
+        [ sh:maxCount 1 ;
+            sh:order 12 ;
+            sh:path schema1:url ],
+        [ sh:maxCount 1 ;
+            sh:order 13 ;
+            sh:path schema1:comment ],
+        [ sh:maxCount 1 ;
+            sh:order 10 ;
+            sh:path schema1:issueNumber ],
+        [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 2 ;
+            sh:path bibo:doi ],
+        [ sh:maxCount 1 ;
+            sh:order 5 ;
+            sh:path dcterms:identifier ],
+        [ sh:maxCount 1 ;
+            sh:order 7 ;
+            sh:path dcterms:abstract ],
+        [ sh:maxCount 1 ;
+            sh:order 9 ;
+            sh:path schema1:volumeNumber ],
+        [ sh:maxCount 1 ;
+            sh:order 3 ;
+            sh:path dcterms:type ],
+        [ sh:maxCount 1 ;
+            sh:order 8 ;
+            sh:path fskxo:FSKXO_0000000047 ],
+        [ sh:description "A title given to the resource." ;
+            sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 1 ;
+            sh:path dcterms:title ],
+        [ sh:maxCount 1 ;
+            sh:order 6 ;
+            sh:path fskxo:FSKXO_0000000021 ],
+        [ sh:description "Publication date of the bibliographic reference." ;
+            sh:maxCount 1 ;
+            sh:order 4 ;
+            sh:path schema1:datePublished ],
+        [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:order 0 ;
+            sh:path fskxo:FSKXO_0000000046 ] ;
+    sh:targetClass fskxo:FSKXO_0000050248 .
+
+[] rdf:first "INTEGER" ;
+    rdf:rest ( "DOUBLE" "NUMBER" "DATE" "FILE" "BOOLEAN" "VECTOROFNUMBERS" "VECTOROFSTRINGS" "MATRIXOFNUMBERS" "MATRIXOFSTRINGS" "OBJECT" "STRING" ) .
+
+[] rdf:first "CONSTANT" ;
+    rdf:rest ( "INPUT" "OUTPUT" ) .
+
+[] rdf:first "ABST" ;
+    rdf:rest ( "ADVS" "AGGR" "ANCIENT" "ART" "BILL" "BLOG" "BOOK" "CASE" "CHAP" "CHART" "CLSWK" "COMP" "CONF" "CPAPER" "CTLG" "DATA" "DBASE" "DICT" "EBOOK" "ECHAP" "EDBOOK" "EJOUR" "ELECT" "ENCYC" "EQUA" "FIGURE" "GEN" "GOVDOC" "GRANT" "HEAR" "ICOMM" "INPR" "JOUR" "JFULL" "LEGAL" "MANSCPT" "MAP" "MGZN" "MPCT" "MULTI" "MUSIC" "NEW" "PAMP" "PAT" "PCOMM" "RPRT" "SER" "SLIDE" "SOUND" "STAND" "STAT" "THES" "UNPB" "VIDEO" ) .
+
