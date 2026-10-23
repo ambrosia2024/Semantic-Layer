@@ -1523,3 +1523,39 @@ ambdash:FarmerRole        skos:broadMatch obo:BFO_0000023 .   # role
 ambdash:AdvisorRole       skos:broadMatch obo:BFO_0000023 .   # role
 ambdash:FoodProcessorRole skos:broadMatch obo:BFO_0000023 .   # role
 ambdash:PolicyMakerRole   skos:broadMatch obo:BFO_0000023 .   # role
+# The legacy amblink:regulatoryLimit string remains incident text, not this catalogue.
+
+
+# Contaminant reference catalogue (additive extension)
+amblink:ContaminantLimit a owl:Class ;
+  rdfs:subClassOf prov:Entity ;
+  rdfs:label "Contaminant limit"@en ;
+  rdfs:comment "Versioned numerical maximum for a chemical contaminant in an explicitly scoped food category; not a microbiological sampling criterion."@en .
+
+amblink:regulatedHazard a owl:ObjectProperty ;
+  rdfs:domain amblink:ContaminantLimit ; rdfs:range [ a owl:Class ; owl:unionOf (skos:Concept skos:Collection) ] ;
+  rdfs:label "regulated hazard"@en ; rdfs:comment "Exact analyte or explicitly defined analyte sum; never inferred from family membership."@en .
+
+amblink:appliesToCrop a owl:ObjectProperty ;
+  rdfs:domain amblink:ContaminantLimit ; rdfs:range skos:Concept ;
+  rdfs:label "applies to crop"@en ; rdfs:comment "Supported crop identity; food category must also match."@en .
+
+amblink:foodCategory a owl:ObjectProperty ;
+  rdfs:domain amblink:ContaminantLimit ; rdfs:range skos:Concept ;
+  rdfs:label "food category"@en ; rdfs:comment "Exact food category including processing stage and intended use."@en .
+
+amblink:maximumLevel a owl:ObjectProperty ;
+  rdfs:domain amblink:ContaminantLimit ; rdfs:range qudt:QuantityValue ;
+  rdfs:label "maximum level"@en ; rdfs:comment "Maximum expressed as a decimal quantity and explicit unit."@en .
+
+amblink:measurementBasis a owl:ObjectProperty ;
+  rdfs:domain amblink:ContaminantLimit ; rdfs:range skos:Concept ;
+  rdfs:label "measurement basis"@en ; rdfs:comment "Basis of measurement such as as marketed or dry matter."@en .
+
+amblink:appliesFrom a owl:DatatypeProperty ;
+  rdfs:domain amblink:ContaminantLimit ; rdfs:range xsd:date ;
+  rdfs:label "applies from"@en ; rdfs:comment "Inclusive legal application start; not extraction date."@en .
+
+amblink:appliesUntil a owl:DatatypeProperty ;
+  rdfs:domain amblink:ContaminantLimit ; rdfs:range xsd:date ;
+  rdfs:label "applies until"@en ; rdfs:comment "Exclusive legal application end; omitted if no end is known."@en .

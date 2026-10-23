@@ -1,0 +1,1689 @@
+@prefix amblink: <https://w3id.org/ambrosia/linking#> .
+@prefix amblim: <https://w3id.org/ambrosia/contaminant-limits/> .
+@prefix ambpath: <https://w3id.org/ambrosia/pathogen-vocab#concept/mycotoxins/> .
+@prefix ambplant: <https://w3id.org/ambrosia/plant-vocab#concept/cereal/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix eli: <http://data.europa.eu/eli/ontology#> .
+@prefix spdx: <http://spdx.org/rdf/terms#> .
+
+# Catalogue metadata
+
+amblim:catalogue a prov:Collection ;
+    dct:identifier "2026-10-23.8" ;
+    dct:title "AMBROSIA scoped contaminant references"@en ;
+    dct:description "45 extracted cereal mycotoxin maxima from Annex I sections 1.4, 1.5, 1.6 and 1.9 of consolidation 19 August 2026. Product qualifications preserved. Other sections and national provisions are outside this catalogue."@en ;
+    dct:source amblim:current-consolidation ;
+    prov:hadMember amblim:limit-1-4-1-2026-08-19 ,
+        amblim:limit-1-4-2-2026-08-19 ,
+        amblim:limit-1-4-3-2026-08-19 ,
+        amblim:limit-1-4-4-2026-08-19 ,
+        amblim:limit-1-4-5-2026-08-19 ,
+        amblim:limit-1-4-6-1-2026-08-19 ,
+        amblim:limit-1-4-6-2-2026-08-19 ,
+        amblim:limit-1-4-6-3-2026-08-19 ,
+        amblim:limit-1-4-7-2026-08-19 ,
+        amblim:limit-1-4-8-2026-08-19 ,
+        amblim:limit-1-4-9-2026-08-19 ,
+        amblim:limit-1-4-10-2026-08-19 ,
+        amblim:limit-1-5-1-2026-08-19 ,
+        amblim:limit-1-5-2-2026-08-19 ,
+        amblim:limit-1-5-3-2026-08-19 ,
+        amblim:limit-1-5-4-2026-08-19 ,
+        amblim:limit-1-5-5-2026-08-19 ,
+        amblim:limit-1-5-6-1-2026-08-19 ,
+        amblim:limit-1-5-6-2-2026-08-19 ,
+        amblim:limit-1-5-7-2026-08-19 ,
+        amblim:limit-1-5-8-2026-08-19 ,
+        amblim:limit-1-6-1-2026-08-19 ,
+        amblim:limit-1-6-2-2026-08-19 ,
+        amblim:limit-1-6-3-2026-08-19 ,
+        amblim:limit-1-6-4-1-2026-08-19 ,
+        amblim:limit-1-6-4-2-2026-08-19 ,
+        amblim:limit-1-6-5-2026-08-19 ,
+        amblim:limit-1-9-1-2026-08-19 ,
+        amblim:limit-1-9-1-1-2026-08-19 ,
+        amblim:limit-1-9-1-2-2026-08-19 ,
+        amblim:limit-1-9-1-3-2026-08-19 ,
+        amblim:limit-1-9-1-4-2026-08-19 ,
+        amblim:limit-1-9-2-2026-08-19 ,
+        amblim:limit-1-9-2-1-2026-08-19 ,
+        amblim:limit-1-9-2-2-2026-08-19 ,
+        amblim:limit-1-9-3-2026-08-19 ,
+        amblim:limit-1-9-3-1-2026-08-19 ,
+        amblim:limit-1-9-3-2-2026-08-19 ,
+        amblim:limit-1-9-4-2026-08-19 ,
+        amblim:limit-1-9-5-2026-08-19 ,
+        amblim:limit-1-9-6-2026-08-19 ,
+        amblim:limit-1-9-7-2026-08-19 ,
+        amblim:limit-1-9-8-2026-08-19 ,
+        amblim:limit-1-9-9-2026-08-19 ,
+        amblim:limit-1-9-10-2026-08-19 .
+
+# Shared concepts and regulated sums
+
+amblim:legal-maximum a skos:Concept .
+
+amblim:as-marketed a skos:Concept ;
+    skos:prefLabel "As marketed"@en .
+
+amblim:dry-matter a skos:Concept ;
+    skos:prefLabel "Dry matter"@en .
+
+amblim:grain-with-husk a skos:Concept ;
+    skos:prefLabel "Grain including inedible husk"@en .
+
+amblim:lower-bound-sum a skos:Concept ;
+    skos:prefLabel "Lower-bound sum"@en ;
+    skos:definition "For the specified regulated sum, components below the limit of quantification are taken as zero. Missing components are not zero."@en .
+
+amblim:fumonisins-b1-b2 a skos:Collection ;
+    dct:type amblim:lower-bound-sum ;
+    skos:prefLabel "Sum of fumonisin B1 and B2"@en ;
+    skos:member ambpath:fumonisin-b1 ,
+        ambpath:fumonisin-b2 .
+
+amblim:t2-ht2 a skos:Collection ;
+    dct:type amblim:lower-bound-sum ;
+    skos:prefLabel "Sum of T-2 and HT-2 toxins"@en ;
+    skos:member ambpath:ht-2-toxin ,
+        ambpath:t-2-toxin .
+
+# Source documents, archived files and provenance
+# dct:date on snapshots records the date archived.
+# dct:created on threshold records records the date extracted.
+
+amblim:annex-footnote-3 a prov:Entity ;
+    dct:identifier "Annex I footnote 3" ;
+    dct:isPartOf amblim:current-consolidation ;
+    prov:value "( 3 ) Food as defined in Article 2 of Regulation (EU) No 609/2013 of the European Parliament and of the Council of 12 June 2013 on food intended for infants and young children, food for special medical purposes, and total diet replacement for weight control and repealing Council Directive 92/52/EEC, Commission Directives 96/8/EC, 1999/21/EC, 2006/125/EC and 2006/141/EC, Directive 2009/39/EC of the European Parliament and of the Council and Commission Regulations (EC) No 41/2009 and (EC) No 953/2009 (OJ L181, 29.6.2013, p. 35)." .
+
+amblim:annex-footnote-5 a prov:Entity ;
+    dct:identifier "Annex I footnote 5" ;
+    dct:isPartOf amblim:current-consolidation ;
+    prov:value "( 5 ) Dry matter is determined according to Commission Regulation (EC) No 401/2006 of 23 February 2006 laying down the methods of sampling and analysis for the official control of the levels of mycotoxins in foodstuffs (OJ L 70, 9.3.2006, p. 12)." .
+
+amblim:annex-footnote-6 a prov:Entity ;
+    dct:identifier "Annex I footnote 6" ;
+    dct:isPartOf amblim:current-consolidation ;
+    prov:value "( 6 ) First stage processing means any physical or thermal treatment, other than drying, of or on the grain. Cleaning, including scouring, dehulling, sorting (colour sorting where applicable) and drying procedures are not considered to be ‘first-stage processing’ insofar as the whole grain remains intact after cleaning and sorting. Scouring means cleaning cereal by brushing and/or scrubbing it vigorously, combined with dust removal (e.g. aspiration). The scouring may be followed by a colour sorting before milling." .
+
+amblim:base a eli:LegalResource ;
+    dct:identifier "EU 2023/915" ;
+    dct:title "Maximum levels for certain contaminants in food" ;
+    dct:source <https://eur-lex.europa.eu/eli/reg/2023/915/oj> ;
+    eli:date_document "2023-04-25"^^xsd:date ;
+    eli:date_publication "2023-05-05"^^xsd:date ;
+    dct:hasFormat amblim:base-snapshot .
+
+amblim:base-provisions a prov:Entity ;
+    dct:identifier "Articles 2(3), 3 and 11; original publication (historical source)" ;
+    dct:description "Default edible/as-marketed basis, processed-food qualifications and original entry into force. Original DON value is superseded; not used as the numerical source." ;
+    dct:isPartOf amblim:base .
+
+amblim:base-snapshot a prov:Entity ;
+    dct:identifier "toxin thresholds/L_2023119EN.01010301.html" ;
+    dct:description "Archived snapshot of the original English regulation."@en ;
+    dct:date "2026-10-23"^^xsd:date ;
+    dct:format "text/html" ;
+    dct:isFormatOf amblim:base ;
+    spdx:checksum [
+        spdx:algorithm spdx:checksumAlgorithm_sha256 ;
+        spdx:checksumValue "71c0c115fd2fd4f013ce3701fb2d09c285fea14751cc5c1ef1ef0ff3cd86f02e"
+    ] .
+
+amblim:consolidation-snapshot a prov:Entity ;
+    dct:identifier "toxin thresholds/EU-2023-915-consolidated-2026-08-19.html" ;
+    dct:description "Archived snapshot of the complete English consolidation dated 19 August 2026, including Annexes I and II."@en ;
+    dct:date "2026-10-23"^^xsd:date ;
+    dct:format "text/html" ;
+    dct:isFormatOf amblim:current-consolidation ;
+    spdx:checksum [
+        spdx:algorithm spdx:checksumAlgorithm_sha256 ;
+        spdx:checksumValue "7de3000394b9b0be0bf8944442f6ced02a84f3234fd6be3b5dc3c8db9e05898d"
+    ] .
+
+amblim:current-consolidation a eli:LegalResource ;
+    dct:identifier "CELEX 02023R0915-20260819" ;
+    dct:title "Regulation (EU) 2023/915, consolidated English text, 19 August 2026" ;
+    dct:description "Complete English reference, consolidated on 19 August 2026. Consolidated text is a documentation aid; Official Journal acts remain the legal sources."@en ;
+    dct:source <https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02023R0915-20260819> ;
+    eli:date_document "2023-04-25"^^xsd:date ;
+    eli:date_publication "2023-05-05"^^xsd:date ;
+    eli:version_date "2026-08-19"^^xsd:date ;
+    dct:hasFormat amblim:consolidation-snapshot .
+
+amblim:don-amendment a eli:LegalResource ;
+    dct:identifier "EU 2024/1022" ;
+    dct:title "Amendment of maximum levels of deoxynivalenol in food" ;
+    dct:source <https://eur-lex.europa.eu/eli/reg/2024/1022/oj/eng/pdf> ;
+    eli:date_document "2024-04-08"^^xsd:date ;
+    eli:date_publication "2024-04-09"^^xsd:date ;
+    dct:hasFormat amblim:don-amendment-snapshot .
+
+amblim:don-amendment-snapshot a prov:Entity ;
+    dct:identifier "toxin thresholds/EU-2024-1022.pdf" ;
+    dct:date "2026-10-23"^^xsd:date ;
+    dct:format "application/pdf" ;
+    dct:isFormatOf amblim:don-amendment ;
+    spdx:checksum [
+        spdx:algorithm spdx:checksumAlgorithm_sha256 ;
+        spdx:checksumValue "d86e179390dcdd23d7c908f03e69aa37eda8dfd8de0d265182e95c9703710060"
+    ] .
+
+amblim:don-provisions a prov:Entity ;
+    dct:identifier "Annex: entry 1.4.1, maximum column and remarks; Articles 2 and 3" ;
+    dct:description "Maximum 1000 micrograms/kg. General cereal entry excludes categories 1.4.2/1.4.3, rice and specified wet-milling maize. Applies from 1 July 2024. Previously lawfully marketed food may remain until minimum durability/use-by; this catalogue does not resolve transitional eligibility." ;
+    dct:isPartOf amblim:don-amendment .
+
+amblim:general-provisions a prov:Entity ;
+    dct:identifier "Articles 2, 3 and 10; applicability and transition provisions in amending acts" ;
+    dct:description "Default edible/as-marketed basis is subject to Annex qualifications. Processed/compound products and transitional eligibility require additional facts. The applicable conditions are preserved in the source provisions."@en ;
+    dct:isPartOf amblim:current-consolidation .
+
+amblim:processing-amendment a eli:LegalResource ;
+    dct:identifier "EU 2024/1756" ;
+    dct:title "Amendment and correction of Regulation 2023/915" ;
+    dct:source <https://eur-lex.europa.eu/eli/reg/2024/1756/oj> ;
+    eli:date_document "2024-06-25"^^xsd:date ;
+    eli:date_publication "2024-06-26"^^xsd:date ;
+    dct:hasFormat amblim:processing-amendment-snapshot .
+
+amblim:processing-amendment-snapshot a prov:Entity ;
+    dct:identifier "toxin thresholds/EU-2024-1756.pdf" ;
+    dct:date "2026-10-23"^^xsd:date ;
+    dct:format "application/pdf" ;
+    dct:isFormatOf amblim:processing-amendment ;
+    spdx:checksum [
+        spdx:algorithm spdx:checksumAlgorithm_sha256 ;
+        spdx:checksumValue "cc133aae65baaae6acacfa966a284813ab3b2f30aa0de3a188daec3daa625b84"
+    ] .
+
+amblim:processing-provisions a prov:Entity ;
+    dct:identifier "Annex point 10, replacement of note 6" ;
+    dct:description "First-stage processing excludes specified cleaning, sorting and drying operations insofar as the whole grain remains intact. Relevant when establishing the category's processing stage." ;
+    dct:isPartOf amblim:processing-amendment .
+
+# Annex I, section 1.4 — Deoxynivalenol (DON)
+
+amblim:header-1-4 a prov:Entity ;
+    dct:identifier "Annex I section 1.4, header and sum definition" ;
+    dct:isPartOf amblim:current-consolidation ;
+    prov:value "1.4 Deoxynivalenol Maximum level (μg/kg) Remarks" .
+
+# Annex I, point 1.4.1
+
+amblim:limit-1-4-1-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-4-1 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:deoxynivalenol ;
+    amblink:appliesToCrop ambplant:barley ,
+        ambplant:rye ,
+        ambplant:soft-wheat ,
+        ambplant:spelt ,
+        ambplant:triticale ;
+    amblink:foodCategory amblim:food-1-4-1 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "1000"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-4-1 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-4-1 a skos:Concept ;
+    skos:prefLabel "Unprocessed cereal grains except products listed in 1.4.2 and 1.4.3"@en ;
+    skos:definition "Unprocessed cereal grains except products listed in 1.4.2 and 1.4.3"@en ;
+    skos:scopeNote "Except unprocessed maize grains intended to be processed by wet milling and except rice. The maximum level applies to unprocessed cereal grains placed on the market for first-stage processing ( 6 )."@en ;
+    dct:source amblim:provision-1-4-1 .
+
+amblim:provision-1-4-1 a prov:Entity ;
+    dct:identifier "Annex I, point 1.4.1, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:annex-footnote-6 ,
+        amblim:general-provisions ,
+        amblim:header-1-4 ;
+    prov:value "1.4.1 | Unprocessed cereal grains except products listed in 1.4.2 and 1.4.3 | 1 000 | Except unprocessed maize grains intended to be processed by wet milling and except rice. The maximum level applies to unprocessed cereal grains placed on the market for first-stage processing ( 6 )." .
+
+# Annex I, point 1.4.2
+
+amblim:limit-1-4-2-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-4-2 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:deoxynivalenol ;
+    amblink:appliesToCrop ambplant:durum-wheat ,
+        ambplant:maize ;
+    amblink:foodCategory amblim:food-1-4-2 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "1500"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-4-2 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-4-2 a skos:Concept ;
+    skos:prefLabel "Unprocessed durum wheat grains and unprocessed maize grains"@en ;
+    skos:definition "Unprocessed durum wheat grains and unprocessed maize grains"@en ;
+    skos:scopeNote "Except unprocessed maize grains for which it is evident e.g. through labelling or, destination, that they are intended for use in a wet milling process only (starch production). The maximum level applies to unprocessed durum wheat grains and unprocessed maize grains placed on the market for first-stage processing ( 6 )."@en ;
+    dct:source amblim:provision-1-4-2 .
+
+amblim:provision-1-4-2 a prov:Entity ;
+    dct:identifier "Annex I, point 1.4.2, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:annex-footnote-6 ,
+        amblim:general-provisions ,
+        amblim:header-1-4 ;
+    prov:value "1.4.2 | Unprocessed durum wheat grains and unprocessed maize grains | 1 500 | Except unprocessed maize grains for which it is evident e.g. through labelling or, destination, that they are intended for use in a wet milling process only (starch production). The maximum level applies to unprocessed durum wheat grains and unprocessed maize grains placed on the market for first-stage processing ( 6 )." .
+
+# Annex I, point 1.4.3
+
+amblim:limit-1-4-3-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-4-3 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:deoxynivalenol ;
+    amblink:appliesToCrop ambplant:oats ;
+    amblink:foodCategory amblim:food-1-4-3 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "1750"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:grain-with-husk ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-4-3 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-4-3 a skos:Concept ;
+    skos:prefLabel "Unprocessed oat grains with inedible husk"@en ;
+    skos:definition "Unprocessed oat grains with inedible husk"@en ;
+    skos:scopeNote "The maximum level applies to unprocessed oat grains with husk placed on the market for first-stage processing ( 6 ). The maximum level applies to the oat grains with the inedible husk included."@en ;
+    dct:source amblim:provision-1-4-3 .
+
+amblim:provision-1-4-3 a prov:Entity ;
+    dct:identifier "Annex I, point 1.4.3, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:annex-footnote-6 ,
+        amblim:general-provisions ,
+        amblim:header-1-4 ;
+    prov:value "1.4.3 | Unprocessed oat grains with inedible husk | 1 750 | The maximum level applies to unprocessed oat grains with husk placed on the market for first-stage processing ( 6 ). The maximum level applies to the oat grains with the inedible husk included." .
+
+# Annex I, point 1.4.4
+
+amblim:limit-1-4-4-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-4-4 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:deoxynivalenol ;
+    amblink:foodCategory amblim:food-1-4-4 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "750"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-4-4 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-4-4 a skos:Concept ;
+    skos:prefLabel "Cereals placed on the market for the final consumer, maize for popping and popcorn"@en ;
+    skos:definition "Cereals placed on the market for the final consumer, maize for popping and popcorn"@en ;
+    skos:scopeNote "Except rice."@en ;
+    dct:source amblim:provision-1-4-4 .
+
+amblim:provision-1-4-4 a prov:Entity ;
+    dct:identifier "Annex I, point 1.4.4, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-4 ;
+    prov:value "1.4.4 | Cereals placed on the market for the final consumer, maize for popping and popcorn | 750 | Except rice." .
+
+# Annex I, point 1.4.5
+
+amblim:limit-1-4-5-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-4-5 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:deoxynivalenol ;
+    amblink:foodCategory amblim:food-1-4-5 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "600"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-4-5 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-4-5 a skos:Concept ;
+    skos:prefLabel "Milling products of cereals with the exception of products listed in 1.4.6"@en ;
+    skos:definition "Milling products of cereals with the exception of products listed in 1.4.6"@en ;
+    skos:scopeNote "Except milling products of rice."@en ;
+    dct:source amblim:provision-1-4-5 .
+
+amblim:provision-1-4-5 a prov:Entity ;
+    dct:identifier "Annex I, point 1.4.5, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-4 ;
+    prov:value "1.4.5 | Milling products of cereals with the exception of products listed in 1.4.6 | 600 | Except milling products of rice." .
+
+# Annex I, point 1.4.6.1
+
+amblim:limit-1-4-6-1-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-4-6-1 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:deoxynivalenol ;
+    amblink:foodCategory amblim:food-1-4-6-1 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "750"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-4-6-1 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-4-6-1 a skos:Concept ;
+    skos:prefLabel "Milling products of maize placed on the market for the final consumer"@en ;
+    skos:definition "Milling products of maize placed on the market for the final consumer"@en ;
+    dct:source amblim:provision-1-4-6-1 .
+
+amblim:provision-1-4-6-1 a prov:Entity ;
+    dct:identifier "Annex I, point 1.4.6.1, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-4 ;
+    prov:value "1.4.6.1 | Milling products of maize placed on the market for the final consumer | 750 | " .
+
+# Annex I, point 1.4.6.2
+
+amblim:limit-1-4-6-2-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-4-6-2 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:deoxynivalenol ;
+    amblink:foodCategory amblim:food-1-4-6-2 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "1000"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-4-6-2 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-4-6-2 a skos:Concept ;
+    skos:prefLabel "Milling products of maize not placed on the market for the final consumer"@en ;
+    skos:definition "Milling products of maize not placed on the market for the final consumer"@en ;
+    dct:source amblim:provision-1-4-6-2 .
+
+amblim:provision-1-4-6-2 a prov:Entity ;
+    dct:identifier "Annex I, point 1.4.6.2, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-4 ;
+    prov:value "1.4.6.2 | Milling products of maize not placed on the market for the final consumer | 1 000 | " .
+
+# Annex I, point 1.4.6.3
+
+amblim:limit-1-4-6-3-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-4-6-3 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:deoxynivalenol ;
+    amblink:foodCategory amblim:food-1-4-6-3 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "250"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-4-6-3 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-4-6-3 a skos:Concept ;
+    skos:prefLabel "Pre-cooked polenta ready to eat"@en ;
+    skos:definition "Pre-cooked polenta ready to eat"@en ;
+    dct:source amblim:provision-1-4-6-3 .
+
+amblim:provision-1-4-6-3 a prov:Entity ;
+    dct:identifier "Annex I, point 1.4.6.3, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-4 ;
+    prov:value "1.4.6.3 | Pre-cooked polenta ready to eat | 250 | " .
+
+# Annex I, point 1.4.7
+
+amblim:limit-1-4-7-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-4-7 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:deoxynivalenol ;
+    amblink:foodCategory amblim:food-1-4-7 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "400"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-4-7 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-4-7 a skos:Concept ;
+    skos:prefLabel "Bakery wares, cereal snacks and breakfast cereals"@en ;
+    skos:definition "Bakery wares, cereal snacks and breakfast cereals"@en ;
+    skos:scopeNote "Except rice products (products of which rice or processed products from rice are the only cereal ingredients). Including small bakery wares."@en ;
+    dct:source amblim:provision-1-4-7 .
+
+amblim:provision-1-4-7 a prov:Entity ;
+    dct:identifier "Annex I, point 1.4.7, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-4 ;
+    prov:value "1.4.7 | Bakery wares, cereal snacks and breakfast cereals | 400 | Except rice products (products of which rice or processed products from rice are the only cereal ingredients). Including small bakery wares." .
+
+# Annex I, point 1.4.8
+
+amblim:limit-1-4-8-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-4-8 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:deoxynivalenol ;
+    amblink:foodCategory amblim:food-1-4-8 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "600"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-4-8 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-4-8 a skos:Concept ;
+    skos:prefLabel "Pasta"@en ;
+    skos:definition "Pasta"@en ;
+    skos:scopeNote "Pasta means pasta (dry) with a water content of approximately 12 %."@en ;
+    dct:source amblim:provision-1-4-8 .
+
+amblim:provision-1-4-8 a prov:Entity ;
+    dct:identifier "Annex I, point 1.4.8, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-4 ;
+    prov:value "1.4.8 | Pasta | 600 | Pasta means pasta (dry) with a water content of approximately 12 %." .
+
+# Annex I, point 1.4.9
+
+amblim:limit-1-4-9-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-4-9 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:deoxynivalenol ;
+    amblink:foodCategory amblim:food-1-4-9 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "150"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:dry-matter ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-4-9 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-4-9 a skos:Concept ;
+    skos:prefLabel "Baby food and processed cereal-based food for infants and young children ( 3 )"@en ;
+    skos:definition "Baby food and processed cereal-based food for infants and young children ( 3 )"@en ;
+    skos:scopeNote "Except rice products (products of which rice or processed products from rice are the only cereal ingredients). The maximum level applies to the dry matter ( 5 ) of the product as placed on the market."@en ;
+    dct:source amblim:provision-1-4-9 .
+
+amblim:provision-1-4-9 a prov:Entity ;
+    dct:identifier "Annex I, point 1.4.9, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:annex-footnote-3 ,
+        amblim:annex-footnote-5 ,
+        amblim:general-provisions ,
+        amblim:header-1-4 ;
+    prov:value "1.4.9 | Baby food and processed cereal-based food for infants and young children ( 3 ) | 150 | Except rice products (products of which rice or processed products from rice are the only cereal ingredients). The maximum level applies to the dry matter ( 5 ) of the product as placed on the market." .
+
+# Annex I, point 1.4.10
+
+amblim:limit-1-4-10-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-4-10 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:deoxynivalenol ;
+    amblink:foodCategory amblim:food-1-4-10 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "150"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:dry-matter ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-4-10 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-4-10 a skos:Concept ;
+    skos:prefLabel "Food for special medical purposes intended for infants and young children ( 3 )"@en ;
+    skos:definition "Food for special medical purposes intended for infants and young children ( 3 )"@en ;
+    skos:scopeNote "Except rice products (products of which rice or processed products from rice are the only cereal ingredients). The maximum level applies to the dry matter ( 5 ) of the product as placed on the market."@en ;
+    dct:source amblim:provision-1-4-10 .
+
+amblim:provision-1-4-10 a prov:Entity ;
+    dct:identifier "Annex I, point 1.4.10, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:annex-footnote-3 ,
+        amblim:annex-footnote-5 ,
+        amblim:general-provisions ,
+        amblim:header-1-4 ;
+    prov:value "1.4.10 | Food for special medical purposes intended for infants and young children ( 3 ) | 150 | Except rice products (products of which rice or processed products from rice are the only cereal ingredients). The maximum level applies to the dry matter ( 5 ) of the product as placed on the market." .
+
+# Annex I, section 1.5 — Zearalenone
+
+amblim:header-1-5 a prov:Entity ;
+    dct:identifier "Annex I section 1.5, header and sum definition" ;
+    dct:isPartOf amblim:current-consolidation ;
+    prov:value "1.5 Zearalenone Maximum level (μg/kg) Remarks" .
+
+# Annex I, point 1.5.1
+
+amblim:limit-1-5-1-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-5-1 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:zearalenone ;
+    amblink:appliesToCrop ambplant:barley ,
+        ambplant:durum-wheat ,
+        ambplant:oats ,
+        ambplant:rye ,
+        ambplant:soft-wheat ,
+        ambplant:spelt ;
+    amblink:foodCategory amblim:food-1-5-1 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "100"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-5-1 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-5-1 a skos:Concept ;
+    skos:prefLabel "Unprocessed cereal grains except products listed in 1.5.2"@en ;
+    skos:definition "Unprocessed cereal grains except products listed in 1.5.2"@en ;
+    skos:scopeNote "Except unprocessed maize grains intended to be processed by wet milling and except rice. The maximum level applies to unprocessed cereal grains (in case of oats, grains with husk) placed on the market for first-stage processing ( 6 )."@en ;
+    dct:source amblim:provision-1-5-1 .
+
+amblim:provision-1-5-1 a prov:Entity ;
+    dct:identifier "Annex I, point 1.5.1, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:annex-footnote-6 ,
+        amblim:general-provisions ,
+        amblim:header-1-5 ;
+    prov:value "1.5.1 | Unprocessed cereal grains except products listed in 1.5.2 | 100 | Except unprocessed maize grains intended to be processed by wet milling and except rice. The maximum level applies to unprocessed cereal grains (in case of oats, grains with husk) placed on the market for first-stage processing ( 6 )." .
+
+# Annex I, point 1.5.2
+
+amblim:limit-1-5-2-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-5-2 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:zearalenone ;
+    amblink:appliesToCrop ambplant:maize ;
+    amblink:foodCategory amblim:food-1-5-2 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "350"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-5-2 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-5-2 a skos:Concept ;
+    skos:prefLabel "Unprocessed maize grains"@en ;
+    skos:definition "Unprocessed maize grains"@en ;
+    skos:scopeNote "Except unprocessed maize grains for which it is evident, e.g. through their labelling or destination, that they are intended for use in a wet milling process only (starch production). The maximum level applies to unprocessed maize grains placed on the market for first-stage processing ( 6 )."@en ;
+    dct:source amblim:provision-1-5-2 .
+
+amblim:provision-1-5-2 a prov:Entity ;
+    dct:identifier "Annex I, point 1.5.2, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:annex-footnote-6 ,
+        amblim:general-provisions ,
+        amblim:header-1-5 ;
+    prov:value "1.5.2 | Unprocessed maize grains | 350 | Except unprocessed maize grains for which it is evident, e.g. through their labelling or destination, that they are intended for use in a wet milling process only (starch production). The maximum level applies to unprocessed maize grains placed on the market for first-stage processing ( 6 )." .
+
+# Annex I, point 1.5.3
+
+amblim:limit-1-5-3-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-5-3 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:zearalenone ;
+    amblink:foodCategory amblim:food-1-5-3 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "75"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-5-3 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-5-3 a skos:Concept ;
+    skos:prefLabel "Cereals, bran and germ placed on the market for the final consumer Cereal flour and semolina Except products listed in 1.5.5, 1.5.6 and 1.5.8"@en ;
+    skos:definition "Cereals, bran and germ placed on the market for the final consumer Cereal flour and semolina Except products listed in 1.5.5, 1.5.6 and 1.5.8"@en ;
+    skos:scopeNote "Except rice and rice products (products of which rice or processed products from rice are the only cereal ingredients)."@en ;
+    dct:source amblim:provision-1-5-3 .
+
+amblim:provision-1-5-3 a prov:Entity ;
+    dct:identifier "Annex I, point 1.5.3, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-5 ;
+    prov:value "1.5.3 | Cereals, bran and germ placed on the market for the final consumer Cereal flour and semolina Except products listed in 1.5.5, 1.5.6 and 1.5.8 | 75 | Except rice and rice products (products of which rice or processed products from rice are the only cereal ingredients)." .
+
+# Annex I, point 1.5.4
+
+amblim:limit-1-5-4-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-5-4 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:zearalenone ;
+    amblink:foodCategory amblim:food-1-5-4 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "50"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-5-4 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-5-4 a skos:Concept ;
+    skos:prefLabel "Bread, pastries, biscuits, cereal snacks and breakfast cereals except products listed in 1.5.5"@en ;
+    skos:definition "Bread, pastries, biscuits, cereal snacks and breakfast cereals except products listed in 1.5.5"@en ;
+    skos:scopeNote "Except rice products (products of which rice or processed products from rice are the only cereal ingredients). Includes small bakery wares."@en ;
+    dct:source amblim:provision-1-5-4 .
+
+amblim:provision-1-5-4 a prov:Entity ;
+    dct:identifier "Annex I, point 1.5.4, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-5 ;
+    prov:value "1.5.4 | Bread, pastries, biscuits, cereal snacks and breakfast cereals except products listed in 1.5.5 | 50 | Except rice products (products of which rice or processed products from rice are the only cereal ingredients). Includes small bakery wares." .
+
+# Annex I, point 1.5.5
+
+amblim:limit-1-5-5-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-5-5 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:zearalenone ;
+    amblink:foodCategory amblim:food-1-5-5 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "100"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-5-5 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-5-5 a skos:Concept ;
+    skos:prefLabel "Maize placed on the market for the final consumer Maize-based snacks and maize-based breakfast cereals"@en ;
+    skos:definition "Maize placed on the market for the final consumer Maize-based snacks and maize-based breakfast cereals"@en ;
+    dct:source amblim:provision-1-5-5 .
+
+amblim:provision-1-5-5 a prov:Entity ;
+    dct:identifier "Annex I, point 1.5.5, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-5 ;
+    prov:value "1.5.5 | Maize placed on the market for the final consumer Maize-based snacks and maize-based breakfast cereals | 100 | " .
+
+# Annex I, point 1.5.6.1
+
+amblim:limit-1-5-6-1-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-5-6-1 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:zearalenone ;
+    amblink:foodCategory amblim:food-1-5-6-1 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "300"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-5-6-1 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-5-6-1 a skos:Concept ;
+    skos:prefLabel "Maize flour not placed on the market for the final consumer"@en ;
+    skos:definition "Maize flour not placed on the market for the final consumer"@en ;
+    skos:scopeNote "At least 90 %, measured by weight, of the particles in the milling product have a size ≤ 500 μm."@en ;
+    dct:source amblim:provision-1-5-6-1 .
+
+amblim:provision-1-5-6-1 a prov:Entity ;
+    dct:identifier "Annex I, point 1.5.6.1, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-5 ;
+    prov:value "1.5.6.1 | Maize flour not placed on the market for the final consumer | 300 | At least 90 %, measured by weight, of the particles in the milling product have a size ≤ 500 μm." .
+
+# Annex I, point 1.5.6.2
+
+amblim:limit-1-5-6-2-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-5-6-2 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:zearalenone ;
+    amblink:foodCategory amblim:food-1-5-6-2 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "200"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-5-6-2 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-5-6-2 a skos:Concept ;
+    skos:prefLabel "Other milling products of maize not placed on the market for the final consumer"@en ;
+    skos:definition "Other milling products of maize not placed on the market for the final consumer"@en ;
+    skos:scopeNote "Less than 90 %, measured by weight, of the particles in the milling product have a size ≤ 500 μm."@en ;
+    dct:source amblim:provision-1-5-6-2 .
+
+amblim:provision-1-5-6-2 a prov:Entity ;
+    dct:identifier "Annex I, point 1.5.6.2, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-5 ;
+    prov:value "1.5.6.2 | Other milling products of maize not placed on the market for the final consumer | 200 | Less than 90 %, measured by weight, of the particles in the milling product have a size ≤ 500 μm." .
+
+# Annex I, point 1.5.7
+
+amblim:limit-1-5-7-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-5-7 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:zearalenone ;
+    amblink:foodCategory amblim:food-1-5-7 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "400"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-5-7 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-5-7 a skos:Concept ;
+    skos:prefLabel "Refined maize oil"@en ;
+    skos:definition "Refined maize oil"@en ;
+    dct:source amblim:provision-1-5-7 .
+
+amblim:provision-1-5-7 a prov:Entity ;
+    dct:identifier "Annex I, point 1.5.7, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-5 ;
+    prov:value "1.5.7 | Refined maize oil | 400 | " .
+
+# Annex I, point 1.5.8
+
+amblim:limit-1-5-8-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-5-8 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:zearalenone ;
+    amblink:foodCategory amblim:food-1-5-8 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "20"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:dry-matter ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-5-8 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-5-8 a skos:Concept ;
+    skos:prefLabel "Baby food and processed cereal-based food for infants and young children ( 3 )"@en ;
+    skos:definition "Baby food and processed cereal-based food for infants and young children ( 3 )"@en ;
+    skos:scopeNote "Except rice products (products of which rice or processed products from rice are the only cereal ingredients). The maximum level applies to the dry matter ( 5 ) of the product as placed on the market."@en ;
+    dct:source amblim:provision-1-5-8 .
+
+amblim:provision-1-5-8 a prov:Entity ;
+    dct:identifier "Annex I, point 1.5.8, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:annex-footnote-3 ,
+        amblim:annex-footnote-5 ,
+        amblim:general-provisions ,
+        amblim:header-1-5 ;
+    prov:value "1.5.8 | Baby food and processed cereal-based food for infants and young children ( 3 ) | 20 | Except rice products (products of which rice or processed products from rice are the only cereal ingredients). The maximum level applies to the dry matter ( 5 ) of the product as placed on the market." .
+
+# Annex I, section 1.6 — Fumonisins: sum of B1 and B2
+
+amblim:header-1-6 a prov:Entity ;
+    dct:identifier "Annex I section 1.6, header and sum definition" ;
+    dct:isPartOf amblim:current-consolidation ;
+    prov:value "1.6 Fumonisins Maximum level (μg/kg) Remarks Sum of B 1 and B 2 For the fumonisins, maximum levels refer to lower bound concentrations, which are calculated on the assumption that all the values below the limit of quantification are zero." .
+
+# Annex I, point 1.6.1
+
+amblim:limit-1-6-1-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-6-1 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:fumonisins-b1-b2 ;
+    amblink:appliesToCrop ambplant:maize ;
+    amblink:foodCategory amblim:food-1-6-1 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "4000"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-6-1 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-6-1 a skos:Concept ;
+    skos:prefLabel "Unprocessed maize grains"@en ;
+    skos:definition "Unprocessed maize grains"@en ;
+    skos:scopeNote "Except unprocessed maize grains for which it is evident, e.g. through their labelling or destination, that they are intended for use in a wet milling process only (starch production). The maximum level applies to unprocessed maize grains placed on the market for first-stage processing ( 6 )."@en ;
+    dct:source amblim:provision-1-6-1 .
+
+amblim:provision-1-6-1 a prov:Entity ;
+    dct:identifier "Annex I, point 1.6.1, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:annex-footnote-6 ,
+        amblim:general-provisions ,
+        amblim:header-1-6 ;
+    prov:value "1.6.1 | Unprocessed maize grains | 4 000 | Except unprocessed maize grains for which it is evident, e.g. through their labelling or destination, that they are intended for use in a wet milling process only (starch production). The maximum level applies to unprocessed maize grains placed on the market for first-stage processing ( 6 )." .
+
+# Annex I, point 1.6.2
+
+amblim:limit-1-6-2-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-6-2 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:fumonisins-b1-b2 ;
+    amblink:appliesToCrop ambplant:maize ;
+    amblink:foodCategory amblim:food-1-6-2 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "1000"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-6-2 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-6-2 a skos:Concept ;
+    skos:prefLabel "Maize placed on the market for the final consumer, milling products of maize placed on the market for the final consumer, maize-based food placed on the market for the final consumer except products listed in 1.6.3 and 1.6.5"@en ;
+    skos:definition "Maize placed on the market for the final consumer, milling products of maize placed on the market for the final consumer, maize-based food placed on the market for the final consumer except products listed in 1.6.3 and 1.6.5"@en ;
+    dct:source amblim:provision-1-6-2 .
+
+amblim:provision-1-6-2 a prov:Entity ;
+    dct:identifier "Annex I, point 1.6.2, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-6 ;
+    prov:value "1.6.2 | Maize placed on the market for the final consumer, milling products of maize placed on the market for the final consumer, maize-based food placed on the market for the final consumer except products listed in 1.6.3 and 1.6.5 | 1 000 | " .
+
+# Annex I, point 1.6.3
+
+amblim:limit-1-6-3-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-6-3 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:fumonisins-b1-b2 ;
+    amblink:appliesToCrop ambplant:maize ;
+    amblink:foodCategory amblim:food-1-6-3 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "800"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-6-3 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-6-3 a skos:Concept ;
+    skos:prefLabel "Maize-based breakfast cereals and maize-based snacks"@en ;
+    skos:definition "Maize-based breakfast cereals and maize-based snacks"@en ;
+    dct:source amblim:provision-1-6-3 .
+
+amblim:provision-1-6-3 a prov:Entity ;
+    dct:identifier "Annex I, point 1.6.3, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-6 ;
+    prov:value "1.6.3 | Maize-based breakfast cereals and maize-based snacks | 800 | " .
+
+# Annex I, point 1.6.4.1
+
+amblim:limit-1-6-4-1-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-6-4-1 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:fumonisins-b1-b2 ;
+    amblink:appliesToCrop ambplant:maize ;
+    amblink:foodCategory amblim:food-1-6-4-1 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "2000"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-6-4-1 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-6-4-1 a skos:Concept ;
+    skos:prefLabel "Maize flour not placed on the market for the final consumer"@en ;
+    skos:definition "Maize flour not placed on the market for the final consumer"@en ;
+    skos:scopeNote "At least 90 %, measured by weight, of the particles in the milling product have a size ≤ 500 μm."@en ;
+    dct:source amblim:provision-1-6-4-1 .
+
+amblim:provision-1-6-4-1 a prov:Entity ;
+    dct:identifier "Annex I, point 1.6.4.1, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-6 ;
+    prov:value "1.6.4.1 | Maize flour not placed on the market for the final consumer | 2 000 | At least 90 %, measured by weight, of the particles in the milling product have a size ≤ 500 μm." .
+
+# Annex I, point 1.6.4.2
+
+amblim:limit-1-6-4-2-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-6-4-2 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:fumonisins-b1-b2 ;
+    amblink:appliesToCrop ambplant:maize ;
+    amblink:foodCategory amblim:food-1-6-4-2 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "1400"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-6-4-2 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-6-4-2 a skos:Concept ;
+    skos:prefLabel "Other milling products of maize not placed on the market for the final consumer"@en ;
+    skos:definition "Other milling products of maize not placed on the market for the final consumer"@en ;
+    skos:scopeNote "Less than 90 %, measured by weight, of the particles in the milling product have a size ≤ 500 μm."@en ;
+    dct:source amblim:provision-1-6-4-2 .
+
+amblim:provision-1-6-4-2 a prov:Entity ;
+    dct:identifier "Annex I, point 1.6.4.2, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-6 ;
+    prov:value "1.6.4.2 | Other milling products of maize not placed on the market for the final consumer | 1 400 | Less than 90 %, measured by weight, of the particles in the milling product have a size ≤ 500 μm." .
+
+# Annex I, point 1.6.5
+
+amblim:limit-1-6-5-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-6-5 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:fumonisins-b1-b2 ;
+    amblink:appliesToCrop ambplant:maize ;
+    amblink:foodCategory amblim:food-1-6-5 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "200"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:dry-matter ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-6-5 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-6-5 a skos:Concept ;
+    skos:prefLabel "Baby food containing maize and processed maize-based food for infants and young children( 3 )"@en ;
+    skos:definition "Baby food containing maize and processed maize-based food for infants and young children( 3 )"@en ;
+    skos:scopeNote "The maximum level applies to the dry matter( 5 ) of the product as placed on the market."@en ;
+    dct:source amblim:provision-1-6-5 .
+
+amblim:provision-1-6-5 a prov:Entity ;
+    dct:identifier "Annex I, point 1.6.5, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:annex-footnote-3 ,
+        amblim:annex-footnote-5 ,
+        amblim:general-provisions ,
+        amblim:header-1-6 ;
+    prov:value "1.6.5 | Baby food containing maize and processed maize-based food for infants and young children( 3 ) | 200 | The maximum level applies to the dry matter( 5 ) of the product as placed on the market." .
+
+# Annex I, section 1.9 — T-2 and HT-2 toxins: sum
+
+amblim:header-1-9 a prov:Entity ;
+    dct:identifier "Annex I section 1.9, header and sum definition" ;
+    dct:isPartOf amblim:current-consolidation ;
+    prov:value "1.9 T-2 and HT-2 toxins Maximum level (μg/kg) Remarks Sum of T-2 and HT-2 toxins For the sum of T-2 and HT-2 toxins, maximum levels refer to lower bound concentrations, which are calculated on the assumption that all the values below the limit of quantification are zero." .
+
+# Annex I, point 1.9.1
+
+amblim:limit-1-9-1-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-9-1 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:t2-ht2 ;
+    amblink:appliesToCrop ambplant:rye ,
+        ambplant:soft-wheat ,
+        ambplant:spelt ;
+    amblink:foodCategory amblim:food-1-9-1 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "50"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-9-1 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-9-1 a skos:Concept ;
+    skos:prefLabel "Unprocessed cereal grains except products listed in 1.9.1.1, 1.9.1.2, 1.9.1.3 and 1.9.1.4"@en ;
+    skos:definition "Unprocessed cereal grains except products listed in 1.9.1.1, 1.9.1.2, 1.9.1.3 and 1.9.1.4"@en ;
+    skos:scopeNote "Except unprocessed maize grains intended to be processed by wet milling and except rice. The maximum level applies to unprocessed cereal grains placed on the market for first-stage processing ( 6 )."@en ;
+    dct:source amblim:provision-1-9-1 .
+
+amblim:provision-1-9-1 a prov:Entity ;
+    dct:identifier "Annex I, point 1.9.1, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:annex-footnote-6 ,
+        amblim:general-provisions ,
+        amblim:header-1-9 ;
+    prov:value "1.9.1 | Unprocessed cereal grains except products listed in 1.9.1.1, 1.9.1.2, 1.9.1.3 and 1.9.1.4 | 50 | Except unprocessed maize grains intended to be processed by wet milling and except rice. The maximum level applies to unprocessed cereal grains placed on the market for first-stage processing ( 6 )." .
+
+# Annex I, point 1.9.1.1
+
+amblim:limit-1-9-1-1-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-9-1-1 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:t2-ht2 ;
+    amblink:appliesToCrop ambplant:barley ;
+    amblink:foodCategory amblim:food-1-9-1-1 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "200"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-9-1-1 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-9-1-1 a skos:Concept ;
+    skos:prefLabel "Unprocessed malting barley grains"@en ;
+    skos:definition "Unprocessed malting barley grains"@en ;
+    skos:scopeNote "The maximum level applies to unprocessed malting barley grains placed on the market for first-stage processing ( 6 )."@en ;
+    dct:source amblim:provision-1-9-1-1 .
+
+amblim:provision-1-9-1-1 a prov:Entity ;
+    dct:identifier "Annex I, point 1.9.1.1, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:annex-footnote-6 ,
+        amblim:general-provisions ,
+        amblim:header-1-9 ;
+    prov:value "1.9.1.1 | Unprocessed malting barley grains | 200 | The maximum level applies to unprocessed malting barley grains placed on the market for first-stage processing ( 6 )." .
+
+# Annex I, point 1.9.1.2
+
+amblim:limit-1-9-1-2-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-9-1-2 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:t2-ht2 ;
+    amblink:appliesToCrop ambplant:barley ;
+    amblink:foodCategory amblim:food-1-9-1-2 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "150"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-9-1-2 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-9-1-2 a skos:Concept ;
+    skos:prefLabel "Unprocessed barley grains other than malting barley grains"@en ;
+    skos:definition "Unprocessed barley grains other than malting barley grains"@en ;
+    skos:scopeNote "The maximum level applies to unprocessed barley grains placed on the market for first-stage processing ( 6 )."@en ;
+    dct:source amblim:provision-1-9-1-2 .
+
+amblim:provision-1-9-1-2 a prov:Entity ;
+    dct:identifier "Annex I, point 1.9.1.2, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:annex-footnote-6 ,
+        amblim:general-provisions ,
+        amblim:header-1-9 ;
+    prov:value "1.9.1.2 | Unprocessed barley grains other than malting barley grains | 150 | The maximum level applies to unprocessed barley grains placed on the market for first-stage processing ( 6 )." .
+
+# Annex I, point 1.9.1.3
+
+amblim:limit-1-9-1-3-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-9-1-3 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:t2-ht2 ;
+    amblink:appliesToCrop ambplant:durum-wheat ,
+        ambplant:maize ;
+    amblink:foodCategory amblim:food-1-9-1-3 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "100"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-9-1-3 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-9-1-3 a skos:Concept ;
+    skos:prefLabel "Unprocessed maize grains and unprocessed durum wheat grains"@en ;
+    skos:definition "Unprocessed maize grains and unprocessed durum wheat grains"@en ;
+    skos:scopeNote "Except unprocessed maize grains for which it is evident, e.g. through labelling or destination, that they are intended for use in a wet milling process only (starch production). The maximum level applies to unprocessed maize grains and unprocessed durum wheat grains placed on the market for first-stage processing ( 6 )."@en ;
+    dct:source amblim:provision-1-9-1-3 .
+
+amblim:provision-1-9-1-3 a prov:Entity ;
+    dct:identifier "Annex I, point 1.9.1.3, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:annex-footnote-6 ,
+        amblim:general-provisions ,
+        amblim:header-1-9 ;
+    prov:value "1.9.1.3 | Unprocessed maize grains and unprocessed durum wheat grains | 100 | Except unprocessed maize grains for which it is evident, e.g. through labelling or destination, that they are intended for use in a wet milling process only (starch production). The maximum level applies to unprocessed maize grains and unprocessed durum wheat grains placed on the market for first-stage processing ( 6 )." .
+
+# Annex I, point 1.9.1.4
+
+amblim:limit-1-9-1-4-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-9-1-4 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:t2-ht2 ;
+    amblink:appliesToCrop ambplant:oats ;
+    amblink:foodCategory amblim:food-1-9-1-4 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "1250"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:grain-with-husk ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-9-1-4 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-9-1-4 a skos:Concept ;
+    skos:prefLabel "Unprocessed oat grains with inedible husk"@en ;
+    skos:definition "Unprocessed oat grains with inedible husk"@en ;
+    skos:scopeNote "The maximum level applies to unprocessed oat grains with husk placed on the market for first-stage processing ( 6 ). The maximum level applies to the oat grains with the inedible husk included."@en ;
+    dct:source amblim:provision-1-9-1-4 .
+
+amblim:provision-1-9-1-4 a prov:Entity ;
+    dct:identifier "Annex I, point 1.9.1.4, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:annex-footnote-6 ,
+        amblim:general-provisions ,
+        amblim:header-1-9 ;
+    prov:value "1.9.1.4 | Unprocessed oat grains with inedible husk | 1 250 | The maximum level applies to unprocessed oat grains with husk placed on the market for first-stage processing ( 6 ). The maximum level applies to the oat grains with the inedible husk included." .
+
+# Annex I, point 1.9.2
+
+amblim:limit-1-9-2-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-9-2 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:t2-ht2 ;
+    amblink:foodCategory amblim:food-1-9-2 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "20"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-9-2 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-9-2 a skos:Concept ;
+    skos:prefLabel "Cereals placed on the market for the final consumer except products listed in 1.9.2.1 and 1.9.2.2"@en ;
+    skos:definition "Cereals placed on the market for the final consumer except products listed in 1.9.2.1 and 1.9.2.2"@en ;
+    skos:scopeNote "Except rice."@en ;
+    dct:source amblim:provision-1-9-2 .
+
+amblim:provision-1-9-2 a prov:Entity ;
+    dct:identifier "Annex I, point 1.9.2, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-9 ;
+    prov:value "1.9.2 | Cereals placed on the market for the final consumer except products listed in 1.9.2.1 and 1.9.2.2 | 20 | Except rice." .
+
+# Annex I, point 1.9.2.1
+
+amblim:limit-1-9-2-1-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-9-2-1 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:t2-ht2 ;
+    amblink:appliesToCrop ambplant:oats ;
+    amblink:foodCategory amblim:food-1-9-2-1 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "100"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-9-2-1 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-9-2-1 a skos:Concept ;
+    skos:prefLabel "Oats placed on the market for the final consumer"@en ;
+    skos:definition "Oats placed on the market for the final consumer"@en ;
+    dct:source amblim:provision-1-9-2-1 .
+
+amblim:provision-1-9-2-1 a prov:Entity ;
+    dct:identifier "Annex I, point 1.9.2.1, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-9 ;
+    prov:value "1.9.2.1 | Oats placed on the market for the final consumer | 100 | " .
+
+# Annex I, point 1.9.2.2
+
+amblim:limit-1-9-2-2-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-9-2-2 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:t2-ht2 ;
+    amblink:appliesToCrop ambplant:barley ,
+        ambplant:durum-wheat ,
+        ambplant:maize ;
+    amblink:foodCategory amblim:food-1-9-2-2 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "50"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-9-2-2 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-9-2-2 a skos:Concept ;
+    skos:prefLabel "Barley, maize and durum wheat placed on the market for the final consumer"@en ;
+    skos:definition "Barley, maize and durum wheat placed on the market for the final consumer"@en ;
+    dct:source amblim:provision-1-9-2-2 .
+
+amblim:provision-1-9-2-2 a prov:Entity ;
+    dct:identifier "Annex I, point 1.9.2.2, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-9 ;
+    prov:value "1.9.2.2 | Barley, maize and durum wheat placed on the market for the final consumer | 50 | " .
+
+# Annex I, point 1.9.3
+
+amblim:limit-1-9-3-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-9-3 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:t2-ht2 ;
+    amblink:foodCategory amblim:food-1-9-3 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "20"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-9-3 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-9-3 a skos:Concept ;
+    skos:prefLabel "Milling products of cereals except products listed in 1.9.3.1 and 1.9.3.2"@en ;
+    skos:definition "Milling products of cereals except products listed in 1.9.3.1 and 1.9.3.2"@en ;
+    skos:scopeNote "Except milling products of rice."@en ;
+    dct:source amblim:provision-1-9-3 .
+
+amblim:provision-1-9-3 a prov:Entity ;
+    dct:identifier "Annex I, point 1.9.3, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-9 ;
+    prov:value "1.9.3 | Milling products of cereals except products listed in 1.9.3.1 and 1.9.3.2 | 20 | Except milling products of rice." .
+
+# Annex I, point 1.9.3.1
+
+amblim:limit-1-9-3-1-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-9-3-1 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:t2-ht2 ;
+    amblink:appliesToCrop ambplant:oats ;
+    amblink:foodCategory amblim:food-1-9-3-1 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "100"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-9-3-1 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-9-3-1 a skos:Concept ;
+    skos:prefLabel "Milling products of oats (including oat bran)"@en ;
+    skos:definition "Milling products of oats (including oat bran)"@en ;
+    dct:source amblim:provision-1-9-3-1 .
+
+amblim:provision-1-9-3-1 a prov:Entity ;
+    dct:identifier "Annex I, point 1.9.3.1, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-9 ;
+    prov:value "1.9.3.1 | Milling products of oats (including oat bran) | 100 | " .
+
+# Annex I, point 1.9.3.2
+
+amblim:limit-1-9-3-2-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-9-3-2 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:t2-ht2 ;
+    amblink:foodCategory amblim:food-1-9-3-2 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "50"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-9-3-2 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-9-3-2 a skos:Concept ;
+    skos:prefLabel "Bran from cereals other than oats and milling products of maize"@en ;
+    skos:definition "Bran from cereals other than oats and milling products of maize"@en ;
+    dct:source amblim:provision-1-9-3-2 .
+
+amblim:provision-1-9-3-2 a prov:Entity ;
+    dct:identifier "Annex I, point 1.9.3.2, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-9 ;
+    prov:value "1.9.3.2 | Bran from cereals other than oats and milling products of maize | 50 | " .
+
+# Annex I, point 1.9.4
+
+amblim:limit-1-9-4-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-9-4 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:t2-ht2 ;
+    amblink:foodCategory amblim:food-1-9-4 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "20"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-9-4 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-9-4 a skos:Concept ;
+    skos:prefLabel "Bakery wares except products listed in 1.9.5, pasta, cereal snacks and breakfast cereals except products listed in 1.9.6, 1.9.7 and 1.9.8"@en ;
+    skos:definition "Bakery wares except products listed in 1.9.5, pasta, cereal snacks and breakfast cereals except products listed in 1.9.6, 1.9.7 and 1.9.8"@en ;
+    skos:scopeNote "Except rice products (products of which rice or processed products from rice are the only cereal ingredients). Including small bakery wares. Pasta means pasta (dry) with a water content of approximately 12 %."@en ;
+    dct:source amblim:provision-1-9-4 .
+
+amblim:provision-1-9-4 a prov:Entity ;
+    dct:identifier "Annex I, point 1.9.4, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-9 ;
+    prov:value "1.9.4 | Bakery wares except products listed in 1.9.5, pasta, cereal snacks and breakfast cereals except products listed in 1.9.6, 1.9.7 and 1.9.8 | 20 | Except rice products (products of which rice or processed products from rice are the only cereal ingredients). Including small bakery wares. Pasta means pasta (dry) with a water content of approximately 12 %." .
+
+# Annex I, point 1.9.5
+
+amblim:limit-1-9-5-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-9-5 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:t2-ht2 ;
+    amblink:appliesToCrop ambplant:oats ;
+    amblink:foodCategory amblim:food-1-9-5 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "100"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-9-5 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-9-5 a skos:Concept ;
+    skos:prefLabel "Bakery wares containing at least 75 % milling products of oats"@en ;
+    skos:definition "Bakery wares containing at least 75 % milling products of oats"@en ;
+    skos:scopeNote "Including small bakery wares."@en ;
+    dct:source amblim:provision-1-9-5 .
+
+amblim:provision-1-9-5 a prov:Entity ;
+    dct:identifier "Annex I, point 1.9.5, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-9 ;
+    prov:value "1.9.5 | Bakery wares containing at least 75 % milling products of oats | 100 | Including small bakery wares." .
+
+# Annex I, point 1.9.6
+
+amblim:limit-1-9-6-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-9-6 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:t2-ht2 ;
+    amblink:appliesToCrop ambplant:oats ;
+    amblink:foodCategory amblim:food-1-9-6 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "100"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-9-6 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-9-6 a skos:Concept ;
+    skos:prefLabel "Oat flakes"@en ;
+    skos:definition "Oat flakes"@en ;
+    dct:source amblim:provision-1-9-6 .
+
+amblim:provision-1-9-6 a prov:Entity ;
+    dct:identifier "Annex I, point 1.9.6, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-9 ;
+    prov:value "1.9.6 | Oat flakes | 100 | " .
+
+# Annex I, point 1.9.7
+
+amblim:limit-1-9-7-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-9-7 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:t2-ht2 ;
+    amblink:foodCategory amblim:food-1-9-7 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "50"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-9-7 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-9-7 a skos:Concept ;
+    skos:prefLabel "Breakfast cereals consisting of at least 50 % of cereal bran, milling products of oat grains, milling products of maize grains, whole oat grains, barley grains, maize grains or durum wheat grains, and consisting of less than 40 % of milling products of oat grains and whole oat grains"@en ;
+    skos:definition "Breakfast cereals consisting of at least 50 % of cereal bran, milling products of oat grains, milling products of maize grains, whole oat grains, barley grains, maize grains or durum wheat grains, and consisting of less than 40 % of milling products of oat grains and whole oat grains"@en ;
+    dct:source amblim:provision-1-9-7 .
+
+amblim:provision-1-9-7 a prov:Entity ;
+    dct:identifier "Annex I, point 1.9.7, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-9 ;
+    prov:value "1.9.7 | Breakfast cereals consisting of at least 50 % of cereal bran, milling products of oat grains, milling products of maize grains, whole oat grains, barley grains, maize grains or durum wheat grains, and consisting of less than 40 % of milling products of oat grains and whole oat grains | 50 | " .
+
+# Annex I, point 1.9.8
+
+amblim:limit-1-9-8-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-9-8 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:t2-ht2 ;
+    amblink:foodCategory amblim:food-1-9-8 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "75"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-9-8 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-9-8 a skos:Concept ;
+    skos:prefLabel "Breakfast cereals consisting of at least 50 % of cereal bran, milling products of oat grains, milling products of maize grains, whole oat grains, barley grains, maize grains or durum wheat grains, and of at least 40 % of milling products of oat grains and whole oat grains"@en ;
+    skos:definition "Breakfast cereals consisting of at least 50 % of cereal bran, milling products of oat grains, milling products of maize grains, whole oat grains, barley grains, maize grains or durum wheat grains, and of at least 40 % of milling products of oat grains and whole oat grains"@en ;
+    dct:source amblim:provision-1-9-8 .
+
+amblim:provision-1-9-8 a prov:Entity ;
+    dct:identifier "Annex I, point 1.9.8, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:general-provisions ,
+        amblim:header-1-9 ;
+    prov:value "1.9.8 | Breakfast cereals consisting of at least 50 % of cereal bran, milling products of oat grains, milling products of maize grains, whole oat grains, barley grains, maize grains or durum wheat grains, and of at least 40 % of milling products of oat grains and whole oat grains | 75 | " .
+
+# Annex I, point 1.9.9
+
+amblim:limit-1-9-9-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-9-9 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:t2-ht2 ;
+    amblink:foodCategory amblim:food-1-9-9 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "10"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:dry-matter ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-9-9 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-9-9 a skos:Concept ;
+    skos:prefLabel "Baby food and processed cereal-based food for infants and young children ( 3 )"@en ;
+    skos:definition "Baby food and processed cereal-based food for infants and young children ( 3 )"@en ;
+    skos:scopeNote "Except rice products (products of which rice or processed products from rice are the only cereal ingredients). The maximum level applies to the dry matter ( 5 ) of the product as placed on the market."@en ;
+    dct:source amblim:provision-1-9-9 .
+
+amblim:provision-1-9-9 a prov:Entity ;
+    dct:identifier "Annex I, point 1.9.9, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:annex-footnote-3 ,
+        amblim:annex-footnote-5 ,
+        amblim:general-provisions ,
+        amblim:header-1-9 ;
+    prov:value "1.9.9 | Baby food and processed cereal-based food for infants and young children ( 3 ) | 10 | Except rice products (products of which rice or processed products from rice are the only cereal ingredients). The maximum level applies to the dry matter ( 5 ) of the product as placed on the market." .
+
+# Annex I, point 1.9.10
+
+amblim:limit-1-9-10-2026-08-19 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:rule-1-9-10 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard amblim:t2-ht2 ;
+    amblink:foodCategory amblim:food-1-9-10 ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "10"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:dry-matter ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:provision-1-9-10 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:food-1-9-10 a skos:Concept ;
+    skos:prefLabel "Food for special medical purposes intended for infants and young children ( 3 )"@en ;
+    skos:definition "Food for special medical purposes intended for infants and young children ( 3 )"@en ;
+    skos:scopeNote "Except rice products (products of which rice or processed products from rice are the only cereal ingredients). The maximum level applies to the dry matter ( 5 ) of the product as placed on the market."@en ;
+    dct:source amblim:provision-1-9-10 .
+
+amblim:provision-1-9-10 a prov:Entity ;
+    dct:identifier "Annex I, point 1.9.10, maximum-level column and remarks" ;
+    dct:isPartOf amblim:current-consolidation ;
+    dct:relation amblim:annex-footnote-3 ,
+        amblim:annex-footnote-5 ,
+        amblim:general-provisions ,
+        amblim:header-1-9 ;
+    prov:value "1.9.10 | Food for special medical purposes intended for infants and young children ( 3 ) | 10 | Except rice products (products of which rice or processed products from rice are the only cereal ingredients). The maximum level applies to the dry matter ( 5 ) of the product as placed on the market." .
+
+# Historical seed records (outside the active catalogue)
+
+amblim:common-wheat-food-grain a skos:Concept ;
+    skos:prefLabel "Unprocessed common-wheat grain for food at first-stage processing"@en ;
+    skos:definition "Common wheat only, excluding durum wheat; unprocessed intact grain for food placed on the market for first-stage processing. Not flour, feed, infant food or a concentration on the living plant."@en ;
+    skos:scopeNote "The caller must establish common-wheat identity and product stage explicitly. The broader wheat crop concept alone is insufficient. Apply the revised first-stage-processing definition in footnote 6."@en .
+
+amblim:consolidated-provisions a prov:Entity ;
+    dct:identifier "Annex I, point 1.4.1: maximum column and remarks; footnote 6; Articles 2(3), 3" ;
+    dct:description "Consolidated source provisions for the historical scoped DON record."@en ;
+    dct:isPartOf amblim:current-consolidation .
+
+amblim:don-wheat-2024-v1 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:don-wheat-2024 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:deoxynivalenol ;
+    amblink:appliesToCrop ambplant:wheat ;
+    amblink:foodCategory amblim:common-wheat-food-grain ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "1000"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    amblink:appliesFrom "2024-07-01"^^xsd:date ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:base-provisions ,
+        amblim:don-provisions ,
+        amblim:processing-provisions ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:don-wheat-2024-v2 a amblink:ContaminantLimit ;
+    dct:isVersionOf amblim:don-wheat-2024 ;
+    dct:type amblim:legal-maximum ;
+    amblink:regulatedHazard ambpath:deoxynivalenol ;
+    amblink:appliesToCrop ambplant:wheat ;
+    amblink:foodCategory amblim:common-wheat-food-grain ;
+    amblink:maximumLevel [
+        a qudt:QuantityValue ;
+        qudt:numericValue "1000"^^xsd:decimal ;
+        qudt:unit unit:MicroGM-PER-KiloGM
+    ] ;
+    amblink:measurementBasis amblim:as-marketed ;
+    amblink:appliesFrom "2024-07-01"^^xsd:date ;
+    dct:spatial <http://publications.europa.eu/resource/authority/country/EUR> ;
+    dct:source amblim:base-provisions ,
+        amblim:consolidated-provisions ,
+        amblim:don-provisions ,
+        amblim:processing-provisions ;
+    prov:wasRevisionOf amblim:don-wheat-2024-v1 ;
+    dct:created "2026-10-23"^^xsd:date .
+
+amblim:seed-history a prov:Collection ;
+    dct:description "Earlier scoped DON records retained as history, outside the active catalogue."@en ;
+    prov:hadMember amblim:don-wheat-2024-v1 ,
+        amblim:don-wheat-2024-v2 .
