@@ -44,15 +44,9 @@ fskxo:ac398182-01ab-48f0-b25c-ca432631b018 a fskxo:FSKXO_0000018113,
 
 fskxo:FSKXO_0000000315 schema:label "English" .
 
-fskxo:FSKXO_0000017506 schema:label "° Celsius" .
-
 fskxo:FSKXO_0000017548 schema:label "g" .
 
 fskxo:FSKXO_0000017577 schema:label ".fskx" .
-
-fskxo:FSKXO_0000017632 schema:label "log10 CFU/g" .
-
-fskxo:FSKXO_0000017661 schema:label "g" .
 
 fskxo:FSKXO_0000018038 schema:label "FSK-Lab" .
 
@@ -132,7 +126,7 @@ fskxo:FSKXO_0000018038 schema:label "FSK-Lab" .
     fskxo:FSKXO_0000000039 fskxo:FSKXO_0000017594 ;
     fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
     schema:name "Tmin" ;
-    schema:unitText "[]" ;
+    schema:unitText fskxo:FSKXO_0000017508 ;
     schema:unit_label "[]" ;
     schema:value "4.96" .
 
@@ -141,7 +135,7 @@ fskxo:FSKXO_0000018038 schema:label "FSK-Lab" .
     fskxo:FSKXO_0000000039 fskxo:FSKXO_0000017594 ;
     fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
     schema:name "alpha0" ;
-    schema:unitText "[]" ;
+    schema:unitText fskxo:FSKXO_0000017540 ;
     schema:unit_label "[]" ;
     schema:value "0.097" .
 
@@ -162,7 +156,7 @@ fskxo:FSKXO_0000018038 schema:label "FSK-Lab" .
     schema:maxValue "100" ;
     schema:minValue "0" ;
     schema:name "tmax" ;
-    schema:unitText "[]" ;
+    schema:unitText fskxo:FSKXO_0000017569 ;
     schema:unit_label "[]" ;
     schema:value "72" .
 
@@ -174,7 +168,7 @@ fskxo:FSKXO_0000018038 schema:label "FSK-Lab" .
     schema:maxValue "9" ;
     schema:minValue "2" ;
     schema:name "y0" ;
-    schema:unitText fskxo:FSKXO_0000017519 ;
+    schema:unitText "log CFU/ml" ;
     schema:unit_label "log CFU/ml" ;
     schema:value "4" .
 
@@ -203,8 +197,8 @@ fskxo:FSKXO_0000018038 schema:label "FSK-Lab" .
 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/scope/product/Iceberg_lettuce> a fskxo:FSKXO_0000000336 ;
     dcterms:description fskxo:FSKXO_0000000507 ;
     schema:name fskxo:FSKXO_0000000507 ;
-    schema:unitText fskxo:FSKXO_0000017661 ;
-    schema:unit_label fskxo:FSKXO_0000017548 .
+    schema:unitText fskxo:FSKXO_0000017548 ;
+    schema:unit_label "g" .
 
 <https://w3id.org/ambrosia/software/pipeline> a prov:SoftwareAgent ;
     dcterms:title "AMBROSIA semantic extraction pipeline" ;
@@ -216,8 +210,8 @@ fskxo:FSKXO_0000000507 schema:label "Fresh cut iceberg lettuce pieces",
 fskxo:FSKXO_0000010627 a fskxo:FSKXO_0000003283 ;
     schema:label "Salmonella spp." ;
     schema:name fskxo:FSKXO_0000010627 ;
-    schema:unitText fskxo:FSKXO_0000017632 ;
-    schema:unit_label fskxo:FSKXO_0000017519 .
+    schema:unitText fskxo:FSKXO_0000017611 ;
+    schema:unit_label "log10 CFU/g" .
 
 fskxo:FSKXO_0000017596 schema:label "OUTPUT" .
 
@@ -235,7 +229,7 @@ fskxo:FSKXO_0000050318 a fskxo:FSKXO_0000050249 ;
     fskxo:FSKXO_0000000041 "VECTOROFNUMBERS" ;
     skos:exactMatch amblink:FoodContaminationConcentration ;
     schema:name "model_values" ;
-    schema:unitText "[]" ;
+    schema:unitText fskxo:FSKXO_0000017611 ;
     schema:unit_label "[]" .
 
 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/t> a fskxo:FSKXO_0000050260 ;
@@ -244,7 +238,7 @@ fskxo:FSKXO_0000050318 a fskxo:FSKXO_0000050249 ;
     fskxo:FSKXO_0000000041 "VECTOROFNUMBERS" ;
     skos:exactMatch amblink:SimulationTimeSeries ;
     schema:name "t" ;
-    schema:unitText "[]" ;
+    schema:unitText qudt-unit:HR ;
     schema:unit_label "[]" .
 
 <http://semanticlookup.zbmed.de/km/fskxo/ac398182-01ab-48f0-b25c-ca432631b018/parameter/temp_celsius> a fskxo:FSKXO_0000050260 ;
@@ -257,14 +251,10 @@ fskxo:FSKXO_0000050318 a fskxo:FSKXO_0000050249 ;
     schema:maxValue "25" ;
     schema:minValue "5" ;
     schema:name "temp_celsius" ;
-    schema:unitText fskxo:FSKXO_0000017506 ;
+    schema:unitText qudt-unit:DEG_C ;
     schema:unit_label "° Celsius" ;
     schema:value "10" ;
     amblink:preferredInputUnit qudt-unit:DEG_C .
-
-fskxo:FSKXO_0000017519 schema:label "Generic model",
-        "log CFU/ml",
-        "log10 CFU/g" .
 
 fskxo:FSKXO_0000017594 schema:label "CONSTANT" .
 

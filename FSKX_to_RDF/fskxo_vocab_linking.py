@@ -8,6 +8,7 @@ from rdflib import Graph, Literal, URIRef
 from rdflib.namespace import DCTERMS, RDF, RDFS, SKOS
 
 from schema_loader import DEFAULT_SCHEMA, get_enum_slots, get_slot_uri
+from vocab_mapper import build_unit_index, resolve_unit_iri
 
 SCHEMA_LABEL = URIRef("https://schema.org/label")
 OBO_EXACT_SYNONYM = URIRef("http://www.geneontology.org/formats/oboInOwl#hasExactSynonym")
@@ -92,6 +93,9 @@ def apply_vocab_linking(
         return 0
 
     label_index = build_label_index(vocab_file)
+    unit_graph = Graph().parse(str(vocab_file))
+    unit_index = build_unit_index(unit_graph)
+    unit_predicate = URIRef("https://schema.org/unitText")
     changed = 0
 
     for predicate in default_replace_predicates(schema_path):
@@ -99,7 +103,8 @@ def apply_vocab_linking(
             if not isinstance(literal, Literal):
                 continue
             original = str(literal).strip()
-            iri = label_index.get(_norm_label(original))
+            iri = (resolve_unit_iri(original, unit_index) if predicate == unit_predicate
+                   else label_index.get(_norm_label(original)))
             if not iri:
                 continue
 

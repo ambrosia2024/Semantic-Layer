@@ -35,6 +35,47 @@ VOCAB_TYPES = {
 }
 
 
+def normalize_unit_label(value: str) -> str:
+    """Normalize unit spelling without guessing dimensions or logarithm bases."""
+    text = unicodedata.normalize("NFKC", str(value)).strip().lower()
+    text = re.sub(r"\s+", "", text)
+    if text in {"°celsius", "celsius", "degreecelsius", "degreescelsius", "degc"}:
+        return "°c"
+    # Parentheses around the argument of log10 are a spelling variant only.
+    return re.sub(r"^log10\((.+)\)$", r"log10\1", text)
+
+
+def build_unit_index(graph: Graph) -> Dict[str, str]:
+    """Index unambiguous labels of FSKXO unit individuals, never other terms."""
+    unit_class = URIRef("http://semanticlookup.zbmed.de/km/fskxo/FSKXO_0000017483")
+    definitions = URIRef("http://purl.obolibrary.org/obo/IAO_0000115")
+    candidates: Dict[str, set] = {}
+    for subject in graph.subjects(RDF.type, unit_class):
+        iri = str(subject)
+        candidates.setdefault(iri, set()).add(iri)
+        for predicate in (RDFS.label, SKOS.prefLabel, SKOS.altLabel, definitions):
+            for label in graph.objects(subject, predicate):
+                key = normalize_unit_label(str(label))
+                if key and key != "[]":
+                    candidates.setdefault(key, set()).add(iri)
+    return {key: next(iter(iris)) for key, iris in candidates.items() if len(iris) == 1}
+
+
+def resolve_unit_iri(value: str, index: Dict[str, str]) -> Optional[str]:
+    """Resolve an exact unit/alias; placeholders and unknown terms stay unmapped."""
+    text = str(value).strip()
+    if text.startswith(("http://", "https://")):
+        return index.get(text)
+    return index.get(normalize_unit_label(text))
+
+
+def set_parameter_unit(graph: Graph, parameter: URIRef, unit: URIRef) -> None:
+    """Keep the normalized parameter unit consistent with an explicit mapping."""
+    if not isinstance(unit, URIRef):
+        raise ValueError("A mapped unit must be an IRI")
+    graph.set((parameter, URIRef("https://schema.org/unitText"), unit))
+
+
 class VocabularyMapper:
     """Maps vocabulary terms to ontology IRIs"""
 
@@ -46,6 +87,7 @@ class VocabularyMapper:
         self.individuals = {}
         self.synonyms = {}
         self.custom_mappings = {}
+        self.unit_index = {}
         self._load_ontology()
         self._load_custom_mappings()
 
@@ -66,6 +108,7 @@ class VocabularyMapper:
         try:
             graph = Graph()
             graph.parse(self.ontology_file)
+            self.unit_index = build_unit_index(graph)
 
             label_predicates = (RDFS.label, SKOS.prefLabel)
             synonym_predicates = (
@@ -154,6 +197,16 @@ class VocabularyMapper:
         """
         if not text:
             return None
+
+        # Unit caches may contain old substring matches. Re-resolve against the
+        # authoritative unit vocabulary before considering any cached result.
+        if field_type in {"unit", "units"} or (vocab_category == "units" and field_type != "unitCategory"):
+            key = f"{vocab_category}:{field_type}:{self._normalize_text(text)}" if vocab_category else f"{field_type}:{self._normalize_text(text)}"
+            iri = resolve_unit_iri(text, self.unit_index)
+            self.custom_mappings.pop(key, None)
+            if iri:
+                self.custom_mappings[key] = iri
+            return iri
 
         q = self._normalize_text(text)
 

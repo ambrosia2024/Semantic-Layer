@@ -199,8 +199,8 @@
     <https://w3id.org/ambrosia/netcdf-vocab#property/verticalContext> [
         a <https://w3id.org/ambrosia/netcdf-vocab#class/VerticalContext> ;
         skos:prefLabel "2 m above ground"@en ;
-        <https://w3id.org/ambrosia/netcdf-vocab#property:referenceLevel> "surface" ;
-        <https://w3id.org/ambrosia/netcdf-vocab#property:height> "2.0"^^xsd:decimal
+        <https://w3id.org/ambrosia/netcdf-vocab#property/referenceLevel> "surface" ;
+        <https://w3id.org/ambrosia/netcdf-vocab#property/height> "2.0"^^xsd:decimal
     ] ;
 
     # netCDF-LD metadata

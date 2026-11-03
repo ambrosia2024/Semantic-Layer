@@ -20,6 +20,11 @@ import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 import importlib
 
+if __package__:
+    from .vocab_mapper import set_parameter_unit
+else:
+    from vocab_mapper import set_parameter_unit
+
 # Get the directory of the current script to build robust paths
 script_dir = Path(__file__).resolve().parent
 
@@ -2043,6 +2048,7 @@ If you map parameters consistently (meaning, unit, temporal semantics), the dash
                             unit_uri = unit_label_to_uri.get(mapped_unit_label)
                             if unit_uri:
                                 g.add((param_uri, AMBLINK.preferredInputUnit, URIRef(unit_uri)))
+                                set_parameter_unit(g, param_uri, URIRef(unit_uri))
 
                     # --- Output Mappings (Concept and Unit) ---
                     if "Output" in param.get('classifications', set()):
@@ -2076,6 +2082,7 @@ If you map parameters consistently (meaning, unit, temporal semantics), the dash
                                 unit_uri = unit_label_to_uri.get(output_unit_label)
                                 if unit_uri:
                                     g.add((om_node, AMBLINK.hasOutputUnit, URIRef(unit_uri)))
+                                    set_parameter_unit(g, param_uri, URIRef(unit_uri))
 
                 # --- New Wiring Logic based on fskx_to_rdf.py ---
                 if model_uri:

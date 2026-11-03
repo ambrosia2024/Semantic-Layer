@@ -46,8 +46,6 @@ fskxo:FSKXO_0000000315 schema:label "English" .
 
 fskxo:FSKXO_0000000362 schema:label "Other" .
 
-fskxo:FSKXO_0000017506 schema:label "1/√(°C·h)" .
-
 fskxo:FSKXO_0000017519 schema:label "log10 CFU/g" .
 
 fskxo:FSKXO_0000017540 schema:label "Dimensionless" .
@@ -55,8 +53,6 @@ fskxo:FSKXO_0000017540 schema:label "Dimensionless" .
 fskxo:FSKXO_0000017548 schema:label "g" .
 
 fskxo:FSKXO_0000017600 schema:label "Listeriosis" .
-
-fskxo:FSKXO_0000017661 schema:label "g" .
 
 fskxo:FSKXO_0000017778 schema:label "Dimensionless Quantity" .
 
@@ -145,7 +141,7 @@ fskxo:FSKXO_0000017778 schema:label "Dimensionless Quantity" .
     fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
     fskxo:FSKXO_0000000088 "Point estimate" ;
     schema:name "Growth rate constant" ;
-    schema:unitText fskxo:FSKXO_0000017506 ;
+    schema:unitText "1/√(°C·h)" ;
     schema:unit_label "1/√(°C·h)" ;
     schema:value "0.016" .
 
@@ -173,7 +169,7 @@ fskxo:FSKXO_0000017778 schema:label "Dimensionless Quantity" .
     fskxo:FSKXO_0000000041 fskxo:FSKXO_0000017803 ;
     fskxo:FSKXO_0000000088 "Point estimate" ;
     schema:name "Initial population" ;
-    schema:unitText fskxo:FSKXO_0000017632 ;
+    schema:unitText fskxo:FSKXO_0000017611 ;
     schema:unit_label "log10 CFU/g" ;
     schema:value "3.5" .
 
@@ -206,8 +202,8 @@ fskxo:FSKXO_0000017778 schema:label "Dimensionless Quantity" .
     fskxo:FSKXO_0000000023 "Plastic bag" ;
     fskxo:FSKXO_0000000024 "None" ;
     schema:name fskxo:FSKXO_0000000507 ;
-    schema:unitText fskxo:FSKXO_0000017661 ;
-    schema:unit_label fskxo:FSKXO_0000017548 .
+    schema:unitText fskxo:FSKXO_0000017548 ;
+    schema:unit_label "g" .
 
 <https://w3id.org/ambrosia/software/pipeline> a prov:SoftwareAgent ;
     dcterms:title "AMBROSIA semantic extraction pipeline" ;
@@ -220,8 +216,8 @@ fskxo:FSKXO_0000006903 a fskxo:FSKXO_0000003283 ;
     fskxo:FSKXO_0000000053 fskxo:FSKXO_0000017600 ;
     schema:label "Listeria monocytogenes" ;
     schema:name fskxo:FSKXO_0000006903 ;
-    schema:unitText fskxo:FSKXO_0000017632 ;
-    schema:unit_label fskxo:FSKXO_0000017519 .
+    schema:unitText fskxo:FSKXO_0000017611 ;
+    schema:unit_label "log10 CFU/g" .
 
 fskxo:FSKXO_0000017508 schema:label "°C" .
 
@@ -247,7 +243,7 @@ fskxo:FSKXO_0000018713 a fskxo:FSKXO_0000050252 ;
     fskxo:FSKXO_0000000088 "Time series" ;
     skos:exactMatch amblink:FoodContaminationConcentration ;
     schema:name "Predicted bacterial population" ;
-    schema:unitText fskxo:FSKXO_0000017632 ;
+    schema:unitText fskxo:FSKXO_0000017611 ;
     schema:unit_label "log10 CFU/g" .
 
 <http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/parameter/t> a fskxo:FSKXO_0000050260 ;
@@ -259,7 +255,7 @@ fskxo:FSKXO_0000018713 a fskxo:FSKXO_0000050252 ;
     fskxo:FSKXO_0000000088 "Time series" ;
     skos:exactMatch amblink:SimulationTimeSeries ;
     schema:name "Time" ;
-    schema:unitText fskxo:FSKXO_0000017569 ;
+    schema:unitText qudt-unit:HR ;
     schema:unit_label "h" .
 
 <http://semanticlookup.zbmed.de/km/fskxo/c4adaff8-96af-40b5-adb9-79bca46c0b04/parameter/temp_celsius> a fskxo:FSKXO_0000050260 ;
@@ -274,19 +270,16 @@ fskxo:FSKXO_0000018713 a fskxo:FSKXO_0000050252 ;
     skos:exactMatch qk:Temperature,
         <https://cfconventions.org/Data/cf-standard-names/current/build/cf-standard-name-table.html#air_temperature> ;
     schema:name "Temperature" ;
-    schema:unitText fskxo:FSKXO_0000017508 ;
+    schema:unitText qudt-unit:DEG_C ;
     schema:unit_label "°C" ;
     schema:value "15" ;
     amblink:preferredInputUnit qudt-unit:DEG_C .
 
-fskxo:FSKXO_0000017569 schema:label "Python",
-        "h" .
+fskxo:FSKXO_0000017569 schema:label "h" .
 
 fskxo:FSKXO_0000017594 schema:label "CONSTANT" .
 
 fskxo:FSKXO_0000017595 schema:label "INPUT" .
-
-fskxo:FSKXO_0000017632 schema:label "log10 CFU/g" .
 
 fskxo:FSKXO_0000017803 schema:label "DOUBLE" .
 

@@ -7,6 +7,7 @@ from rdflib.namespace import RDF, SKOS, RDFS
 import difflib
 import sys
 import os
+from vocab_mapper import normalize_unit_label
 
 # Global log file path
 LOG_FILE = Path(__file__).parent / "inference_debug.log"
@@ -97,7 +98,7 @@ def extend_uri_lookup_with_ontology(uri_lookup, ontology_path):
         return uri_lookup
 
     expanded = dict(uri_lookup)
-    match_predicates = (SKOS.exactMatch, SKOS.closeMatch, SKOS.narrowMatch, SKOS.broadMatch)
+    match_predicates = (SKOS.exactMatch,)
     for source_uri, label in list(uri_lookup.items()):
         source_ref = FSKXO[source_uri.rsplit("/", 1)[-1]] if source_uri.startswith(str(FSKXO)) else None
         for pred in match_predicates:
@@ -140,29 +141,20 @@ def _looks_like_temperature_mapping(mapping_label):
 def fuzzy_match_term(term_str, candidates, threshold=0.7, is_unit=False):
     if not term_str:
         return None
+
+    if is_unit:
+        term = normalize_unit_label(term_str)
+        if not term or term in {"[]", "nan", "none"}:
+            return None
+        matches = set()
+        for candidate in candidates:
+            aliases = [candidate['term'], *candidate.get('altLabels', '').split(',')]
+            if any(normalize_unit_label(alias) == term for alias in aliases if alias.strip()):
+                matches.add(candidate['display_label'])
+        return next(iter(matches)) if len(matches) == 1 else None
     
     term_str = term_str.strip()
     term_str_lower = term_str.lower()
-
-    # Special case: Dimensionless for units
-    if is_unit and term_str == "[]":
-        # 1. Try to find exact match for "[]" in candidates
-        for cand in candidates:
-            if cand['term'] == "[]":
-                return cand['display_label']
-        
-        # 2. Try to find "Dimensionless" or "Unitless" or "1"
-        dimensionless_keywords = ["dimensionless", "unitless", "1"]
-        for cand in candidates:
-            c_term = cand['term'].lower()
-            c_alts = cand['altLabels'].lower() if cand['altLabels'] else ""
-            
-            for kw in dimensionless_keywords:
-                if kw == c_term or kw in c_alts.split(','):
-                    return cand['display_label']
-                    
-        # 3. Return "[]" as fallback if no mapping found, allowing user to see it
-        return "[]"
 
     best_match = None
     best_score = -1
@@ -293,11 +285,17 @@ def process_turtle_files(input_dirs, unit_candidates, input_candidates, output_c
             
             # Query for parameters, their units, and classification
             q = """
-                SELECT ?param ?id ?unitText ?unitLabel ?name ?classification ?classRef WHERE {
+                SELECT ?param ?id ?unitText ?unitLabel ?preferredUnit ?outputUnit ?name ?classification ?classRef WHERE {
                     ?model fskxo:FSKXO_0000000016 / fskxo:FSKXO_0000000017 ?param .
                     OPTIONAL { ?param dcterms:identifier ?id . }
                     OPTIONAL { ?param schema:unitText ?unitText . }
                     OPTIONAL { ?param schema:unit_label ?unitLabel . }
+                    OPTIONAL { ?param <https://w3id.org/ambrosia/linking#preferredInputUnit> ?preferredUnit . }
+                    OPTIONAL {
+                        ?mapping a <https://w3id.org/ambrosia/linking#OutputMapping> ;
+                            <https://w3id.org/ambrosia/linking#mapsParameter> ?param ;
+                            <https://w3id.org/ambrosia/linking#hasOutputUnit> ?outputUnit .
+                    }
                     OPTIONAL { ?param schema:name ?name . }
                     OPTIONAL { ?param fskxo:FSKXO_0000000039 ?classification . }
                     OPTIONAL { ?param fskxo:FSKXO_0000017519 ?classRef . }
@@ -313,7 +311,10 @@ def process_turtle_files(input_dirs, unit_candidates, input_candidates, output_c
                 if param_id not in params_data:
                     params_data[param_id] = {
                         'id': param_id,
-                        'unit_str': str(row.unitText) if row.unitText else (str(row.unitLabel) if row.unitLabel else None),
+                        'unit_str': str(row.preferredUnit or row.outputUnit or (
+                            row.unitLabel if str(row.unitLabel or '').strip() not in {'', '[]'}
+                            else row.unitText
+                        ) or ''),
                         'name': str(row.name) if row.name else None,
                         'classifications': set()
                     }
